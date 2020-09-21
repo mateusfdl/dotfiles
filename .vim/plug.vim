@@ -15,11 +15,13 @@ call plug#begin()
 	Plug 'junegunn/fzf.vim'
 	
 	Plug 'terryma/vim-multiple-cursors'
-	
+	Plug 'christoomey/vim-tmux-runner'
+
 	Plug 'itchyny/lightline.vim'
 
 	Plug 'preservim/nerdtree'
 
+	Plug 'lifepillar/vim-solarized8'
 	Plug 'morhetz/gruvbox'
 	Plug 'altercation/vim-colors-solarized'
 
@@ -28,13 +30,12 @@ call plug#begin()
 	Plug 'yggdroot/indentline'
 
 	Plug 'junegunn/vim-easy-align'
-	"" VIM SUPPORT FOR JS AND VUE HIGHLIGHT
-	Plug 'pangloss/vim-javascript'
-	Plug 'posva/vim-vue'
+	
+	Plug 'tpope/vim-surround'
 	
 	"" VIM RSPEC 
 	Plug 'thoughtbot/vim-rspec'
-
+	"
 	"" VIM SUPPORT FOR RUST LANG
 	Plug 'rust-lang/rust.vim'
 
