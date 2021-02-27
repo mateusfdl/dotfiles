@@ -1,7 +1,7 @@
 
 export PATH=$PATH=$HOME/pear/bin:$PATH
 
-export ZSH="/home/matheus/.oh-my-zsh"
+export ZSH="/home/donamaid/.oh-my-zsh"
 
 export TERM="xterm-256color"
 
@@ -11,10 +11,12 @@ ZSH_THEME="ohmymatheus"
 
 . $HOME/.asdf/asdf.sh
 
-plugins=(git ruby)
+plugins=(docker docker-compose git ruby)
 
 source $ZSH/oh-my-zsh.sh
 source $HOME/.cargo/env
+source $HOME/.zsh.d/alias-docker.zsh
+source $HOME/.zsh.d/alias-git.zsh
 
 if [ -z "$TMUX" ]; then
     base_session='my_session'
@@ -30,4 +32,7 @@ if [ -z "$TMUX" ]; then
         tmux -2 attach-session -t $base_session
     fi
 fi
-alias config='/usr/bin/git --git-dir=/home/matheus/.dotfiles/ --work-tree=/home/matheus'
+
+alias dotfiles='/usr/bin/git --git-dir=$HOME/dotfiles.git/ --work-tree=$HOME'
+alias home='cd $HOME'
+alias ps='docker-compose ps -a'
