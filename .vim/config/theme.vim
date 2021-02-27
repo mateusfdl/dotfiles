@@ -1,6 +1,5 @@
-filetype plugin on
-set background=dark
-syntax enable
-
+syntax on
+"colorscheme miramare
 colorscheme solarized
+set background=dark
 "colorscheme gruvbox
