@@ -21,8 +21,6 @@ call plug#begin()
 
 	Plug 'preservim/nerdtree'
 
-	Plug 'lifepillar/vim-solarized8'
-	Plug 'morhetz/gruvbox'
 	Plug 'altercation/vim-colors-solarized'
 
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -32,7 +30,8 @@ call plug#begin()
 	Plug 'junegunn/vim-easy-align'
 	
 	Plug 'tpope/vim-surround'
-	
+
+	Plug 'kristijanhusak/vim-carbon-now-sh'
 	"" VIM RSPEC 
 	Plug 'thoughtbot/vim-rspec'
 	"
@@ -40,6 +39,10 @@ call plug#begin()
 	Plug 'rust-lang/rust.vim'
 
 	Plug 'mattn/webapi-vim'
+	
+	" MARKDOWN SUPPORT
+	Plug 'iamcco/mathjax-support-for-mkdp'
+	Plug 'iamcco/markdown-preview.vim'
 call plug#end()
 
 let config = $VIM.'/config'
