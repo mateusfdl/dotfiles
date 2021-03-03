@@ -6,57 +6,66 @@ set number "Show rows number at sidebar
 set relativenumber "Show line number on the current line and relative
 " numbers on all other lines
 set autoindent	
+set autoread                                                 " reload files when changed on disk, i.e. via `git checkout`
+set backspace=2
 set tabstop=2
 set smartcase 
-set noerrorbells "Disable error sounds set noswapfile 
+set noerrorbells					     " Disable error sounds set noswapfile 
 set ruler
 set laststatus=2
 set mouse=a
 set autoread
+set ruler                                                    " show where you are
+set scrolloff=3                                              " show context above/below cursorline
+set shiftwidth=2                                             " normal mode indentation commands use 2 spaces
+set showcmd
+set smartcase                                                " case-sensitive search if any caps
+set softtabstop=2                                            " insert mode tab and backspace use 2 spaces
+set tabstop=8
 syntax enable
 highlight ColorColumn ctermbg=red
 
 " auto-install vim-plug
 call plug#begin()
-  Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
+	Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 
-  " If you want to display icons, then use one of these plugins:
-  Plug 'kyazdani42/nvim-web-devicons' " lua
-  Plug 'ryanoasis/vim-devicons' " vimscript
+	" If you want to display icons, then use one of these plugins:
+	Plug 'kyazdani42/nvim-web-devicons' " lua
+	Plug 'ryanoasis/vim-devicons' " vimscript
 
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 	Plug 'glepnir/zephyr-nvim'
 
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-  Plug 'kyazdani42/nvim-tree.lua'
+	Plug 'kyazdani42/nvim-tree.lua'
 
 	Plug 'nvim-lua/popup.nvim'
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim'
+	Plug 'nvim-lua/plenary.nvim'
+	Plug 'nvim-telescope/telescope.nvim'
 
 
 	Plug 'npxbr/glow.nvim', {'do': ':GlowInstall'}
 
-	 Plug 'terryma/vim-multiple-cursors'
+	Plug 'terryma/vim-multiple-cursors'
 
-	 Plug 'christoomey/vim-tmux-runner'
+	Plug 'christoomey/vim-tmux-runner'
 
-	 Plug 'yggdroot/indentline'
+	Plug 'yggdroot/indentline'
 
-	 Plug 'tpope/vim-surround'
+	Plug 'tpope/vim-surround'
 
-	 Plug 'tpope/vim-fugitive'
+	Plug 'tpope/vim-fugitive'
 
-	 Plug 'junegunn/vim-easy-align'
+	Plug 'junegunn/vim-easy-align'
 
-	 Plug 'kristijanhusak/vim-carbon-now-sh'
+	Plug 'kristijanhusak/vim-carbon-now-sh'
 
-	 Plug 'thoughtbot/vim-rspec'
+	Plug 'thoughtbot/vim-rspec'
 
-	 Plug 'mattn/webapi-vim'
+	Plug 'mattn/webapi-vim'
 
-	 Plug 'tmux-plugins/vim-tmux-focus-events'
+	Plug 'tmux-plugins/vim-tmux-focus-events'
 call plug#end()
 
 set colorcolumn=80
@@ -120,11 +129,15 @@ highlight NvimTreeFolderIcon guibg=blue
 
 " CoC
 " NOTE: Use tab for trigger completion with characters ahead and navigate.
+
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -147,12 +160,5 @@ let g:carbon_now_sh_options =
 \ { 'ln': 'true',
   \ 'fm': 'Source Code Pro' }
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = { "c", "rust" },  -- list of language that will be disabled
-  },
-}
-EOF
+:lua require('status-line')
+:lua require('nvim-treesitter-conf')
