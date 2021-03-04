@@ -27,45 +27,45 @@ highlight ColorColumn ctermbg=red
 
 " auto-install vim-plug
 call plug#begin()
-	Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
+  Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 
-	" If you want to display icons, then use one of these plugins:
-	Plug 'kyazdani42/nvim-web-devicons' " lua
-	Plug 'ryanoasis/vim-devicons' " vimscript
+  " If you want to display icons, then use one of these plugins:
+  Plug 'kyazdani42/nvim-web-devicons' " lua
+  Plug 'ryanoasis/vim-devicons' " vimscript
 
-	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-	Plug 'glepnir/zephyr-nvim'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'glepnir/zephyr-nvim'
 
-	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-	Plug 'kyazdani42/nvim-tree.lua'
+  Plug 'kyazdani42/nvim-tree.lua'
 
-	Plug 'nvim-lua/popup.nvim'
-	Plug 'nvim-lua/plenary.nvim'
-	Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-lua/popup.nvim'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim'
 
 
-	Plug 'npxbr/glow.nvim', {'do': ':GlowInstall'}
+  Plug 'npxbr/glow.nvim', {'do': ':GlowInstall'}
 
-	Plug 'terryma/vim-multiple-cursors'
+  Plug 'terryma/vim-multiple-cursors'
 
-	Plug 'christoomey/vim-tmux-runner'
+  Plug 'christoomey/vim-tmux-runner'
 
-	Plug 'yggdroot/indentline'
+  Plug 'yggdroot/indentline'
 
-	Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-surround'
 
-	Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-fugitive'
 
-	Plug 'junegunn/vim-easy-align'
+  Plug 'junegunn/vim-easy-align'
 
-	Plug 'kristijanhusak/vim-carbon-now-sh'
+  Plug 'kristijanhusak/vim-carbon-now-sh'
 
-	Plug 'thoughtbot/vim-rspec'
+  Plug 'thoughtbot/vim-rspec'
 
-	Plug 'mattn/webapi-vim'
+  Plug 'mattn/webapi-vim'
 
-	Plug 'tmux-plugins/vim-tmux-focus-events'
+  Plug 'tmux-plugins/vim-tmux-focus-events'
 call plug#end()
 
 set colorcolumn=80
