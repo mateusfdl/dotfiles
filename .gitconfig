@@ -1,0 +1,9 @@
+[user]
+	name = Matheus Lima
+	email = matheus.limastack@outlook.com
+
+[init]
+    defaultBranch = main
+
+[push]
+	default = current
