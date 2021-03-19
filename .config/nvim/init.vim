@@ -21,6 +21,7 @@ set showcmd
 set smartcase                                                " Case-sensitive search if any caps
 set softtabstop=2                                            " Insert mode tab and backspace use 2 spaces
 set tabstop=8
+set noswapfile
 
 syntax enable
 
