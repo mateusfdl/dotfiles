@@ -2,11 +2,10 @@ let mapleader = ","
 set encoding=utf-8
 
 " CONFIG 
-set number "Show rows number at sidebar
-set relativenumber "Show line number on the current line and relative
-" numbers on all other lines
+set number						     " Show rows number at sidebar
+set relativenumber					     " Show line number on the current line and relative
 set autoindent	
-set autoread                                                 " reload files when changed on disk, i.e. via `git checkout`
+set autoread                                                 " Reload files when changed on disk, i.e. via `git checkout`
 set backspace=2
 set tabstop=2
 set smartcase 
@@ -15,19 +14,23 @@ set ruler
 set laststatus=2
 set mouse=a
 set autoread
-set ruler                                                    " show where you are
-set scrolloff=3                                              " show context above/below cursorline
-set shiftwidth=2                                             " normal mode indentation commands use 2 spaces
+set ruler                                                    " Show where you are
+set scrolloff=3                                              " Show context above/below cursorline
+set shiftwidth=2                                             " Normal mode indentation commands use 2 spaces
 set showcmd
-set smartcase                                                " case-sensitive search if any caps
-set softtabstop=2                                            " insert mode tab and backspace use 2 spaces
+set smartcase                                                " Case-sensitive search if any caps
+set softtabstop=2                                            " Insert mode tab and backspace use 2 spaces
 set tabstop=8
+
 syntax enable
+
 highlight ColorColumn ctermbg=red
 
 " auto-install vim-plug
 call plug#begin()
   Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
+
+  Plug 'glepnir/dashboard-nvim'
 
   " If you want to display icons, then use one of these plugins:
   Plug 'kyazdani42/nvim-web-devicons' " lua
@@ -59,6 +62,8 @@ call plug#begin()
 
   Plug 'junegunn/vim-easy-align'
 
+  Plug 'mhinz/vim-grepper'
+
   Plug 'kristijanhusak/vim-carbon-now-sh'
 
   Plug 'thoughtbot/vim-rspec'
@@ -66,6 +71,8 @@ call plug#begin()
   Plug 'mattn/webapi-vim'
 
   Plug 'tmux-plugins/vim-tmux-focus-events'
+
+  Plug 'rust-lang/rust.vim'
 call plug#end()
 
 set colorcolumn=80
@@ -160,5 +167,34 @@ let g:carbon_now_sh_options =
 \ { 'ln': 'true',
   \ 'fm': 'Source Code Pro' }
 
+" Rust
+let g:rustfmt_autosave = 1
+let g:rust_clip_command = 'xclip -selection clipboard'
+
 :lua require('status-line')
 :lua require('nvim-treesitter-conf')
+:lua require('devilicons')
+
+let g:dashboard_custom_header =<< trim END
+───────▄▀▀▀▀▀▀▀▀▀▀▄▄
+────▄▀▀░░░░░░░░░░░░░▀▄
+──▄▀░░░░░░░░░░░░░░░░░░▀▄
+──█░░░░░░░░░░░░░░░░░░░░░▀▄
+─▐▌░░░░░░░░▄▄▄▄▄▄▄░░░░░░░▐▌
+─█░░░░░░░░░░░▄▄▄▄░░▀▀▀▀▀░░█
+▐▌░░░░░░░▀▀▀▀░░░░░▀▀▀▀▀░░░▐▌
+█░░░░░░░░░▄▄▀▀▀▀▀░░░░▀▀▀▀▄░█
+█░░░░░░░░░░░░░░░░▀░░░▐░░░░░▐▌
+▐▌░░░░░░░░░▐▀▀██▄░░░░░░▄▄▄░▐▌
+─█░░░░░░░░░░░▀▀▀░░░░░░▀▀██░░█
+─▐▌░░░░▄░░░░░░░░░░░░░▌░░░░░░█
+──▐▌░░▐░░░░░░░░░░░░░░▀▄░░░░░█
+───█░░░▌░░░░░░░░▐▀░░░░▄▀░░░▐▌
+───▐▌░░▀▄░░░░░░░░▀░▀░▀▀░░░▄▀
+───▐▌░░▐▀▄░░░░░░░░░░░░░░░░█
+───▐▌░░░▌░▀▄░░░░▀▀▀▀▀▀░░░█
+───█░░░▀░░░░▀▄░░░░░░░░░░▄▀
+──▐▌░░░░░░░░░░▀▄░░░░░░▄▀
+─▄▀░░░▄▀░░░░░░░░▀▀▀▀█▀
+▀░░░▄▀░░░░░░░░░░▀░░░▀▀▀▀▄▄▄▄▄
+END
