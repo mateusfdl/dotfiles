@@ -20,3 +20,5 @@ set laststatus=2
 
 so $VIM/plug.vim
 
+set colorcolumn=81
+highlight ColorColumn ctermbg=red

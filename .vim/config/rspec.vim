@@ -1,3 +1,3 @@
-let g:rspec_command = "call VtrSendCommand('rspec {spec}}')"
-map <Leader>rf :call RunCurrentSpecFile()<CR>
+let g:rspec_command = "call VtrSendCommand('rspec -I . {spec}}')"
+map <Leader>rr :call RunCurrentSpecFile()<CR>
 map <Leader>rn :call RunNearestSpec()<CR>
