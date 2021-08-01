@@ -1,0 +1,13 @@
+{
+  "coc.preferences.formatOnSaveFiletypes": ["ruby"],
+  "solargraph.diagnostics": true,
+  "solargraph.rename": true,
+  "solargraph.completion": true,
+  "solargraph.hover": true,
+  "solargraph.formatting": true,
+  "solargraph.logLevel": "warn",
+  "solargraph.autoformat": true,
+  "go.goplsOptions": {
+    "completeUnimported": true
+  }
+}
