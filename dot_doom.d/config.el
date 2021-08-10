@@ -12,5 +12,3 @@
       org-directory "~/org/")
 
 
-
-
