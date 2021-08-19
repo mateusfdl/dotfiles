@@ -7,7 +7,7 @@
 
       display-line-numbers-type t
 
-      doom-font(font-spec :family "Fira Code" :size 12)
+      doom-font(font-spec :family "Hack Nerd Font Mono" :size 12)
 
       org-directory "~/org/")
 
