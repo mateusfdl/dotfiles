@@ -40,3 +40,5 @@ fi
 source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 bindkey '^Z' autosuggest-accept
+
+[ -f .melhor_envio ] && source .melhor_envio
