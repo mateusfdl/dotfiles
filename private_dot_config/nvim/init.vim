@@ -36,7 +36,7 @@ call plug#begin()
   Plug 'kyazdani42/nvim-web-devicons' " lua
   Plug 'ryanoasis/vim-devicons' " vimscript
 
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter'
   Plug 'dracula/vim', { 'name': 'dracula' }
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -48,7 +48,6 @@ call plug#begin()
   Plug 'nvim-telescope/telescope.nvim'
 
   Plug 'christoomey/vim-tmux-runner'
-
   Plug 'yggdroot/indentline'
 
   Plug 'tpope/vim-surround'
@@ -60,6 +59,9 @@ call plug#begin()
   Plug 'tmux-plugins/vim-tmux-focus-events'
 
   Plug 'mhinz/vim-signify'
+
+  " Languages
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 set colorcolumn=80
@@ -94,9 +96,6 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-"NerdTree
-map <leader>. :NERDTreeToggle<CR>
-map <leader>o :NERDTreeFind<CR>
 
 " Rspec
 map <Leader>rr :call RunCurrentSpecFile()<CR>
@@ -108,6 +107,7 @@ vnoremap <leader>1 :CarbonNowSh<CR>
 
 " Run Exercism
 map <f4> :w<cr>:call system("tmux resize-pane -y 20 -t2 && tmux send -t2 'ruby -r minitest/pride *_test.rb' c-j")<cr>
+map <f1> :w<cr>:call system("tmux resize-pane -y 10 -t1 && tmux send -t1 'go test -v --bench .' c-j")<cr>
 
 " NerdTree
 nnoremap <Leader>o :NvimTreeToggle<CR>
@@ -160,3 +160,13 @@ let g:carbon_now_sh_options =
 :lua require('status-line')
 :lua require('nvim-treesitter-conf')
 :lua require('devilicons')
+:lua require('nvim-tree-conf')
+
+
+" Language config
+
+" Golang
+autocmd FileType go setlocal shiftwidth=4
+autocmd FileType go setlocal tabstop=4
+let g:go_fmt_command = "goimports" 
+
