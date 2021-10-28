@@ -1,7 +1,9 @@
 let mapleader = ","
-set encoding=utf-8
+syntax on
+syntax enable
 
 " CONFIG 
+set encoding=utf-8
 set number						     " Show rows number at sidebar
 set relativenumber					     " Show line number on the current line and relative
 set autoindent	
@@ -23,12 +25,13 @@ set softtabstop=2                                            " Insert mode tab a
 set tabstop=8
 set noswapfile
 set guicursor=
+set termguicolors					     " this variable must be enabled for colors to be applied properly
+set colorcolumn=80
+set cursorline
 
-syntax enable
 
 highlight ColorColumn ctermbg=red
 
-" auto-install vim-plug
 call plug#begin()
   Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 
@@ -60,14 +63,14 @@ call plug#begin()
 
   Plug 'mhinz/vim-signify'
 
+  Plug 'github/copilot.vim'
+
   " Languages
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
-set colorcolumn=80
-set cursorline
 colorscheme dracula
-syntax on
+
 
 """"" KEYMAP
 nmap <leader>p :Glow<CR>
@@ -89,41 +92,20 @@ inoremap ii <esc>
 nnoremap cn <S-v>/\n\n<CR>
 noremap <Leader>s :update<CR>
 
-" EasyAlign
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
-
-
-" Rspec
-map <Leader>rr :call RunCurrentSpecFile()<CR>
-map <Leader>rn :call RunNearestSpec()<CR>
-
-
-" CarbonNowSh
-vnoremap <leader>1 :CarbonNowSh<CR>
 
 " Run Exercism
 map <f4> :w<cr>:call system("tmux resize-pane -y 20 -t2 && tmux send -t2 'ruby -r minitest/pride *_test.rb' c-j")<cr>
 map <f1> :w<cr>:call system("tmux resize-pane -y 10 -t1 && tmux send -t1 'go test -v --bench .' c-j")<cr>
+nnoremap <silent><leader>1 :source ~/.config/nvim/init.vim \| :PlugInstall <CR>
 
 " NerdTree
-nnoremap <Leader>o :NvimTreeToggle<CR>
-nnoremap <leader>r :NvimTreeRefresh<CR>
-nnoremap <leader>n :NvimTreeFindFile<CR>
 " NvimTreeOpen and NvimTreeClose are also available if you need them
 
-set termguicolors " this variable must be enabled for colors to be applied properly
 
 " a list of groups can be found at `:help nvim_tree_highlight`
-highlight NvimTreeFolderIcon guibg=blue
 """"" 
 
 " CoC
-" NOTE: Use tab for trigger completion with characters ahead and navigate.
-
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
@@ -146,22 +128,17 @@ let g:VtrOrientation = "h"
 " EasyAlign
 let g:indentLine_color_gui = '#454545'
 let g:indentLine_char = '.'
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 " NerdTree
 let g:NERDTreeIgnore = [
     \ '.git',
     \ ]
-
-" VimCarbonNowSh
-let g:carbon_now_sh_options =
-\ { 'ln': 'true',
-  \ 'fm': 'Source Code Pro' }
-
-:lua require('status-line')
-:lua require('nvim-treesitter-conf')
-:lua require('devilicons')
-:lua require('nvim-tree-conf')
-
+nnoremap <Leader>o :NvimTreeToggle<CR>
+nnoremap <leader>r :NvimTreeRefresh<CR>
+nnoremap <leader>n :NvimTreeFindFile<CR>
+highlight NvimTreeFolderIcon guibg=blue
 
 " Language config
 
@@ -170,3 +147,8 @@ autocmd FileType go setlocal shiftwidth=4
 autocmd FileType go setlocal tabstop=4
 let g:go_fmt_command = "goimports" 
 
+
+:lua require('status-line')
+:lua require('nvim-treesitter-conf')
+:lua require('devilicons')
+:lua require('nvim-tree-conf')
