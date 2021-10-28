@@ -15,6 +15,5 @@ ZSH_THEME_GIT_PROMPT_CLEAN="$YS_VCS_PROMPT_CLEAN"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#757575"
 
  
-PROMPT="👾%(?:%{$fg[blue]%}➜ :%{$fg_bold[red]%}➜)"
-PROMPT+='%{$fg[white]%}%c%{$reset_color%}$(git_prompt_info )'
+PROMPT="%(?:%{$fg[blue]%} ▷ :%{$fg_bold[red]%} ▷ )"
 
