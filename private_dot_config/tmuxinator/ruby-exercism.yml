@@ -1,0 +1,14 @@
+# /Users/joaomatheusfurtadodelima/.config/tmuxinator/exercism.yml
+
+name: ruby-exercism
+root: ~/
+
+windows:
+  - ruby:
+      layout: main-horizontal 
+      root: ~/Documents/self/matheus/exercism/ruby/<%= @settings["exercism"] %>
+      panes:
+        - nvim
+        - test: 
+          - tmux resize-pane -y 10 -t 1
+          - fd -e .rb | entr -c  ruby -r minitest/pride <%=@settings["exercism"]%>_test.rb
