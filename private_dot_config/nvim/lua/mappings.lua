@@ -28,8 +28,25 @@ function M.telescope()
 end
 
 function M.easyalign()
-    nmap("gd", ":EasyAlign") 
-    xmap("ga", ":EasyAlign")
+    nmap("<leader>gd", ":EasyAlign") 
+    xmap("<leader>ga", ":EasyAlign")
+end
+
+function M.lsp()
+  nnoremap("gd", "<cmd>lua vim.lsp.buf.definition()<CR>")  
+  nnoremap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")  
+  nnoremap("gr", "<cmd>lua vim.lsp.buf.references()<CR>")  
+  nnoremap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")  
+  nnoremap("K", "<cmd>lua vim.lsp.buf.hover()<CR>")   
+  nnoremap("<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>") 
+  nnoremap("<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>") 
+  nnoremap("<C-p>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")  
+  
+  vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+  vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+  vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+  vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+  vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
 end
 
 function M.setup()
@@ -38,6 +55,7 @@ function M.setup()
     M.telescope()
     M.telescope()
     M.easyalign()
+    M.lsp()
 end
 
 return M
