@@ -5,7 +5,6 @@ require "packer".startup(function()
     use { 'ryanoasis/vim-devicons' } 
     use { 'nvim-treesitter/nvim-treesitter' } 
     use { 'dracula/vim', as = 'dracula' } 
-    use { 'neoclide/coc.nvim', branch = 'release' } 
     use { 'nvim-lua/popup.nvim' } 
     use { 'nvim-lua/plenary.nvim' } 
     use { 'kyazdani42/nvim-tree.lua' } 
@@ -20,4 +19,6 @@ require "packer".startup(function()
     use { 'github/copilot.vim' } 
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' } 
     use { 'neovimhaskell/haskell-vim' } 
+    use { "neovim/nvim-lspconfig" }
+    use { "hrsh7th/nvim-compe" }
 end)
