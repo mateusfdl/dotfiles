@@ -5,6 +5,7 @@ require "settings.status-line"
 require "settings.telescope"
 require "settings.easyalign"
 require "settings.tmux-runner"
+require "settings.lsp"
 
 local M = {}
 local options = vim.opt
@@ -39,6 +40,7 @@ function M.lua_auto_cmds()
   options.backspace		    ='2'
   options.softtabstop		    =2                                     
   options.tabstop		    =8
+  options.hidden                    =true
 end
 
 function M.setup()
