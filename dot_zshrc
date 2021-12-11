@@ -22,6 +22,10 @@ alias abrew='/opt/homebrew/bin/brew'
 alias ibrew='arch -x86_64 /usr/local/bin/brew'
 alias tns='tmux new'
 
+rexercism(){
+  tmuxinator start ruby-exercism exercism=${1}
+}
+
 . $(brew --prefix asdf)/asdf.sh
 
 if [[ -z "${TMUX}" ]] then;
