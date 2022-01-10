@@ -49,12 +49,17 @@ function M.lsp()
   vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
 end
 
+function M.lsp_saga()
+  nmap("<C-d>", "<cmd>lua require('lspsaga.floaterm').open_float_terminal('lazygit')<CR>")
+end
+
 function M.setup()
     M.system()
     M.nvim_tree()
     M.telescope()
     M.telescope()
     M.easyalign()
+    M.lsp_saga()
     M.lsp()
 end
 
