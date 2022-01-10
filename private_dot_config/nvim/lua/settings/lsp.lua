@@ -1,7 +1,9 @@
 vim.o.completeopt = "menuone,noselect"
 
-require'lspconfig'.tsserver.setup{}
-require'lspconfig'.solargraph.setup{}
+require('settings.lsp.solargraph')
+require('settings.lsp.tsserver')
+require('settings.lsp.golang')
+
 require'compe'.setup {
   enabled = true;
   autocomplete = true;
@@ -66,4 +68,6 @@ end
 
 vim.cmd("autocmd BufWritePre *.rb lua vim.lsp.buf.formatting_sync(nil, 100)")
 vim.cmd("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 100)")
-vim.cmd("autocmd BufWritePre *.ts lua vim.lsp.buf.formatting_sync(nil, 100)")
+
+
+vim.g["completion_enable_snippet"] = "UltiSnips"
