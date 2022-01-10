@@ -21,4 +21,7 @@ require "packer".startup(function()
     use { 'neovimhaskell/haskell-vim' } 
     use { "neovim/nvim-lspconfig" }
     use { "hrsh7th/nvim-compe" }
+    use { "jiangmiao/auto-pairs" }
+    use { "glepnir/lspsaga.nvim" }
+    use { "jose-elias-alvarez/nvim-lsp-ts-utils" }
 end)
