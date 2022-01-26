@@ -1,5 +1,5 @@
 env:
-  TERM: alacritty 
+  TERM: tmux-256color
 
 window:
   dimensions:
@@ -9,27 +9,27 @@ window:
   padding:
     x: 0
     y: 0
-    
+
   decorations: buttonless
 
 font:
-  size: 12
+  size: 16
 
   normal:
-    family: Iosevka SS11
-    style: Regular
+    family: Iosevka Nerd Font Mono   
+    style:  Regular 
 
   bold:
-    family: Iosevka SS11
-    style: Regular
+    family: Iosevka Nerd Font Mono
+    style:  Regular
 
   italic:
-    family: Iosevka SS11
-    style: Regular
+    family: Iosevka Nerd Font Mono
+    style:  Regular
 
   bold_italic:
-    family: Iosevka SS11
-    style: Regular
+    family: Iosevka Nerd Font Mono
+    style:  Regular
 
 use_thin_strokes: true
 
