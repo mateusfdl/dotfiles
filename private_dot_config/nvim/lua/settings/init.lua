@@ -6,8 +6,6 @@ require "settings.telescope"
 require "settings.easyalign"
 require "settings.tmux-runner"
 require "settings.lsp"
-require "settings.lsp-saga"
-require "settings.lsp-kind"
 
 local M = {}
 local options = vim.opt
