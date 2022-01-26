@@ -16,12 +16,11 @@ require "packer".startup(function()
     use { 'junegunn/vim-easy-align' } 
     use { 'tmux-plugins/vim-tmux-focus-events' } 
     use { 'mhinz/vim-signify' } 
-    use { 'github/copilot.vim' } 
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' } 
     use { 'neovimhaskell/haskell-vim' } 
     use { "neovim/nvim-lspconfig" }
     use { "hrsh7th/nvim-compe" }
     use { "jiangmiao/auto-pairs" }
-    use { "glepnir/lspsaga.nvim" }
     use { "jose-elias-alvarez/nvim-lsp-ts-utils" }
+    use { "mattn/efm-langserver"}
 end)
