@@ -1,9 +1,8 @@
 vim.o.completeopt = "menuone,noselect"
 
 require('settings.lsp.solargraph')
-require('settings.lsp.golang')
-require('settings.lsp.haskell')
 require('settings.lsp.tsserver')
+require('settings.lsp.golang')
 
 require'compe'.setup {
   enabled = true;
@@ -14,9 +13,9 @@ require'compe'.setup {
   throttle_time = 80;
   source_timeout = 200;
   incomplete_delay = 400;
-  max_abbr_width = 150;
-  max_kind_width = 150;
-  max_menu_width = 150;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
   documentation = {
     border = { '', '' ,'', ' ', '', '', '', ' ' },
     winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
@@ -54,8 +53,8 @@ end
 _G.tab_complete = function()
   if vim.fn.pumvisible() ==1 then
     return t "<C-n>"
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
+--  elseif vim.fn.call("vsnip#available", {1}) == 1 then
+--    return t "<Plug>(vsnip-expand-or-jump)"
   elseif check_back_space() then
     return t "<Tab>"
   else
@@ -72,6 +71,3 @@ _G.s_tab_complete = function()
     return t "<S-Tab>"
   end
 end 
-
-vim.cmd("autocmd BufWritePre *.rb lua vim.lsp.buf.formatting_sync(nil, 100)")
-vim.cmd("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 100)")
