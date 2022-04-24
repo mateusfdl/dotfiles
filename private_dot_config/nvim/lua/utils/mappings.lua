@@ -8,8 +8,18 @@ function set_keybind(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
+function buf_set_keybind(bufnr, mode, lhs, rhs, opts)
+    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or {
+        silent = true,
+    })
+end
+
 function map(bind, command)
   set_keybind("", bind, command)
+end
+
+function smap(bind, command)
+  set_keybind("s", bind, command)
 end
 
 function imap(bind, command)
@@ -47,6 +57,10 @@ end
 function xnoremap(bind, command)
   set_keybind("x", bind, command, { noremap = true})
 end
+
+function tnoremap(bind, command)
+  set_keybind("t", bind, command, { noremap = true})
+end
  
 return {
   imap = imap,
@@ -58,4 +72,5 @@ return {
   nnoremap = nnoremap,
   vnoremap = vnoremap,
   xnoremap = xnoremap,
+  buf_set_keybind = buf_set_keybind,
 }
