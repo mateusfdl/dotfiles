@@ -7,6 +7,7 @@ function M.system()
     nnoremap("<Right>", ":echoe 'this --> l'<CR>")
     nnoremap("<Up>", ":echoe 'this --> j'<CR>")
     nnoremap("<Down>", ":echoe 'this --> j'<CR>")
+    nnoremap("<Leader>vr", ":so ˜/.config/nvim/init.lua")
 
     inoremap("ii", "<esc>")
 
@@ -43,9 +44,12 @@ function M.lsp()
   nnoremap("gR", "<cmd>lua vim.lsp.buf.rename()<CR>")
   nnoremap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")  
   nnoremap("gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
+  nnoremap("gT", "<cmd>lua vim.lsp.buf.code_action()<CR>")
   nnoremap("<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>") 
   nnoremap("<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>") 
   nnoremap("<C-p>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")  
+
+
   
   vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
   vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
