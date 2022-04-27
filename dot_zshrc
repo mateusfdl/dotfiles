@@ -1,3 +1,6 @@
+autoload -Uz compinit
+compinit
+
 export PATH=$PATH=$HOME/pear/bin:$PATH
 
 export ZSH=$HOME"/.oh-my-zsh"
@@ -13,14 +16,10 @@ ZSH_THEME="ohmymatheus"
 
 plugins=(docker docker-compose git ruby)
 
+source <(kubectl completion zsh)
 source $ZSH/oh-my-zsh.sh
+source $HOME/.alias
 
-alias home='cd $HOME'
-alias ps='docker-compose ps -a'
-alias nama='cd $HOME/Documents/self/nama'
-alias abrew='/opt/homebrew/bin/brew'
-alias ibrew='arch -x86_64 /usr/local/bin/brew'
-alias tns='tmux new'
 
 rexercism(){
   tmuxinator start ruby-exercism exercism=$1
@@ -30,7 +29,13 @@ gexercism(){
   tmuxinator start golang-exercism exercism=$1
 }
 
+resize(){
+  tmux resize-pane -y $1 -t $2
+}
+
+
 . $(brew --prefix asdf)/asdf.sh
+. z/z.sh
 
 if [[ -z "${TMUX}" ]] then;
   tmux attach || exec tmux new-session;
@@ -50,3 +55,5 @@ source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 bindkey '^Z' autosuggest-accept
 
 [ -f .melhor_envio ] && source .melhor_envio
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
