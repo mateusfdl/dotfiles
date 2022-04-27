@@ -69,15 +69,25 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
-  ["copilot.vim"] = {
+  ["auto-pairs"] = {
     loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/copilot.vim",
-    url = "https://github.com/github/copilot.vim"
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/auto-pairs",
+    url = "https://github.com/jiangmiao/auto-pairs"
+  },
+  ["dashboard-nvim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/dashboard-nvim",
+    url = "https://github.com/glepnir/dashboard-nvim"
   },
   dracula = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/dracula",
     url = "https://github.com/dracula/vim"
+  },
+  ["efm-langserver"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/efm-langserver",
+    url = "https://github.com/mattn/efm-langserver"
   },
   ["galaxyline.nvim"] = {
     loaded = true,
@@ -99,10 +109,35 @@ _G.packer_plugins = {
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/indentline",
     url = "https://github.com/yggdroot/indentline"
   },
+  ["kanagawa.nvim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/kanagawa.nvim",
+    url = "https://github.com/rebelot/kanagawa.nvim"
+  },
+  ["lsp-colors.nvim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/lsp-colors.nvim",
+    url = "https://github.com/folke/lsp-colors.nvim"
+  },
+  ["lspsaga.nvim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
+    url = "https://github.com/glepnir/lspsaga.nvim"
+  },
+  ["null-ls.nvim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
+    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
+  },
   ["nvim-compe"] = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-compe",
     url = "https://github.com/hrsh7th/nvim-compe"
+  },
+  ["nvim-lsp-ts-utils"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-lsp-ts-utils",
+    url = "https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
@@ -187,5 +222,6 @@ if should_profile then save_profiles() end
 end)
 
 if not no_errors then
+  error_msg = error_msg:gsub('"', '\\"')
   vim.api.nvim_command('echohl ErrorMsg | echom "Error in packer_compiled: '..error_msg..'" | echom "Please check your config for correctness" | echohl None')
 end
