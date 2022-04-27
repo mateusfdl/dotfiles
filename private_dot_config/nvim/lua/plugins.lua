@@ -18,9 +18,15 @@ require "packer".startup(function()
     use { 'mhinz/vim-signify' } 
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' } 
     use { 'neovimhaskell/haskell-vim' } 
-    use { "neovim/nvim-lspconfig" }
-    use { "hrsh7th/nvim-compe" }
-    use { "jiangmiao/auto-pairs" }
-    use { "jose-elias-alvarez/nvim-lsp-ts-utils" }
-    use { "mattn/efm-langserver"}
+    use { 'neovim/nvim-lspconfig' }
+    use { 'hrsh7th/nvim-compe' }
+    use { 'jiangmiao/auto-pairs' }
+    use { 'jose-elias-alvarez/nvim-lsp-ts-utils' }
+    use { 'mattn/efm-langserver'}
+    use { 'glepnir/dashboard-nvim' }
+    use { 'rebelot/kanagawa.nvim' }
+    use { 'folke/lsp-colors.nvim' }
+    use { 'jose-elias-alvarez/null-ls.nvim' }
+    use { 'glepnir/lspsaga.nvim' }
+    use { 'voldikss/vim-floaterm' }
 end)
