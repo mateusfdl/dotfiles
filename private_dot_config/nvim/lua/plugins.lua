@@ -29,4 +29,5 @@ require "packer".startup(function()
     use { 'jose-elias-alvarez/null-ls.nvim' }
     use { 'glepnir/lspsaga.nvim' }
     use { 'voldikss/vim-floaterm' }
+    use { "nvim-neorg/neorg" }
 end)
