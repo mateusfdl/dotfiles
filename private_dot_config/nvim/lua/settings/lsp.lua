@@ -3,6 +3,7 @@ vim.o.completeopt = "menuone,noselect"
 require('settings.lsp.solargraph')
 require('settings.lsp.tsserver')
 require('settings.lsp.golang')
+require('settings.lsp.haskell')
 
 require'compe'.setup {
   enabled = true;
