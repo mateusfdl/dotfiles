@@ -35,7 +35,7 @@ resize(){
 
 
 . $(brew --prefix asdf)/asdf.sh
-. z/z.sh
+. $HOME/z/z.sh
 
 if [[ -z "${TMUX}" ]] then;
   tmux attach || exec tmux new-session;
