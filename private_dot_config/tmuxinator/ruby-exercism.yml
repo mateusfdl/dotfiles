@@ -6,7 +6,7 @@ root: ~/
 windows:
   - ruby:
       layout: main-horizontal 
-      root: ~/Documents/self/matheus/exercism/ruby/<%=@settings["exercism"] %>
+      root: ~/Documents/self/matheus/codes/exercism/ruby/<%=@settings["exercism"] %>
       panes:
         - nvim
         - test: 
