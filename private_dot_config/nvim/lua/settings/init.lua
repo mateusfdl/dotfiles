@@ -8,8 +8,8 @@ require("settings.tmux-runner")
 require("settings.lsp")
 require("settings.dashboard")
 require("settings.theme")
-require("settings.null-ls")
 require("settings.float-term")
+require("settings.neorg")
 
 local M = {}
 local options = vim.opt
@@ -21,13 +21,13 @@ function M.vim_auto_cmds()
 	cmd("syntax on")
 	cmd("syntax enable")
 	cmd("colorscheme kanagawa")
-	--cmd("autocmd BufWritePre * :lua vim.lsp.buf.formatting_seq_sync()")
 end
 
 function M.lua_auto_cmds()
 	options.mouse = "a"
 	options.colorcolumn = "80"
 	options.encoding = "utf-8"
+	options.guicursor = "v-c-sm:block,n-i-ci-ve:block25,r-cr-o:block20"
 	options.number = true
 	options.relativenumber = true
 	options.autoindent = true
