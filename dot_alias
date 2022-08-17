@@ -1,0 +1,15 @@
+alias home='cd $HOME'
+alias sp='cd $HOME/Documents/self/spike_code'
+alias codes='cd $HOME/Documents/self/matheus/codes'
+alias f="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
+
+# docker
+alias ps='docker-compose ps -a'
+
+#tmux
+alias tns='tmux new'
+alias t5:1='tmux resize pane -y 5 -t 1'
+
+#homebrew
+alias abrew='/opt/homebrew/bin/brew'
+alias ibrew='arch -x86_64 /usr/local/bin/brew'
