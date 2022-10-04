@@ -1,4 +1,4 @@
-require "packer".startup(function()
+require("packer").startup(function()
     use { 'lewis6991/impatient.nvim' } 
     use { 'glepnir/galaxyline.nvim', branch = 'main' } 
     use { 'kyazdani42/nvim-web-devicons' } 
@@ -30,4 +30,5 @@ require "packer".startup(function()
     use { 'glepnir/lspsaga.nvim' }
     use { 'voldikss/vim-floaterm' }
     use { "nvim-neorg/neorg" }
+    use { "mfussenegger/nvim-lint" }
 end)
