@@ -8,6 +8,7 @@ require("settings.tmux-runner")
 require("settings.lsp")
 require("settings.dashboard")
 require("settings.theme")
+require("settings.lint")
 require("settings.float-term")
 require("settings.neorg")
 
@@ -27,7 +28,6 @@ function M.lua_auto_cmds()
 	options.mouse = "a"
 	options.colorcolumn = "80"
 	options.encoding = "utf-8"
-	options.guicursor = "v-c-sm:block,n-i-ci-ve:block25,r-cr-o:block20"
 	options.number = true
 	options.relativenumber = true
 	options.autoindent = true
@@ -38,6 +38,7 @@ function M.lua_auto_cmds()
 	options.termguicolors = true
 	options.cursorline = true
 	options.autoread = true
+	options.guicursor = "v-c-sm:block,n-i-ci-ve:block25,r-cr-o:block20"
 	options.ruler = true
 	options.laststatus = 2
 	options.scrolloff = 3
