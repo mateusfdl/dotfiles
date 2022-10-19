@@ -31,4 +31,5 @@ require("packer").startup(function()
     use { 'voldikss/vim-floaterm' }
     use { "nvim-neorg/neorg" }
     use { "mfussenegger/nvim-lint" }
+    use { "https://github.com/nat-418/boole.nvim" }
 end)
