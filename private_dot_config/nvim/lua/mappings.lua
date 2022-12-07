@@ -11,7 +11,7 @@ function M.system()
 
     inoremap("ii", "<esc>")
 
-    map("<f4> :w<cr>", ":call system('tmux resize-pane -y 20 -t2 && tmux send -t2 'ruby -r minitest/pride *_test.rb' c-j')<cr>")
+    map("<Leader>ts", [[:call system("tmux resize-pane -y 20 -t1 && tmux send -t1 'fd -e rb | entr -c ruby -r minitest/pride *_test.rb' c-j")]])
     map("<f1> :w<cr>", ":call system('tmux resize-pane -y 10 -t1 && tmux send -t1 'go test -v --bench .' c-j')<cr>")
     map("<C-e>", ":lua print(table.concat(vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), 0, 2, true)))" )
 
@@ -43,7 +43,7 @@ function M.lsp()
   nnoremap("K", "<cmd>lua vim.lsp.buf.hover()<CR>")  
   nnoremap("gf", "<cmd>lua vim.lsp.buf.document_symbol()<CR>")
   nnoremap("gF", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>")
-  nnoremap("gG", "<cmd>lua vim.lsp.buf.formatting_seq_sync(nil, 2000)<CR>")
+  nnoremap("gG", "<cmd>lua vim.lsp.buf.format({ async=true })<CR>")
   nnoremap("gr", "<cmd>lua vim.lsp.buf.references()<CR>")  
   nnoremap("gR", "<cmd>lua vim.lsp.buf.rename()<CR>")
   nnoremap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")  
