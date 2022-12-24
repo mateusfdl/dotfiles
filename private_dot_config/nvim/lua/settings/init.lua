@@ -1,5 +1,5 @@
 require("settings.devicons")
-require("settings.nvim-tree")
+require("settings.tree")
 require("settings.nvim-treesitter")
 require("settings.status-line")
 require("settings.telescope")
