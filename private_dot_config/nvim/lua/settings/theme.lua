@@ -1,9 +1,11 @@
 require('kanagawa').setup({
     undercurl = true,
-    commentStyle = "italic",
-    functionStyle = "NONE",
+    commentStyle = {
+      italic = true
+    },
+    functionStyle = {},
     specialReturn = true,
-    specialException = true, 
+    specialException = true,
     transparent = false,
     dimInactive = false,
     colors = {},
