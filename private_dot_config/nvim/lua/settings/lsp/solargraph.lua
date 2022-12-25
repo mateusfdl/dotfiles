@@ -3,7 +3,7 @@ local lspconfig = require'lspconfig'
 lspconfig.solargraph.setup{
   settings = {
     solargraph = {
-      commandPath = '/Users/joaomatheusfurtadodelima/.asdf/shims/solargraph',
+      commandPath = '$HOME/.asdf/shims/solargraph',
       logLevel = 'warn',
     }
   },
