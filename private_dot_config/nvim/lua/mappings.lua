@@ -27,6 +27,12 @@ function M.system()
   map("<Leader>k", ":lua require('goplayground.api').post()")
 end
 
+function M.comp()
+  nnoremap('<Leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
+  nnoremap('<Leader>D', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+  nnoremap('<Leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
+end
+
 function M.nvim_tree()
   nnoremap("<Leader>o", ":NvimTreeToggle<CR>")
   nnoremap("<Leader>O", ":NvimTreeFindFileToggle<CR>")
@@ -61,12 +67,6 @@ function M.lsp()
   nnoremap("<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
   nnoremap("<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>")
   nnoremap("<C-p>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")
-
-  vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", { expr = true })
-  vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", { expr = true })
-  vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", { expr = true })
-  vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", { expr = true })
-  vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
 end
 
 function M.float_term()
@@ -92,6 +92,7 @@ end
 
 function M.setup()
   M.system()
+  M.comp()
   M.nvim_tree()
   M.telescope()
   M.telescope()

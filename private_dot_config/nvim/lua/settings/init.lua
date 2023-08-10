@@ -12,6 +12,8 @@ require("settings.lint")
 require("settings.float-term")
 require("settings.neorg")
 require("settings.boole")
+require("settings.diagnostics")
+require("settings.cmp")
 
 local M = {}
 local options = vim.opt
