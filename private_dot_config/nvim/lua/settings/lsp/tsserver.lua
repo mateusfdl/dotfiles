@@ -1,26 +1,16 @@
-local nvim_lsp = require("lspconfig")
+local M = {}
 
-local function organize_imports()
-  local params = {
-    command = "_typescript.organizeImports",
-    arguments = {vim.api.nvim_buf_get_name(0)},
-    title = ""
-  }
-  vim.lsp.buf.execute_command(params)
+function M.on_attach(client, bufnr)
+    local buff = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf)
+    local params = { command = "_typescript.organizeImports", arguments = { buff }, title = "" }
+    vim.lsp.buf.execute_command(params)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":OrganizeImports<CR>", {silent = true})
+    commands = {
+      OrganizeImports = {
+        organize_imports,
+        description = "Organize Imports"
+      }
+    }
 end
 
-
-nvim_lsp.tsserver.setup {
-    on_attach = function(client, bufnr)
-      print('Attaching LSP: ' .. client.name)
-
-      vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":OrganizeImports<CR>", {silent = true})
-    end,
-    commands = {
-    OrganizeImports = {
-      organize_imports,
-      description = "Organize Imports"
-    }
-  }
-}
-
+return M

@@ -10,7 +10,6 @@ local git_add = function()
 
   if gs == "??" or gs == "MM" or gs == "AM" or gs == " M" then
     vim.cmd("silent !git add " .. node.absolute_path)
-
   elseif gs == "M " or gs == "A " then
     vim.cmd("silent !git restore --staged " .. node.absolute_path)
   end
@@ -28,7 +27,7 @@ require("nvim-tree").setup({
   view = {
     mappings = {
       list = {
-        { key = "ggA", action = "git_add", action_cb = git_add },
+        { key = "ggA", action = "git_add",     action_cb = git_add },
         { key = "ggR", action = "git_restore", action_cb = git_restore },
       }
     },
@@ -64,9 +63,8 @@ require("nvim-tree").setup({
     }
   },
   actions = {
-        open_file = {
-            quit_on_open = true
-        }
+    open_file = {
+      quit_on_open = true
     }
+  }
 })
-

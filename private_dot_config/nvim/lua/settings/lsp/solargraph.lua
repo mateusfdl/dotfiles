@@ -1,17 +1,8 @@
-local lspconfig = require'lspconfig'
+local M = {}
 
-lspconfig.solargraph.setup{
-  settings = {
-    solargraph = {
-      commandPath = '$HOME/.asdf/shims/solargraph',
-      logLevel = 'warn',
-    }
-  },
-  on_attach = attacher
-}
-
-local function attacher(client, bufnr)
-  print('Attaching LSP: ' .. client.name)
+function M.attacher(client, bufnr)
   client.resolved_capabilities.document_formatting = false
   client.resolved_capabilities.document_range_formatting = false
 end
+
+return M

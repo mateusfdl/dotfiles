@@ -10,3 +10,4 @@ telescope.setup {
     border = {},
   }
 }
+
