@@ -4,7 +4,6 @@ require("packer").startup(function()
     use { 'kyazdani42/nvim-web-devicons' } 
     use { 'ryanoasis/vim-devicons' } 
     use { 'nvim-treesitter/nvim-treesitter' } 
-    use { 'dracula/vim', as = 'dracula' } 
     use { 'nvim-lua/popup.nvim' } 
     use { 'nvim-lua/plenary.nvim' } 
     use { 'nvim-telescope/telescope.nvim' } 
@@ -18,14 +17,13 @@ require("packer").startup(function()
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' } 
     use { 'neovimhaskell/haskell-vim' } 
     use { 'neovim/nvim-lspconfig' }
-    use { 'hrsh7th/nvim-compe' }
+    use { 'hrsh7th/nvim-cmp' }
+    use { 'hrsh7th/cmp-nvim-lsp' }
     use { 'jiangmiao/auto-pairs' }
-    use { 'jose-elias-alvarez/nvim-lsp-ts-utils' }
-    use { 'mattn/efm-langserver'}
+    use { 'jose-elias-alvarez/null-ls.nvim' }
     use { 'glepnir/dashboard-nvim' }
     use { 'rebelot/kanagawa.nvim', commit = 'fc2e308' }
     use { 'folke/lsp-colors.nvim' }
-    use { 'glepnir/lspsaga.nvim' }
     use { 'voldikss/vim-floaterm' }
     use { "nvim-neorg/neorg" }
     use { "mfussenegger/nvim-lint" }
