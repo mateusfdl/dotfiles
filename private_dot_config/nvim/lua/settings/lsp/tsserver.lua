@@ -13,6 +13,7 @@ end
 nvim_lsp.tsserver.setup {
     on_attach = function(client, bufnr)
       print('Attaching LSP: ' .. client.name)
+
       vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":OrganizeImports<CR>", {silent = true})
     end,
     commands = {

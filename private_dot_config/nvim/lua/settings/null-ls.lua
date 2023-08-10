@@ -13,7 +13,7 @@ local sources = {
 	formatting.prettier,
 	formatting.rustfmt,
 	formatting.rubocop,
-	formatting.prettierd,
+	formatting.prettier,
 }
 
 null_ls.setup({

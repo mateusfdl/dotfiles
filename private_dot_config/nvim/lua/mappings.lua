@@ -1,4 +1,5 @@
 require "utils.mappings"
+require "utils.filetype"
 
 local M = {}
 
@@ -27,6 +28,7 @@ end
 
 function M.nvim_tree()
     nnoremap("<Leader>o", ":NvimTreeToggle<CR>")  
+    nnoremap("<Leader>O", ":NvimTreeFindFileToggle<CR>")  
     nnoremap("<leader>r", ":NvimTreeRefresh<CR>")  
     nnoremap("<leader>n", ":NvimTreeFindFile<CR>")  
 end
@@ -71,6 +73,22 @@ function M.float_term()
   nnoremap("<Leader>ir", ":FloatermNew --height=30 --width=80 --title=-  irb<CR>")
 end
 
+function M.delve()
+  nnoremap("<Leader>da", ":DlvAddBreakpoint<CR>")
+  nnoremap("<Leader>dt", ":DlvAddTracepoint<CR>")
+  nnoremap("<Leader>dc", ":DlvClearAll<CR>")
+  nnoremap("<Leader>rn", ":DlvTest<CR>")
+end
+
+function M.vimGo()
+  nnoremap("<Leader>Im", ":GoImpl")
+  nnoremap("<Leader>gP", ":GoPlay<CR>")
+end
+
+function  M.neorg()
+  nnoremap("<Leader>d", ':Neorg keybind norg core.norg.qol.todo_items.todo.task_done<CR>')
+end
+
 function M.setup()
     M.system()
     M.nvim_tree()
@@ -79,8 +97,8 @@ function M.setup()
     M.easyalign()
     M.lsp()
     M.float_term()
+    M.delve()
+    M.vimGo()
 end
 
 return M
-
-

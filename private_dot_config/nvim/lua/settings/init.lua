@@ -26,6 +26,7 @@ function M.vim_auto_cmds()
 end
 
 function M.lua_auto_cmds()
+	options.background = 'dark'
 	options.mouse = "a"
 	options.colorcolumn = "80"
 	options.encoding = "utf-8"
@@ -50,6 +51,7 @@ function M.lua_auto_cmds()
 	options.hidden = true
 	options.expandtab = true
 	options.wrap = true
+	options.swapfile = false
 end
 
 function M.setup()

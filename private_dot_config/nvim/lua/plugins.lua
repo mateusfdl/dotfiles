@@ -30,6 +30,8 @@ require("packer").startup(function()
     use { "nvim-neorg/neorg" }
     use { "mfussenegger/nvim-lint" }
     use { "https://github.com/nat-418/boole.nvim" }
-    use { "mateusfdl/spongebob-stupid-nvim" }
     use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons' } }
-end)
+    use { 'sebdah/vim-delve' }
+    use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+    use { "folke/neodev.nvim" }
+  end)
