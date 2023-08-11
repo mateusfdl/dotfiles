@@ -33,8 +33,14 @@ require('neorg').setup {
     ['core.keybinds'] = {
       config = {
         default_keybinds = false,
-        hook = function()
-          require('mappings').neorg()
+        hook = function(keybinds)
+          keybinds.remap_event("norg", "n", "<Leader>td", "core.qol.todo_items.todo.task_done<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>tu", "core.qol.todo_items.todo.task_undone<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>tp", "core.qol.todo_items.todo.task_pending<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>th", "core.qol.todo_items.todo.task_on_hold<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>tc", "core.qol.todo_items.todo.task_cancelled<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>tr", "core.qol.todo_items.todo.task_recurring<CR>")
+          keybinds.remap_event("norg", "n", "<Leader>ti", "core.qol.todo_items.todo.task_important<CR>")
         end,
       },
     },

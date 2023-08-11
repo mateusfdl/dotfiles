@@ -1,5 +1,4 @@
 require "utils.mappings"
-require "utils.filetype"
 
 local M = {}
 
