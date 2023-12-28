@@ -13,16 +13,9 @@ local function packer_init()
   vim.cmd "autocmd BufWritePost plugins.lua PackerCompile"
 end
 
-local function nvim_init()
-  require "impatient"
-end
 
 function M.setup()
-  ---nvim_init()
-
   packer_init()
-
-  --require("plugin.packer_compiled")
 
   require("plugins")
   require("settings.init").setup()
