@@ -1,7 +1,8 @@
 local M = {}
 
 function M.on_attach(client)
-	require('lspconfig').util.add_diagnostics(client)
+  client.resolved_capabilities.document_formatting = false
+  client.resolved_capabilities.document_range_formatting = false
 end
 
 return M

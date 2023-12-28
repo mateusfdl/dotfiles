@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
+local package_path_str = "/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.1702233742/share/lua/5.1/?.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.1702233742/share/lua/5.1/?/init.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.1702233742/lib/luarocks/rocks-5.1/?.lua;/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.1702233742/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/Users/joaomatheusfurtadodelima/.cache/nvim/packer_hererocks/2.1.1702233742/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -84,30 +84,25 @@ _G.packer_plugins = {
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/boole.nvim",
     url = "https://github.com/nat-418/boole.nvim"
   },
+  ["cmp-nvim-lsp"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
+    url = "https://github.com/hrsh7th/cmp-nvim-lsp"
+  },
+  ["copilot.vim"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/copilot.vim",
+    url = "https://github.com/github/copilot.vim"
+  },
   ["dashboard-nvim"] = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/dashboard-nvim",
     url = "https://github.com/glepnir/dashboard-nvim"
   },
-  dracula = {
-    loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/dracula",
-    url = "https://github.com/dracula/vim"
-  },
-  ["efm-langserver"] = {
-    loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/efm-langserver",
-    url = "https://github.com/mattn/efm-langserver"
-  },
   ["galaxyline.nvim"] = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/galaxyline.nvim",
     url = "https://github.com/glepnir/galaxyline.nvim"
-  },
-  ["haskell-vim"] = {
-    loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/haskell-vim",
-    url = "https://github.com/neovimhaskell/haskell-vim"
   },
   ["impatient.nvim"] = {
     loaded = true,
@@ -129,35 +124,35 @@ _G.packer_plugins = {
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/lsp-colors.nvim",
     url = "https://github.com/folke/lsp-colors.nvim"
   },
-  ["lspsaga.nvim"] = {
+  ["neodev.nvim"] = {
     loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
-    url = "https://github.com/glepnir/lspsaga.nvim"
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/neodev.nvim",
+    url = "https://github.com/folke/neodev.nvim"
   },
   neorg = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/neorg",
     url = "https://github.com/nvim-neorg/neorg"
   },
-  ["null-ls.nvim"] = {
+  ["nvim-cmp"] = {
     loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
-    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-cmp",
+    url = "https://github.com/hrsh7th/nvim-cmp"
   },
-  ["nvim-compe"] = {
+  ["nvim-dap"] = {
     loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-compe",
-    url = "https://github.com/hrsh7th/nvim-compe"
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-dap",
+    url = "https://github.com/mfussenegger/nvim-dap"
+  },
+  ["nvim-dap-ui"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-dap-ui",
+    url = "https://github.com/rcarriga/nvim-dap-ui"
   },
   ["nvim-lint"] = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-lint",
     url = "https://github.com/mfussenegger/nvim-lint"
-  },
-  ["nvim-lsp-ts-utils"] = {
-    loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-lsp-ts-utils",
-    url = "https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
@@ -167,7 +162,7 @@ _G.packer_plugins = {
   ["nvim-tree.lua"] = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/nvim-tree.lua",
-    url = "https://github.com/kyazdani42/nvim-tree.lua"
+    url = "https://github.com/nvim-tree/nvim-tree.lua"
   },
   ["nvim-treesitter"] = {
     loaded = true,
@@ -188,11 +183,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/popup.nvim",
     url = "https://github.com/nvim-lua/popup.nvim"
-  },
-  ["spongebob-stupid-nvim"] = {
-    loaded = true,
-    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/spongebob-stupid-nvim",
-    url = "https://github.com/mateusfdl/spongebob-stupid-nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,
@@ -243,6 +233,16 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/vim-tmux-runner",
     url = "https://github.com/christoomey/vim-tmux-runner"
+  },
+  ["vim-vsnip"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/vim-vsnip",
+    url = "https://github.com/hrsh7th/vim-vsnip"
+  },
+  ["vim-wakatime"] = {
+    loaded = true,
+    path = "/Users/joaomatheusfurtadodelima/.local/share/nvim/site/pack/packer/start/vim-wakatime",
+    url = "https://github.com/wakatime/vim-wakatime"
   }
 }
 

@@ -14,6 +14,7 @@ require("settings.neorg")
 require("settings.boole")
 require("settings.diagnostics")
 require("settings.cmp")
+require("settings.copilot")
 
 local M = {}
 local options = vim.opt

@@ -62,7 +62,9 @@ cmp.setup({
     ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
+      if require("copilot.suggestion").is_visible() then
+        require("copilot.suggestion").accept()
+      elseif cmp.visible() then
         cmp.select_next_item()
       elseif has_words_before() then
         cmp.complete()
@@ -81,7 +83,7 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'treesitter' },
-    { name = 'path', option = { trailing_slash = true } },
+    { name = 'path',                   option = { trailing_slash = true } },
     { name = 'nvim_lsp_signature_help' },
   }, {
     { name = 'buffer' },

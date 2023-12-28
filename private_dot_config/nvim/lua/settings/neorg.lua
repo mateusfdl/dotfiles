@@ -26,13 +26,14 @@ require('neorg').setup {
           work = "~/livefire/notes",
           studies = "~/Documents/org/studies/home",
           notes = "~/Documents/org/notes/home",
+          gym = "~/Documents/org/gym/home",
         },
         default_workspace = "notes",
       }
     },
     ['core.keybinds'] = {
       config = {
-        default_keybinds = false,
+        --default_keybinds = false,
         hook = function(keybinds)
           keybinds.remap_event("norg", "n", "<Leader>td", "core.qol.todo_items.todo.task_done<CR>")
           keybinds.remap_event("norg", "n", "<Leader>tu", "core.qol.todo_items.todo.task_undone<CR>")

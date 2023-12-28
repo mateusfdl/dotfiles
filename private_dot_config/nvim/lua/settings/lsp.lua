@@ -6,6 +6,7 @@ local go = require('settings.lsp.golang')
 local haskell = require('settings.lsp.haskell')
 local rust = require('settings.lsp.rust')
 local lua = require('settings.lsp.lua')
+local c = require('settings.lsp.clangd')
 
 local servers = {
   tsserver = ts,
@@ -14,6 +15,7 @@ local servers = {
   rust_analyzer = rust,
   hls = haskell,
   lua_ls = lua,
+  clangd = c,
 }
 
 function add_capabilities()
