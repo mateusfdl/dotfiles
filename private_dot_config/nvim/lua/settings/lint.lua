@@ -2,7 +2,9 @@ do
   local lint = require('lint')
   lint.linters_by_ft = {
     dockerfile = { 'hadolint', },
-    lua = { 'luacheck', }
+    lua = { 'luacheck', },
+    typescript = { 'eslint', },
+    javascript = { 'eslint', },
   }
 
   vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufEnter', 'BufLeave' }, {

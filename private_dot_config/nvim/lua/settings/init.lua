@@ -15,6 +15,7 @@ require("settings.boole")
 require("settings.diagnostics")
 require("settings.cmp")
 require("settings.copilot")
+require("settings.conform")
 
 local M = {}
 local options = vim.opt

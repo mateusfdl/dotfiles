@@ -32,4 +32,5 @@ require("packer").startup(function()
   use { 'hrsh7th/vim-vsnip' }
   use { 'fatih/vim-go', lazy = true, build = ":GoInstallBinaries" }
   use { 'zbirenbaum/copilot.lua' }
+  use { 'stevearc/conform.nvim' }
 end)
