@@ -1,4 +1,5 @@
 local lib = require("nvim-tree.lib")
+local map = vim.keymap.set
 
 local node_under_cursor = function()
   return lib.get_node_at_cursor()
@@ -24,16 +25,8 @@ local git_restore = function()
 end
 
 require("nvim-tree").setup({
-  view = {
-    mappings = {
-      list = {
-        { key = "ggA", action = "git_add",     action_cb = git_add },
-        { key = "ggR", action = "git_restore", action_cb = git_restore },
-      }
-    },
-  },
   filters = {
-    dotfiles = true,
+    custom = { "\\.git$", "\\.node_modules" },
   },
   git = {
     ignore = false,
@@ -66,5 +59,16 @@ require("nvim-tree").setup({
     open_file = {
       quit_on_open = true
     }
-  }
+  },
+  on_attach = function(bufnr)
+    local api = require("nvim-tree.api")
+
+    api.config.mappings.default_on_attach(bufnr)
+
+    local function opts(desc)
+      return { desc = "nvim-tree: " .. desc, buffer = bufnr, silent = true, nowait = true }
+    end
+    map('n', 'ggA', git_add, opts('Git Add'))
+    map('n', 'ggR', git_restore, opts('Git Restore'))
+  end,
 })
