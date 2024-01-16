@@ -1,7 +1,7 @@
 require("utils.mappings")
 local M = {}
 
-_G.organize_imports = function ()
+_G.organize_imports = function()
   vim.lsp.buf.execute_command {
     command = '_typescript.organizeImports',
     arguments = {
@@ -11,9 +11,8 @@ _G.organize_imports = function ()
 end
 vim.cmd('command! OrganizeImports lua organize_imports()')
 
-function M.on_attach(client, bufnr)
-  buf_set_keybind(bufnr, "n", "gs",  ":OrganizeImports<CR>")
+function M.on_attach(_, bufnr)
+  buf_set_keybind(bufnr, "n", "gs", ":OrganizeImports<CR>")
 end
 
 return M
-
