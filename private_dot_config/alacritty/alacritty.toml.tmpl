@@ -40,22 +40,22 @@ foreground = "0xc8c093"
 TERM = "tmux-256color"
 
 [font]
-size = 30
+size = {{ .alacritty.font.size }}
 
 [font.bold]
-family = "IosevkaSS04 Nerd Font Mono"
+family = "{{ .alacritty.font.family }}"
 style = "Medium"
 
 [font.bold_italic]
-family = "IosevkaSS04 Nerd Font Mono"
+family = "{{ .alacritty.font.family }}"
 style = "BoldItalic"
 
 [font.italic]
-family = "IosevkaSS04 Nerd Font Mono"
+family = "{{ .alacritty.font.family }}"
 style = "Italic"
 
 [font.normal]
-family = "IosevkaSS04 Nerd Font Mono"
+family = "{{ .alacritty.font.family }}"
 style = "Regular"
 
 [window]
