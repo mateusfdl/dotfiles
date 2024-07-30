@@ -1,0 +1,11 @@
+[font]
+family = "IosevkaSS04 Nerd Font Mono"
+
+[font.emacs]
+size = 30
+
+[font.alacritty]
+size = 12
+
+[font.nvim]
+size = 30
