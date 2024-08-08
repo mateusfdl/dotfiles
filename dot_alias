@@ -4,7 +4,9 @@ alias codes='cd $HOME/Documents/self/matheus/codes'
 alias f="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
 # docker
-alias ps='docker-compose ps -a'
+alias ps='docker compose ps -a'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
 
 #tmux
 alias tns='tmux new'
@@ -13,3 +15,23 @@ alias t5:1='tmux resize pane -y 5 -t 1'
 #homebrew
 alias abrew='/opt/homebrew/bin/brew'
 alias ibrew='arch -x86_64 /usr/local/bin/brew'
+
+#asdf nvim
+alias update-nvim-stable='asdf uninstall neovim stable && asdf install neovim stable'
+alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
+alias update-nvim-master='asdf uninstall neovim ref:master && asdf install neovim ref:master'
+
+alias gstatus='git status --porcelain'
+alias gpush='git push --porcelain'
+alias gpull='git pull --porcelain'
+
+alias v='nvim "$@"'
+alias chezmoi-local='$HOME/.local/share/chezmoi/'
+alias pnvim='git -C $HOME/.config/nvim pull origin main'
+alias desk='tmux detach-client && ssh matheus@desktop'
+
+alias lstartd='docker context use lima-docker && limactl start --name=docker \
+  --cpus=2 \
+  --memory=1 \
+  --disk=10'
+alias lstopd='limactl stop docker'
