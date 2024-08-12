@@ -35,3 +35,5 @@ alias lstartd='docker context use lima-docker && limactl start --name=docker \
   --memory=1 \
   --disk=10'
 alias lstopd='limactl stop docker'
+alias v='nvim'
+alias sgpg='echo $GPG_PASS | gpg --passphrase-fd 0 --clearsign > /dev/null 2>&1'
