@@ -1,0 +1,47 @@
+plugins=(docker docker-compose git ruby wakatime  zsh-autosuggestions)
+
+ZSH_THEME="ohmymatheus"
+
+eval "$($HOME/.local/bin/mise activate zsh)"
+
+source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+export ZSH=$HOME"/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh
+
+export LANG=en_US.UTF-8
+export EDITOR=nvim
+export GPG_TTY=$(tty)
+
+[ -f "$HOME/z/z.sh" ] && . "$HOME/z/z.sh"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+[ -f "$HOME/.direnv" ] && . "$HOME/.direnv"
+[ -f "$HOME/.env" ] && . "$HOME/.env"
+[ -f "$HOME/.fzf.zsh" ] && . "$HOME/.fzf.zsh"
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env"
+[ -f "$HOME/.alias" ] && . "$HOME/.alias"
+[ -f "$HOME/.scripts" ] && . "$HOME/.scripts"
+[ -f "$HOME/.tokens" ] && . "$HOME/.tokens"
+{{ if eq .chezmoi.os "linux" }}
+[ -f "$HOME/.wsl" ] && . "$HOME/.wsl"
+{{ end }}
+
+if [[ -z "${TMUX}" ]] then;
+  tmux attach || exec tmux new-session;
+fi
+
+export PATH="/bin:/usr/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+export PATH="/usr/local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/scripts:$PATH"
+export PATH="$HOME/.luarocks/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
+
+{{ if eq .chezmoi.os "darwin" }}
+export PATH="/opt/homebrew/bin:$PATH"
+export TERM="xterm-256color"
+{{ end }}
+
+bindkey '^Z' autosuggest-accept
