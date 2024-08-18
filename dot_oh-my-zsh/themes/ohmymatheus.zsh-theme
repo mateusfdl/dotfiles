@@ -16,5 +16,5 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#757575"
 
  
 PROMPT='$(git_prompt_info)'
-PROMPT+="%(?:%{$fg[blue]%} ▷ :%{$fg_bold[red]%} ▷ )"
+PROMPT+="%(?:%{$fg[blue]%} ▷  :%{$fg_bold[red]%} ▷  )"
 
