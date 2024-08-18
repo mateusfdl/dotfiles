@@ -3,5 +3,5 @@ size = 30
 family = "IosevkaSS04 Nerd Font Mono"
 
 [alacritty.font]
-size = 12
+size = 30
 family = "IosevkaSS04 Nerd Font Mono"
