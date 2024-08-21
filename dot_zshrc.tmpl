@@ -1,5 +1,9 @@
 plugins=(docker docker-compose git ruby wakatime  zsh-autosuggestions)
 
+{{ if eq .chezmoi.os "darwin" }}
+autoload -Uz compinit && compinit
+{{ end }}
+
 ZSH_THEME="ohmymatheus"
 
 eval "$($HOME/.local/bin/mise activate zsh)"
@@ -25,10 +29,6 @@ export GPG_TTY=$(tty)
 [ -f "$HOME/.wsl" ] && . "$HOME/.wsl"
 {{ end }}
 
-if [[ -z "${TMUX}" ]] then;
-  tmux attach || exec tmux new-session;
-fi
-
 export PATH="/bin:/usr/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 export PATH="/usr/local/bin:$PATH"
@@ -43,5 +43,9 @@ export PATH="$HOME/go/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export TERM="xterm-256color"
 {{ end }}
+
+if [[ -z "${TMUX}" ]] then;
+  tmux attach || exec tmux new-session;
+fi
 
 bindkey '^Z' autosuggest-accept
