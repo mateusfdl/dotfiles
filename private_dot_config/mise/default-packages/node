@@ -1,0 +1,13 @@
+yaml-language-server
+lua-fmt
+npm-check-updates
+@biomejs/biome
+prettier
+typescript
+typescript-language-server
+ts-node
+@tailwindcss/language-server
+vscode-langservers-extracted
+@nestjs/cli
+@vue/language-server
+@vue/typescript-plugin

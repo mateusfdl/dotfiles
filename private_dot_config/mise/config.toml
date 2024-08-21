@@ -1,0 +1,23 @@
+[env]
+MISE_GO_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/go"
+MISE_LUA_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/lua"
+MISE_RUBY_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/ruby"
+MISE_NODE_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/node"
+
+[tools]
+go = "1.23.0"
+neovim = "latest"
+node = "22.2.0"
+rust = "1.80.0"
+ruby = "3.1.0"
+lua = "5.4.6"
+erlang = "25"
+elixir = "1.16.0"
+haskell = "9.0-latest"
+ghc = "9.0.1"
+hls = "2.7.0.0"
+stack = "2.11.1"
+chezmoi = "2.9.5"
+
+[settings]
+go_set_gobin = true
