@@ -3,7 +3,7 @@
 	email = matheus.limastack@outlook.com
 
 [init]
-    defaultBranch = main
+  defaultBranch = main
 
 [push]
 	default = current
