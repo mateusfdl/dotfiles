@@ -11,13 +11,16 @@ node = "22.2.0"
 rust = "1.80.0"
 ruby = "3.1.0"
 lua = "5.4.6"
-erlang = "25"
 elixir = "1.16.0"
-haskell = "9.0-latest"
-ghc = "9.0.1"
-hls = "2.7.0.0"
-stack = "2.11.1"
 chezmoi = "2.9.5"
+
+{{ if eq .chezmoi.os "darwin" }}
+swift = "latest"
+swiftformat = "latest"
+swiftgen = "latest"
+swiftlint = "latest"
+tuist = "4.24.0"
+{{ end }}
 
 [settings]
 go_set_gobin = true
