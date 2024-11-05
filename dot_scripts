@@ -1,0 +1,48 @@
+unalias z 2> /dev/null
+
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+
+japad() {
+    if [ $# -lt 1 ]; then
+        echo "Usage: japad <directory_path>"
+        return 1
+    fi
+
+    directory_path="$1"
+    file_paths=find "$directory_path" -type f -name "*.spec.ts" -exec printf "%s," {} \;
+
+    # echo files found
+    echo "$directory_path"
+
+    if [ -z "$file_paths" ]; then
+        echo "No .spec.ts files found in the specified directory."
+        return 1
+    fi
+
+    node --prof -r ts-node/register japa/test.ts --files="${file_paths%,}"
+}
+
+resize(){
+  tmux resize-pane -y $1 -t $2
+}
+
+grl(){
+  git log --graph --color=always \
+        --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+    fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --preview='git show --color {1}' --height=100 \
+        --bind "ctrl-m:execute:
+                  (grep -o '[a-f0-9]\{7\}' | head -1 |
+                  xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                  {}
+  FZF-EOF"
+}
+
+scripts() {
+  echo "z - jump to a directory"
+  echo "japad - run japa tests for a directory"
+  echo "resize - resize a tmux pane"
+  echo "grl - git log with fzf"
+}
