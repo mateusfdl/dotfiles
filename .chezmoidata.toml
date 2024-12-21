@@ -1,7 +1,7 @@
 [emacs.font]
-size = 30
+size = 20
 family = "IosevkaSS04 Nerd Font Mono"
 
 [alacritty.font]
-size = 30
+size = 20
 family = "IosevkaSS04 Nerd Font Mono"
