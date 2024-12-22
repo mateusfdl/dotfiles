@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+&mt {
+    flavor = "tap-preferred";
+    tapping_term_ms = <200>;
+};
+
+&mmv {
+    time-to-max-speed-ms = <680>;
+    acceleration-exponent = <2>;
+};
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick_tap_ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        td: tapdance {
+            compatible = "zmk,behavior-hold-tap";
+            label = "TAPDANCE";
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            quick_tap_ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        parentesis {
+            bindings = <&kp LEFT_PARENTHESIS>;
+            key-positions = <27 28>;
+        };
+
+        single_quote {
+            bindings = <&kp SINGLE_QUOTE>;
+            key-positions = <1 2>;
+        };
+
+        tab {
+            bindings = <&kp TAB>;
+            key-positions = <0 1>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&kp Q    &kp W  &kp E  &kp R                  &kp T              &kp Y        &kp U          &kp I                &kp O                    &kp P
+&kp A    &kp S  &kp D  &kp F                  &kp G              &kp H        &kp J          &kp K                &kp L                    &kp COMMA
+&lt 2 Z  &kp X  &kp C  &kp V                  &kp B              &kp N        &kp M          &td RCTRL SEMICOLON  &td RIGHT_COMMAND COLON  &to 1
+                       &mt LEFT_SHIFT ESCAPE  &mt LCTRL SPACE    &lt 1 ENTER  &kp BACKSPACE
+            >;
+        };
+
+        sym {
+            bindings = <
+&kp EXCLAMATION  &kp AT        &kp HASH      &kp DLLR          &kp PRCNT         &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp MINUS      &kp PLUS           &kp EQUAL
+&kp AMPERSAND    &kp ASTERISK  &kp LA(RBKT)  &kp LA(LS(RBKT))  &kp UNDERSCORE    &kp LEFT_BRACKET      &kp LBRC               &kp RBRC       &kp RIGHT_BRACKET  &kp SINGLE_QUOTE
+&kp TILDE        &kp GRAVE     &kp SLASH     &kp LA(LS(LBKT))  &kp DQT           &kp COMMA             &kp DOT                &kp LESS_THAN  &kp GREATER_THAN   &kp QUESTION
+                                             &to 0             &sk LSHIFT        &sk RALT              &to 2
+            >;
+        };
+
+        num {
+            bindings = <
+&kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5           &kp NUMBER_6  &kp N7  &kp N8  &kp N9  &trans
+&kp TAB       &trans        &kp C_VOL_DN  &kp C_VOL_UP  &kp LS(EQUAL)    &kp EQUAL     &kp N4  &kp N5  &kp N6  &kp ENTER
+&to 0         &kp AMPS      &kp SLASH     &kp STAR      &kp DOT          &kp N0        &kp N1  &kp N2  &kp N3  &trans
+                                          &to 0         &sk LGUI         &sk RALT      &to 2
+            >;
+        };
+    };
+};
