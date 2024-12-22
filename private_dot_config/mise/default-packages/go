@@ -3,3 +3,4 @@ golang.org/x/tools/gopls@latest
 github.com/onsi/ginkgo/v2/ginkgo@latest
 github.com/jesseduffield/lazydocker
 github.com/jesseduffield/lazygit
+github.com/golangci/golangci-lint/cmd/golangci-lint@latest
