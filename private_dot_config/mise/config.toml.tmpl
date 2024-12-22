@@ -18,6 +18,12 @@ stylua = "0.20.0"
 java = "21"
 pnpm = "latest"
 
+{{ if eq .chezmoi.os "linux" }}
+cmake = "latest"
+clangd = "latest"
+clang-format = "latest"
+{{ end }}
+
 {{ if eq .chezmoi.os "darwin" }}
 swift = "latest"
 swiftformat = "latest"
