@@ -11,3 +11,4 @@ vscode-langservers-extracted
 @nestjs/cli
 @vue/language-server
 @vue/typescript-plugin
+eslint
