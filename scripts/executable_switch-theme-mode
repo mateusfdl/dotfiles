@@ -1,0 +1,44 @@
+#!/bin/bash
+
+TMUX_THEME_DIR="$HOME/.tmux/themes"
+TMUX_THEME_FILE="$HOME/.tmux/theme.conf"
+
+ALACRITTY_THEME_DIR="$HOME/.config/alacritty/themes"
+ALACRITTY_THEME_FILE="$ALACRITTY_THEME_DIR/.selected_theme.toml"
+
+TMP_MODE_FILE="/tmp/theme-mode"
+
+LIGHT_THEME="onelight"
+DARK_THEME="onedark"
+
+if [ -f "$TMP_MODE_FILE" ]; then
+  CURRENT_MODE=$(cat "$TMP_MODE_FILE")
+else
+  CURRENT_MODE="dark"
+  echo "dark" > "$TMP_MODE_FILE"
+fi
+
+if [ "$CURRENT_MODE" = "light" ]; then
+  NEW_MODE="dark"
+  SELECTED_THEME="$DARK_THEME"
+else
+  NEW_MODE="light"
+  SELECTED_THEME="$LIGHT_THEME"
+fi
+
+if [ -f "$TMUX_THEME_DIR/$SELECTED_THEME" ]; then
+  cp "$TMUX_THEME_DIR/$SELECTED_THEME" "$TMUX_THEME_FILE"
+  tmux source-file "$TMUX_THEME_FILE"
+else
+  tmux display-message "Tmux theme file $SELECTED_THEME.tmux not found in $TMUX_THEME_DIR!"
+fi
+
+if [ -f "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" ]; then
+  cp "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" "$ALACRITTY_THEME_FILE"
+else
+  echo "Alacritty theme file $SELECTED_THEME.toml not found in $ALACRITTY_THEME_DIR!"
+fi
+
+pgrep nvim | xargs -n1 kill -SIGUSR1
+
+echo "$NEW_MODE" > "$TMP_MODE_FILE"
