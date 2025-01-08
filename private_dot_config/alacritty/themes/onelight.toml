@@ -1,0 +1,36 @@
+[[colors.indexed_colors]]
+color = "0xd75f00"
+index = 16
+
+[[colors.indexed_colors]]
+color = "0xc18401"
+index = 17
+
+[colors.bright]
+black = "0xdfdfe0"
+blue = "0x428bab"
+cyan = "0x519ABA"
+green = "0x7eca9c"
+magenta = "0x8e79b9"
+red = "0xd75f00"
+white = "0x202227"
+yellow = "0xdea95f"
+
+[colors.normal]
+black = "0x090a0b"
+blue = "0x4078f2"
+cyan = "0x0b8ec6"
+green = "0x50a14f"
+magenta = "0xa626a4"
+red = "0xd84a3d"
+white = "0x383a42"
+yellow = "0xc18401"
+
+[colors.primary]
+background = "0xfafafa"
+foreground = "0x383a42"
+
+[colors.selection]
+background = "0xe5e5e6"
+foreground = "0x383a42"
+

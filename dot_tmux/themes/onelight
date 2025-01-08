@@ -1,0 +1,42 @@
+# Onelight Colors
+white="#54555b"
+gray="#ececec"
+dark_gray="#e5e5e6"
+light_purple="#a28dcd"
+dark_purple="#8e79b9"
+cyan="#0b8ec6"
+green="#50a14f"
+orange="#FF6A00"
+red="#d84a3d"
+pink="#ff75a0"
+yellow="#c18401"
+
+left_sep=
+left_icon="#W ";
+
+# Status Bar Style
+set-option -g status-style "bg=${gray},fg=${white}"
+
+# Message Style (Command Prompt)
+set-option -g message-style "bg=${gray},fg=${cyan}"
+
+# Pane Border Style
+set-option -g pane-border-style "fg=${gray}"
+set-option -g pane-active-border-style "fg=${green}"
+
+# Active Window Style
+set-window-option -g window-status-current-format "#[fg=${gray},bg=${dark_purple}]${left_sep}#[fg=${white},bg=${dark_purple}] #I #W${current_flags} #[fg=${dark_purple},bg=${gray}]${left_sep}"
+
+# Left Status (Session Name)
+set-option -g status-left "#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green},bg=${gray}]#{?client_prefix,#[fg=${yellow}],}${left_sep}"
+set-option -g status-left-length 100
+
+# Right Status (Custom Right Content)
+set-option -g status-right "#[bg=${gray},fg=${green}]#(currency_converter)"
+set-option -g status-right-length 100
+
+# Window Styles
+set-window-option -g window-status-format "#[fg=${white}]#[bg=${gray}] #I #W${flags}"
+set-window-option -g window-status-activity-style "bold"
+set-window-option -g window-status-bell-style "bold"
+
