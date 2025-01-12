@@ -9,6 +9,8 @@ orange='#ffb86c'
 red='#ff5555'
 pink='#ff79c6'
 yellow='#ff9e3b'
+left_sep=
+left_icon="#W ";
 
 set-option -g status-style "bg=${gray},fg=${white}"
 set-option -g message-style "bg=${gray},fg=${cyan}"
