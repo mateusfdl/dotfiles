@@ -8,9 +8,6 @@ ALACRITTY_THEME_FILE="$ALACRITTY_THEME_DIR/.selected_theme.toml"
 
 TMP_MODE_FILE="/tmp/theme-mode"
 
-LIGHT_THEME="onelight"
-DARK_THEME="onedark"
-
 if [ -f "$TMP_MODE_FILE" ]; then
   CURRENT_MODE=$(cat "$TMP_MODE_FILE")
 else
