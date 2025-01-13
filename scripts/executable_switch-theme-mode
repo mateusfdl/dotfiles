@@ -36,6 +36,23 @@ else
   echo "Alacritty theme file $SELECTED_THEME.toml not found in $ALACRITTY_THEME_DIR!"
 fi
 
+# if [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+if [ -n "$(wsl.exe -l)" ]; then
+  TERMINAL_SETTINGS_FILE=$(wslpath "$(powershell.exe -Command '[Environment]::GetFolderPath("LocalApplicationData")' | tr -d '\r')\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json")
+
+  if [ -f "$TERMINAL_SETTINGS_FILE" ]; then
+    jq --arg theme "$SELECTED_THEME" '
+  .profiles.list |= map(
+    if has("colorScheme") then .colorScheme = $theme else . end
+  )
+' "$TERMINAL_SETTINGS_FILE" > settings.tmp && mv settings.tmp "$TERMINAL_SETTINGS_FILE"
+  else
+    echo "Windows Terminal settings file not found!"
+  fi
+fi
+
 pgrep nvim | xargs -n1 kill -SIGUSR1
+
+
 
 echo "$NEW_MODE" > "$TMP_MODE_FILE"
