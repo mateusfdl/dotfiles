@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "linux" }}
+if [[ ! "$PATH" == ~/.fzf/bin* ]]; then
+  PATH="${PATH:+${PATH}:}~/.fzf/bin"
+fi
+
+source "~/.fzf/shell/completion.zsh"
+
+source "~/.fzf/shell/key-bindings.zsh"
+
+export FZF_DEFAULT_OPTS='--height 1% --layout=reverse --bind "ctrl-y:execute-silent(echo {} | xclip -selection clipboard)" --bind "ctrl-c:execute-silent(cat {} | xclip -selection clipboard)"'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+{{ end }}
