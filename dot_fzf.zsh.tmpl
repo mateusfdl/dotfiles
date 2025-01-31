@@ -11,3 +11,15 @@ export FZF_DEFAULT_OPTS='--height 1% --layout=reverse --bind "ctrl-y:execute-sil
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 {{ end }}
+{{ if eq .chezmoi.os "linux" }}
+if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
+  export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
+fi
+
+[[ $- == *i* ]] && source "/opt/homebrew/opt/fzf/shell/completion.zsh" 2> /dev/null
+
+source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
+export FZF_DEFAULT_OPTS='--height 1% --layout=reverse'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+{{ end }}
