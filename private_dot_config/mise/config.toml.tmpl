@@ -15,13 +15,13 @@ lua = "5.4.6"
 elixir = "1.16.0"
 chezmoi = "2.9.5"
 stylua = "0.20.0"
-java = "21"
 pnpm = "latest"
 
 {{ if eq .chezmoi.os "linux" }}
 cmake = "latest"
 clangd = "latest"
 clang-format = "latest"
+java = "21"
 {{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
