@@ -1,0 +1,16 @@
+general {
+        colors = true
+        interval = 5
+}
+
+order += "tztime local"
+order += "read_file spotify"
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+}
+
+read_file spotify {
+        format = "♪ %content"
+        path = "/tmp/spotify.log"
+}
