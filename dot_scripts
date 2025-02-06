@@ -40,9 +40,15 @@ grl(){
   FZF-EOF"
 }
 
+on() {
+  nvim -c ":ObsidianNew $*" -c "ObsidianTemplate notes"
+}
+
 scripts() {
   echo "z - jump to a directory"
   echo "japad - run japa tests for a directory"
   echo "resize - resize a tmux pane"
   echo "grl - git log with fzf"
+  echo "on - create a new obsidian note"
 }
+
