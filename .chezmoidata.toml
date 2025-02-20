@@ -5,3 +5,8 @@ family = "IosevkaSS04 Nerd Font Mono"
 [alacritty.font]
 size = 16
 family = "IosevkaSS04 Nerd Font Mono"
+
+[git]
+name = "Matheus Lima"
+email = ""
+signingkey = ""
