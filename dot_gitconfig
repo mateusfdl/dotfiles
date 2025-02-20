@@ -1,0 +1,41 @@
+[user]
+	email = {{ .git.email }}
+	name = {{ .git.name }}
+  signingkey = {{ .git.signingkey }}
+
+[format]
+  signoff = true
+
+[commit]
+  gpgsign = true
+
+[color]
+  ui = true
+
+[core]
+  excludesFile = ~/.gitignore
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[github]
+  user = mateusfdl
+
+[diff]
+  algorithm = histogram
+  indentHeuristic = true
+  colorMoved = default
+
+[pull]
+  mode = rebase
+  rebase = true
+
+[rebase]
+  autoStash = true
+
+[init]
+  defaultBranch = main
+
+[gpg]
+  program = gpg
