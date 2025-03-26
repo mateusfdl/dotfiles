@@ -1,0 +1,5 @@
+font-family = "IosevkaSS04 Nerd Font Mono"
+font-size = 28
+
+theme = dark:Onedark,light:Onelight
+config-file = "switch-theme"
