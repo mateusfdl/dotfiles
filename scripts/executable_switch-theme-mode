@@ -6,6 +6,8 @@ TMUX_THEME_FILE="$HOME/.tmux/theme.conf"
 ALACRITTY_THEME_DIR="$HOME/.config/alacritty/themes"
 ALACRITTY_THEME_FILE="$ALACRITTY_THEME_DIR/.selected_theme.toml"
 
+GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
+
 TMP_MODE_FILE="/tmp/theme-mode"
 
 if [ -f "$TMP_MODE_FILE" ]; then
@@ -28,6 +30,12 @@ if [ -f "$TMUX_THEME_DIR/$SELECTED_THEME" ]; then
   tmux source-file "$TMUX_THEME_FILE"
 else
   tmux display-message "Tmux theme file $SELECTED_THEME.tmux not found in $TMUX_THEME_DIR!"
+fi
+
+if [ -f "$GHOSTTY_FILE_TOGGLER" ]; then
+  echo "theme=$SELECTED_THEME" > $GHOSTTY_FILE_TOGGLER
+  osascript -e 'tell application "System Events" to tell process "Ghostty" to click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1'
+
 fi
 
 if [ -f "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" ]; then
