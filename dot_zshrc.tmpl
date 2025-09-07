@@ -30,6 +30,7 @@ export DARK_THEME="onedark"
 [ -f "$HOME/.tokens" ] && . "$HOME/.tokens"
 {{ if eq .chezmoi.os "linux" }}
 [ -f "$HOME/.wsl" ] && . "$HOME/.wsl"
+[ -f "$HOME/.wslpaths" ] && . "$HOME/.wslpaths"
 {{ end }}
 
 export PATH="/bin:/usr/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
