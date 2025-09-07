@@ -23,3 +23,7 @@ set-option -g default-terminal "screen-256color"
 {{- end }}
 
 set-option -ga terminal-overrides ",xterm-256color:Tc"
+
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "tmux show-buffer | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | osc52"
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "tmux osc52"
+bind -T copy-mode-vi Enter send -X copy-pipe-and-cancel "tmux osc52"
