@@ -1,0 +1,52 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "permissions": {
+    "allowed_tools": [
+      "view",
+      "ls",
+      "grep",
+      "edit"
+    ]
+  },
+  "lsp": {
+    "golang": {
+      "command": "gopls"
+    },
+    "typescript": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"]
+    }
+  },
+  "mcp": {
+    "serena": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena-mcp-server",
+        "--context",
+        "ide-assistant",
+        "--project",
+        "/Users/joaomatheusfurtadodelima/kairos/kairos-api"
+      ],
+      "env": { }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 9999
+    },
+    "tree-sitter": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-server-tree-sitter"
+      ]
+    }
+  }
+}
+
