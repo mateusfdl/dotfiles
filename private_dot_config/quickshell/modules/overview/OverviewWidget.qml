@@ -17,14 +17,14 @@ Item {
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
-    readonly property int workspacesShown: ConfigOptions.overview.numOfRows * ConfigOptions.overview.numOfCols
+    readonly property int workspacesShown: Config.options.overview.numOfRows * Config.options.overview.numOfCols
     readonly property int workspaceGroup: Math.floor((monitor.activeWorkspace?.id - 1) / workspacesShown)
     property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor.id)
     property var windows: HyprlandData.windowList
     property var windowByAddress: HyprlandData.windowByAddress
     property var windowAddresses: HyprlandData.addresses
     property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor.id)
-    property real scale: ConfigOptions.overview.scale
+    property real scale: Config.options.overview.scale
     property color activeBorderColor: Appearance.m3colors.m3accentSecondary
 
     property real workspaceImplicitWidth: Math.max(100, (monitorData?.transform % 2 === 1) ? 
@@ -35,8 +35,8 @@ Item {
         ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale))
 
     property real workspaceNumberMargin: 80
-    property real workspaceNumberSize: (ConfigOptions.overview.workspaceNumberSize > 0) 
-        ? ConfigOptions.overview.workspaceNumberSize 
+    property real workspaceNumberSize: (Config.options.overview.workspaceNumberSize > 0) 
+        ? Config.options.overview.workspaceNumberSize 
         : Math.min(workspaceImplicitHeight, workspaceImplicitWidth) * monitor.scale
     property int workspaceZ: 0
     property int windowZ: 1
@@ -52,10 +52,10 @@ Item {
     property Component windowComponent: OverviewWindow {}
     property list<OverviewWindow> windowWidgets: []
 
-    // Shared wallpaper image - loaded once and reused
+    // Shared wallpaper image - loaded once and reused, only when visible
     Image {
         id: sharedWallpaper
-        source: Appearance.background_image || ""
+        source: root.visible ? (Appearance.background_image || "") : ""  // Only load when overview is visible
         visible: false // Hidden as it's only used as a source
         cache: true
         asynchronous: true
@@ -87,23 +87,23 @@ Item {
             anchors.centerIn: parent
             spacing: workspaceSpacing
             Repeater {
-                model: ConfigOptions.overview.numOfRows
+                model: Config.options.overview.numOfRows
                 delegate: RowLayout {
                     id: row
                     property int rowIndex: index
                     spacing: workspaceSpacing
 
                     Repeater { // Workspace repeater
-                        model: ConfigOptions.overview.numOfCols
+                        model: Config.options.overview.numOfCols
                         Rectangle { // Workspace
                             id: workspace
                             property int colIndex: index
-                            property int workspaceValue: root.workspaceGroup * workspacesShown + rowIndex * ConfigOptions.overview.numOfCols + colIndex + 1
+                            property int workspaceValue: root.workspaceGroup * workspacesShown + rowIndex * Config.options.overview.numOfCols + colIndex + 1
                             property color defaultWorkspaceColor: Appearance.colors.colLayer1
                             property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
                             property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                             property bool hoveredWhileDragging: false
-                            readonly property int padding: ConfigOptions.overview.windowPadding
+                            readonly property int padding: Config.options.overview.windowPadding
 
                             Layout.preferredWidth: root.workspaceImplicitWidth
                             Layout.preferredHeight: root.workspaceImplicitHeight
@@ -247,14 +247,14 @@ Item {
                     property bool atInitPosition: (initX == x && initY == y)
                     restrictToWorkspace: Drag.active || atInitPosition
 
-                    property int workspaceColIndex: (windowData?.workspace.id - 1) % ConfigOptions.overview.numOfCols
-                    property int workspaceRowIndex: Math.floor((windowData?.workspace.id - 1) % root.workspacesShown / ConfigOptions.overview.numOfCols)
+                    property int workspaceColIndex: (windowData?.workspace.id - 1) % Config.options.overview.numOfCols
+                    property int workspaceRowIndex: Math.floor((windowData?.workspace.id - 1) % root.workspacesShown / Config.options.overview.numOfCols)
                     xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceColIndex
                     yOffset: (root.workspaceImplicitHeight + workspaceSpacing) * workspaceRowIndex
 
                     Timer {
                         id: updateWindowPosition
-                        interval: ConfigOptions.hacks.arbitraryRaceConditionDelay
+                        interval: Config.options.hacks.arbitraryRaceConditionDelay
                         repeat: false
                         running: false
                         onTriggered: {
@@ -319,8 +319,8 @@ Item {
             Rectangle { // Focused workspace indicator
                 id: focusedWorkspaceIndicator
                 property int activeWorkspaceInGroup: monitor.activeWorkspace?.id - (root.workspaceGroup * root.workspacesShown)
-                property int activeWorkspaceRowIndex: Math.floor((activeWorkspaceInGroup - 1) / ConfigOptions.overview.numOfCols)
-                property int activeWorkspaceColIndex: (activeWorkspaceInGroup - 1) % ConfigOptions.overview.numOfCols
+                property int activeWorkspaceRowIndex: Math.floor((activeWorkspaceInGroup - 1) / Config.options.overview.numOfCols)
+                property int activeWorkspaceColIndex: (activeWorkspaceInGroup - 1) % Config.options.overview.numOfCols
                 x: (root.workspaceImplicitWidth + workspaceSpacing) * activeWorkspaceColIndex
                 y: (root.workspaceImplicitHeight + workspaceSpacing) * activeWorkspaceRowIndex
                 z: root.windowZ

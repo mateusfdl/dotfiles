@@ -2,18 +2,19 @@
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 
-import "./modules/common/"
-import "./modules/testwindow/"
-import "./services/"
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import Quickshell
+import qs
+import qs.modules.common
+import qs.modules.testwindow
+import qs.services
 
 ShellRoot {
     Component.onCompleted: {
-        MaterialThemeLoader.reapplyTheme();
-        ConfigLoader.loadConfig();
+        console.log("Config ready:", Config.ready);
+        console.log("Persistent ready:", Persistent.ready);
+        console.log("Launcher test starting...");
     }
 
     TestWindow {

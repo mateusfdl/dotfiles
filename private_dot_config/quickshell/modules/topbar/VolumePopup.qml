@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 pragma Singleton
@@ -29,10 +30,12 @@ Scope {
     }
 
     function togglePopup(x, y) {
-        if (popupVisible)
+        if (popupVisible) {
             hidePopup();
-        else
+        } else {
+            Topbar.PopupManager.closeAllExcept("volume");
             showPopup(x, y);
+        }
     }
 
     function updateOutputDevice() {
@@ -110,8 +113,8 @@ Scope {
                 width: 280
                 height:  80
                 radius: 12
-                color: Qt.rgba(0.15, 0.15, 0.15, 0.7)
-                border.color: Qt.rgba(1, 1, 1, 0.15)
+                color: Appearance.colors.colLayer1
+                border.color: Appearance.m3colors.m3borderSecondary
                 border.width: 1
                 z: 10
                 layer.enabled: true
@@ -162,7 +165,7 @@ Scope {
                                 text: "Volume protection active"
                                 font.pixelSize: 11
                                 font.weight: Font.Medium
-                                color: Qt.rgba(1, 1, 1, 0.9)
+                                color: Appearance.m3colors.m3primaryText
                                 Layout.fillWidth: true
                             }
                         }
@@ -203,7 +206,7 @@ Scope {
                               }
                               iconSize: 24
                               fill: 1
-                              color: Qt.rgba(1, 1, 1, 0.9)
+                              color: Appearance.m3colors.m3primaryText
                           }
 
                         }
@@ -211,75 +214,20 @@ Scope {
                     }
 
                     // Volume slider
-                    Item {
+                    StyledSlider {
+                        id: volumeSlider
+
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30
-
-                        // Background track (gray)
-                        Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            height: 6
-                            radius: 3
-                            color: Qt.rgba(0.5, 0.5, 0.5, 0.3)
+                        configuration: StyledSlider.Configuration.S
+                        from: 0
+                        to: 1
+                        value: Audio.sink?.audio?.volume ?? 0
+                        onMoved: {
+                            if (Audio.sink?.audio) {
+                                Audio.sink.audio.volume = value;
+                            }
                         }
-
-                        // Filled track (blue for current volume)
-                        Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width * (volumeSlider.value / 100)
-                            height: 6
-                            radius: 3
-                            color: Qt.rgba(0.3, 0.6, 1, 1)
-
-                            Behavior on width {
-                                NumberAnimation {
-                                    duration: 100
-                                    easing.type: Easing.OutQuad
-                                }
-
-                            }
-
-                        }
-
-                        Slider {
-                            id: volumeSlider
-
-                            anchors.fill: parent
-                            from: 0
-                            to: 100
-                            value: (Audio.sink?.audio?.volume ?? 0) * 100
-                            onMoved: {
-                                if (Audio.sink?.audio) {
-                                    Audio.sink.audio.volume = value / 100;
-                                }
-                            }
-
-                            background: Item {
-                            }
-
-                            handle: Rectangle {
-                                x: volumeSlider.visualPosition * (volumeSlider.width - width)
-                                y: (volumeSlider.height - height) / 2
-                                width: 22
-                                height: 22
-                                radius: 11
-                                color: "white"
-                                border.color: Qt.rgba(0, 0, 0, 0.05)
-                                border.width: 0.5
-                                layer.enabled: true
-
-                                layer.effect: DropShadow {
-                                    radius: 6
-                                    samples: 13
-                                    color: Qt.rgba(0, 0, 0, 0.25)
-                                    verticalOffset: 1
-                                }
-
-                            }
-
-                        }
-
                     }
                 }
 

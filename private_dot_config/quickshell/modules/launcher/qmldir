@@ -1,0 +1,8 @@
+module qs.modules.launcher
+
+Launcher 1.0 Launcher.qml
+WrapperSimple 1.0 WrapperSimple.qml
+ContentSimple 1.0 ContentSimple.qml
+ContentListSimple 1.0 ContentListSimple.qml
+AppListSimple 1.0 AppListSimple.qml
+AppItemSimple 1.0 AppItemSimple.qml

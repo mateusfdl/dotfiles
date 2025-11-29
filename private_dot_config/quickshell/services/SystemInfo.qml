@@ -8,53 +8,67 @@ Singleton {
 
     property int volume: 100
     property bool volumeMuted: false
+    property string distroName: "Unknown"
+    property string distroId: "unknown"
+    property string uptime: "0:00"
+    property string username: "user"
 
-    Component.onCompleted: {
-        volumeLevelProcess.running = true;
+    Timer {
+        triggeredOnStart: true
+        interval: 1
+        running: true
+        repeat: false
+        onTriggered: {
+            getUsername.running = true;
+            getUptime.running = true;
+            fileOsRelease.reload();
+            const textOsRelease = fileOsRelease.text();
+            const prettyNameMatch = textOsRelease.match(/^PRETTY_NAME="(.+?)"/m);
+            const nameMatch = textOsRelease.match(/^NAME="(.+?)"/m);
+            parent.distroName = prettyNameMatch ? prettyNameMatch[1] : (nameMatch ? nameMatch[1].replace(/Linux/i, "").trim() : "Unknown");
+            const idMatch = textOsRelease.match(/^ID="?(.+?)"?$/m);
+            parent.distroId = idMatch ? idMatch[1] : "unknown";
+        }
     }
 
     Connections {
-        target: Hyprland
-
         function onRawEvent(event) {
-            //console.log("Hyprland raw event:", event.name);
-            updateAll()
+            updateAll();
         }
+
+        target: Hyprland
     }
 
     Process {
-        id: volumeLevelProcess
+        id: getUsername
 
-        running: false
-        command: ["sh", "-c", "pactl get-sink-volume @DEFAULT_SINK@ | head -n 1 | awk '{print $5}' | sed 's/%//'"]
-        onExited: (exitCode, stdout, stderr) => {
-            if (exitCode === 0 && stdout) {
-                var vol = parseInt(stdout.trim());
-                if (!isNaN(vol))
-                    root.volume = vol;
+        command: ["whoami"]
 
+        stdout: SplitParser {
+            onRead: (data) => {
+                root.username = data.trim();
             }
-            volumeMuteProcess.running = true;
         }
+
+    }
+
+    FileView {
+        id: fileOsRelease
+
+        path: "/etc/os-release"
     }
 
     Process {
-        id: volumeMuteProcess
+        id: getUptime
 
-        running: false
-        command: ["sh", "-c", "pactl get-sink-mute @DEFAULT_SINK@ | grep -q 'yes' && echo '1' || echo '0'"]
-        onExited: (exitCode, stdout, stderr) => {
-            if (exitCode === 0 && stdout)
-                root.volumeMuted = stdout.trim() === "1";
+        command: ["uptime", "-p"]
 
+        stdout: SplitParser {
+            onRead: (data) => {
+                root.uptime = data.replace(/up/, "").trim();
+            }
         }
-    }
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: true
-        onTriggered: volumeLevelProcess.running = true
     }
 
 }

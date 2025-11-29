@@ -1,8 +1,8 @@
 pragma Singleton
 
-import "root:/modules/common"
-import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
-import "root:/modules/common/functions/levendist.js" as Levendist
+import qs.modules.common
+import "../modules/common/functions/fuzzysort.js" as Fuzzy
+import "../modules/common/functions/levendist.js" as Levendist
 import Quickshell
 import Quickshell.Io
 
@@ -12,7 +12,7 @@ import Quickshell.Io
  */
 Singleton {
     id: root
-    property bool sloppySearch: ConfigOptions?.search.sloppy ?? false
+    property bool sloppySearch: Config.options?.search.sloppy ?? false
     property real scoreThreshold: 0.2
     property var substitutions: ({
         "code-url-handler": "visual-studio-code",
@@ -46,10 +46,34 @@ Singleton {
     readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values)
         .sort((a, b) => a.name.localeCompare(b.name))
 
+    // Lazy-loaded prepared names - only computed when actually used
     readonly property var preppedNames: list.map(a => ({
-                name: Fuzzy.prepare(`${a.name} `),
-                entry: a
-            }))
+        name: Fuzzy.prepare(`${a.name} `),
+        entry: a
+    }))
+
+    function search(query: string): var {
+        return fuzzyQuery(query)
+    }
+
+    function launch(entry: DesktopEntry): void {
+        if (!entry) return;
+
+        // Try different execution methods
+        if (typeof entry.execute === "function") {
+            entry.execute();
+        } else if (typeof entry.launch === "function") {
+            entry.launch();
+        } else if (typeof entry.run === "function") {
+            entry.run();
+        } else if (entry.command) {
+            // Fallback: execute command directly
+            Quickshell.execDetached({
+                command: entry.command,
+                workingDirectory: entry.workingDirectory ?? ""
+            });
+        }
+    }
 
     function fuzzyQuery(search: string): var { // Idk why list<DesktopEntry> doesn't work
         if (root.sloppySearch) {

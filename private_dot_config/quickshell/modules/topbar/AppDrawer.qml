@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import qs
 import qs.modules.common.widgets
 
 Item {
@@ -20,7 +21,7 @@ Item {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                Quickshell.execDetached(["sh", "-c", "rofi -show drun || wofi --show drun"]);
+                GlobalStates.launcherOpen = !GlobalStates.launcherOpen
             }
         }
 

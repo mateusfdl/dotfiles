@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import qs.modules.common
 
 Item {
     id: root
@@ -71,10 +72,10 @@ Item {
             return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase()
         }
 
-        color: "white"
-        font.pixelSize: 22
+        color: Appearance.m3colors.m3primaryText
+        font.pixelSize: Appearance.font.pixelSize.iconLarge
         font.weight: Font.Black
-        font.family: "-apple-system"
+        font.family: Appearance.font.family.uiFont
         elide: Text.ElideRight
         verticalAlignment: Text.AlignVCenter
     }

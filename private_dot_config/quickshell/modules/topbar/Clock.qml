@@ -1,10 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.modules.common
 
 Item {
     id: root
 
-    property string format: "ddd MMM dd  hh:mm"
+    property string format: Config.options.time.format
 
     implicitWidth: clockText.implicitWidth + 8
     implicitHeight: clockText.implicitHeight
@@ -14,10 +15,10 @@ Item {
 
         anchors.centerIn: parent
         text: Qt.formatDateTime(new Date(), root.format)
-        color: Qt.rgba(1, 1, 1, 0.9)
-        font.pixelSize: 16
+        color: Appearance.m3colors.m3primaryText
+        font.pixelSize: Appearance.font.pixelSize.textMedium
         font.weight: Font.Medium
-        font.family: "-apple-system"
+        font.family: Appearance.font.family.uiFont
         verticalAlignment: Text.AlignVCenter
 
         Timer {
@@ -35,12 +36,12 @@ Item {
         anchors.fill: parent
         anchors.margins: -4
         color: "transparent"
-        radius: 4
+        radius: Appearance.rounding.unsharpen
         z: -1
 
         Behavior on color {
             ColorAnimation {
-                duration: 200
+                duration: Appearance.animation.elementMoveFast.duration
             }
 
         }

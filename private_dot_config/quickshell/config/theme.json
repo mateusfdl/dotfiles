@@ -1,0 +1,36 @@
+{
+  "dark": {
+      "windowBackground": "#1a1b26",
+      "primaryText": "#c0caf5",
+      "layerBackground1": "#24283b",
+      "layerBackground2": "#1f2335",
+      "layerBackground3": "#2e3248",
+      "surfaceText": "#c0caf5",
+      "secondaryText": "#565f89",
+      "borderPrimary": "#3b4261",
+      "shadowColor": "#000000",
+      "accentPrimary": "#7aa2f7",
+      "accentSecondary": "#bb9af7",
+      "selectionBackground": "#33467c",
+      "accentPrimaryText": "#1a1b26",
+      "selectionText": "#c0caf5",
+      "borderSecondary": "#292e42"
+  },
+  "light": {
+      "windowBackground": "#f4f8f5",   
+      "primaryText": "#2e3d32",        
+      "layerBackground1": "#e6f0ea",   
+      "layerBackground2": "#dce9e2",   
+      "layerBackground3": "#c9dbcf",   
+      "surfaceText": "#33493d",        
+      "secondaryText": "#6b7f73",      
+      "borderPrimary": "#b0c7b8",      
+      "borderSecondary": "#d0e0d5",    
+      "shadowColor": "#00000020",      
+      "accentPrimary": "#3b8c59",
+      "accentSecondary": "#62a87c",
+      "selectionBackground": "#b2d6be",
+      "accentPrimaryText": "#ffffff",
+      "selectionText": "#1e2a21"
+  }
+}

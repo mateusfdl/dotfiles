@@ -13,7 +13,7 @@ import Quickshell.Hyprland
 Scope {
     id: overviewScope
     property bool dontAutoCancelSearch: false
-    property bool searchEnabled: ConfigOptions.search.searchEnabled
+    property bool searchEnabled: Config.options.search.searchEnabled
     
     Variants {
         id: overviewVariants
@@ -59,13 +59,13 @@ Scope {
                 target: GlobalStates
                 function onOverviewOpenChanged() {
                     if (!GlobalStates.overviewOpen) {
-                        if (overviewScope.searchEnabled && searchWidget) {
-                            searchWidget.disableExpandAnimation()
+                        if (overviewScope.searchEnabled && searchWidgetLoader) {
+                            searchWidgetLoader.disableExpandAnimation()
                         }
                         overviewScope.dontAutoCancelSearch = false;
                     } else {
-                        if (!overviewScope.dontAutoCancelSearch && overviewScope.searchEnabled && searchWidget) {
-                            searchWidget.cancelSearch()
+                        if (!overviewScope.dontAutoCancelSearch && overviewScope.searchEnabled && searchWidgetLoader) {
+                            searchWidgetLoader.cancelSearch()
                         }
                         delayedGrabTimer.start()
                     }
@@ -74,7 +74,7 @@ Scope {
 
             Timer {
                 id: delayedGrabTimer
-                interval: ConfigOptions.hacks.arbitraryRaceConditionDelay
+                interval: Config.options.hacks.arbitraryRaceConditionDelay
                 repeat: false
                 onTriggered: {
                     if (!grab.canBeActive) return
@@ -86,8 +86,8 @@ Scope {
             implicitHeight: columnLayout.implicitHeight
 
             function setSearchingText(text) {
-                if (overviewScope.searchEnabled && searchWidget) {
-                    searchWidget.setSearchingText(text);
+                if (overviewScope.searchEnabled && searchWidgetLoader) {
+                    searchWidgetLoader.setSearchingText(text);
                 }
             }
 
@@ -96,9 +96,9 @@ Scope {
                 visible: GlobalStates.overviewOpen
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    top: ConfigOptions.overview.position === 0 ? parent.top : undefined
-                    verticalCenter: ConfigOptions.overview.position === 1 ? parent.verticalCenter : undefined
-                    bottom: ConfigOptions.overview.position === 2 ? parent.bottom : undefined
+                    top: Config.options.overview.position === 0 ? parent.top : undefined
+                    verticalCenter: Config.options.overview.position === 1 ? parent.verticalCenter : undefined
+                    bottom: Config.options.overview.position === 2 ? parent.bottom : undefined
                 }
 
                 Keys.onPressed: (event) => {
@@ -112,16 +112,39 @@ Scope {
                     width: 1
                 }
 
-                // Conditionally render SearchWidget - only exists when searchEnabled is true
-                SearchWidget {
-                    id: searchWidget
+                // Conditionally render SearchWidget - only loaded when searchEnabled is true
+                Loader {
+                    id: searchWidgetLoader
+                    active: overviewScope.searchEnabled
                     Layout.alignment: Qt.AlignHCenter
-                    visible: overviewScope.searchEnabled
-                    height: overviewScope.searchEnabled ? implicitHeight : 0
-                    Layout.preferredHeight: overviewScope.searchEnabled ? implicitHeight : 0
-                    onSearchingTextChanged: (text) => {
-                        root.searchingText = searchingText
+                    Layout.preferredHeight: overviewScope.searchEnabled && item ? item.implicitHeight : 0
+
+                    sourceComponent: SearchWidget {
+                        id: searchWidget
+                        onSearchingTextChanged: (text) => {
+                            root.searchingText = searchingText
+                        }
+
+                        // Refresh clipboard when opened
+                        Component.onCompleted: {
+                            Cliphist.refresh()
+                        }
                     }
+
+                    // Expose searchWidget-like interface
+                    function setSearchingText(text) {
+                        if (item) item.setSearchingText(text)
+                    }
+
+                    function cancelSearch() {
+                        if (item) item.cancelSearch()
+                    }
+
+                    function disableExpandAnimation() {
+                        if (item) item.disableExpandAnimation()
+                    }
+
+                    readonly property string searchingText: item ? item.searchingText : ""
                 }
 
                 Item {
@@ -233,7 +256,7 @@ Scope {
                 if (panelWindow.modelData.name == Hyprland.focusedMonitor.name) {
                     overviewScope.dontAutoCancelSearch = true;
                     panelWindow.setSearchingText(
-                        ConfigOptions.search.prefix.clipboard
+                        Config.options.search.prefix.clipboard
                     );
                     GlobalStates.overviewOpen = true;
                     return
@@ -258,7 +281,7 @@ Scope {
                 if (panelWindow.modelData.name == Hyprland.focusedMonitor.name) {
                     overviewScope.dontAutoCancelSearch = true;
                     panelWindow.setSearchingText(
-                        ConfigOptions.search.prefix.emojis
+                        Config.options.search.prefix.emojis
                     );
                     GlobalStates.overviewOpen = true;
                     return

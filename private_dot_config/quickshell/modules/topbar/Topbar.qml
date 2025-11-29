@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import qs.modules.common
 
 Scope {
     Variants {
@@ -14,8 +15,8 @@ Scope {
             required property var modelData
 
             screen: modelData
-            implicitHeight: 50
-            color: Qt.rgba(0, 0, 0, 0.15)
+            implicitHeight: Appearance.sizes.barHeight
+            color: Appearance.colors.colLayer0
 
             anchors {
                 top: true
@@ -25,19 +26,20 @@ Scope {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.topMargin: 15
-                anchors.bottomMargin: 15
+                anchors.topMargin: Config.options.bar.margins
+                anchors.bottomMargin: Config.options.bar.margins
                 spacing: 0
 
                 // Left section
                 Item {
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.preferredWidth: leftContent.width
 
                     RowLayout {
                         id: leftContent
 
                         anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
                         spacing: 8
 
                         Item {
@@ -70,13 +72,14 @@ Scope {
                 }
 
                 Item {
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.preferredWidth: rightContent.width
 
                     RowLayout {
                         id: rightContent
 
                         anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
                         spacing: 10
 
                         Item {
@@ -91,7 +94,15 @@ Scope {
                             invertSide: false
                         }
 
+                        Topbar.RecordingIndicator {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
                         Topbar.VolumeIndicator {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
+                        Topbar.PomodoroIndicator {
                             Layout.alignment: Qt.AlignVCenter
                         }
 

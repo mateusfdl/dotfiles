@@ -1,3 +1,4 @@
+import "." as Topbar
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -13,7 +14,7 @@ Item {
         id: icon
 
         anchors.centerIn: parent
-        text: "search"
+        text: "more_vert"  // Three vertical dots like control center
         iconSize: 22
         fill: 0
         color: Qt.rgba(1, 1, 1, 0.85)
@@ -22,9 +23,7 @@ Item {
             ColorAnimation {
                 duration: 200
             }
-
         }
-
     }
 
     Rectangle {
@@ -38,9 +37,7 @@ Item {
             ColorAnimation {
                 duration: 200
             }
-
         }
-
     }
 
     MouseArea {
@@ -48,11 +45,14 @@ Item {
 
         anchors.fill: parent
         anchors.margins: -6
-        hoverEnabled: false
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            Quickshell.execDetached(["sh", "-c", "rofi -show drun || wofi --show drun"]);
+            var pos = mapToItem(null, 0, 0)
+            var iconRightX = pos.x + root.width
+            var popupX = iconRightX - 420  // Popup width is 420
+            var popupY = 2
+            Topbar.ControlCenterPopup.togglePopup(popupX, popupY)
         }
     }
-
 }

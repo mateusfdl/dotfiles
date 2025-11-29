@@ -1,0 +1,90 @@
+{
+  "ui": {
+    "theme": "dark",
+    "scale": 1.25
+  },
+  "features": {
+    "animations": true
+  },
+  "appearance": {
+    "fakeScreenRounding": 1
+  },
+  "overview": {
+    "scale": 0.15,
+    "numOfRows": 2,
+    "numOfCols": 5,
+    "showXwaylandIndicator": true,
+    "windowPadding": 6,
+    "position": 1,
+    "workspaceNumberSize": 220
+  },
+  "resources": {
+    "updateInterval": 3000
+  },
+  "time": {
+    "format": "ddd MMM dd  hh:mm"
+  },
+  "hacks": {
+    "arbitraryRaceConditionDelay": 20
+  },
+  "search": {
+    "searchEnabled": true,
+    "nonAppResultDelay": 30,
+    "prefix": {
+      "action": "/",
+      "clipboard": ";",
+      "emojis": ":"
+    }
+  },
+  "bar": {
+    "bottom": false,
+    "margins": 15,
+    "spacing": 10,
+    "workspaces": {
+      "size": 24,
+      "iconSize": 16,
+      "spacing": 4
+    },
+    "tray": {
+      "itemSize": 24,
+      "iconSize": 20,
+      "spacing": 14
+    }
+  },
+  "launcher": {
+    "enabled": true,
+    "maxShown": 7,
+    "specialPrefix": "@",
+    "actionPrefix": ">",
+    "enableDangerousActions": false,
+    "vimKeybinds": false,
+    "hiddenApps": [],
+    "sizes": {
+      "itemWidth": 600,
+      "itemHeight": 57,
+      "wallpaperWidth": 280,
+      "wallpaperHeight": 200
+    },
+    "useFuzzy": {
+      "apps": false,
+      "actions": false,
+      "schemes": false,
+      "variants": false,
+      "wallpapers": false
+    }
+  },
+  "font": {
+    "family": {
+      "uiFont": "Open Sans",
+      "iconFont": "FiraConde Nerd Font",
+      "codeFont": "JetBrains Mono NF"
+    },
+    "pixelSize": {
+      "textSmall": 13,
+      "textBase": 15,
+      "textMedium": 16,
+      "textLarge": 19,
+      "iconLarge": 22
+    }
+  }
+}

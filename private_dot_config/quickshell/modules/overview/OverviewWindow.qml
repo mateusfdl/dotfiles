@@ -34,7 +34,7 @@ Rectangle { // Window
     property var iconPath: Quickshell.iconPath(AppSearch.guessIcon(windowData?.class), "image-missing")
     property bool compactMode: Appearance.font.pixelSize.textSmall * 4 > targetWindowHeight || Appearance.font.pixelSize.textSmall * 4 > targetWindowWidth
 
-    property bool indicateXWayland: (ConfigOptions.overview.showXwaylandIndicator && windowData?.xwayland) ?? false
+    property bool indicateXWayland: (Config.options.overview.showXwaylandIndicator && windowData?.xwayland) ?? false
     
     x: initX
     y: initY

@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Hyprland
 import qs.services
 import qs.modules.common.widgets
+import qs.modules.common
 
 Item {
     id: root
@@ -16,7 +17,7 @@ Item {
     RowLayout {
         id: workspacesRow
         anchors.centerIn: parent
-        spacing: 4
+        spacing: Config.options.bar.workspaces.spacing
 
         Repeater {
             model: root.workspaceCount
@@ -24,17 +25,12 @@ Item {
             Rectangle {
                 required property int index
 
-                width: 24
-                height: 24
-                color: {
-                    if (isActive) return Qt.rgba(1, 1, 1, 0.15)
-                    if (mouseArea.containsMouse) return Qt.rgba(1, 1, 1, 0.15)
-                    return "transparent"
-                }
-                radius: 4
+                width: Config.options.bar.workspaces.size
+                height: Config.options.bar.workspaces.size
+                color: "transparent"
+                radius: Appearance.rounding.small
 
                 property int workspaceId: {
-                  console.log("INDEX:", index)
                   return index + 1
                 }
                 property bool isActive: {
@@ -48,15 +44,15 @@ Item {
                         if (parent.isActive) return ""  
                         return ""  
                     }
-                    size:  16 
-                    color: Qt.rgba(1, 1, 1, 0.9)
+                    size: Config.options.bar.workspaces.iconSize
+                    color: Appearance.m3colors.m3primaryText
 
                     Behavior on size {
-                        NumberAnimation { duration: 200 }
+                        NumberAnimation { duration: Appearance.animation.elementMoveFast.duration }
                     }
 
                     Behavior on color {
-                        ColorAnimation { duration: 200 }
+                        ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
                     }
                 }
 
@@ -72,7 +68,7 @@ Item {
                 }
 
                 Behavior on color {
-                    ColorAnimation { duration: 200 }
+                    ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
                 }
             }
         }

@@ -48,7 +48,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -6
-        color: "transparent"
+        color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
         radius: 4
         z: -1
 
@@ -66,7 +66,7 @@ Item {
 
         anchors.fill: parent
         anchors.margins: -6
-        hoverEnabled: false
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             var pos = mapToItem(null, 0, 0);

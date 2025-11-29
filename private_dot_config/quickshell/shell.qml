@@ -2,27 +2,33 @@
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 
-import "./modules/common/"
-import "./modules/overview/"
-import "./modules/topbar/"
-import "./modules/windowswitcher/"
-import "./services/"
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import qs.modules.common
+import qs.modules.launcher
+import qs.modules.notifications
+import qs.modules.overview
+import qs.modules.theme
+import qs.modules.topbar
+import qs.modules.wallpaper
+import qs.modules.windowswitcher
+import qs.services
 
 ShellRoot {
-    // Enable/disable modules here. False = not loaded at all, so rest assured
-    // no unnecessary stuff will take up memory if you decide to only use, say, the overview.
     property bool enableTopbar: true
     property bool enableOverview: true
     property bool enableWindowSwitcher: true
+    property bool enableLauncher: true
+    property bool enableWallpaper: true
+    property bool enableNotifications: true
 
-    // Force initialization of some singletons
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme();
-        ConfigLoader.loadConfig();
+    }
+
+    ThemeIpc {
     }
 
     Loader {
@@ -45,6 +51,30 @@ ShellRoot {
         active: enableWindowSwitcher
 
         sourceComponent: WindowSwitcher {
+        }
+
+    }
+
+    Loader {
+        active: enableLauncher
+
+        sourceComponent: Launcher {
+        }
+
+    }
+
+    Loader {
+        active: enableWallpaper
+
+        sourceComponent: Wallpaper {
+        }
+
+    }
+
+    Loader {
+        active: enableNotifications
+
+        sourceComponent: NotificationPopup {
         }
 
     }

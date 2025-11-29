@@ -58,12 +58,18 @@ Singleton {
         updateAll();
     }
 
+    Timer {
+        id: updateDebounce
+        interval: 100
+        repeat: false
+        onTriggered: updateAll()
+    }
+
     Connections {
         target: Hyprland
 
         function onRawEvent(event) {
-            //console.log("Hyprland raw event:", event.name);
-            updateAll()
+            updateDebounce.restart()
         }
     }
 
@@ -118,7 +124,6 @@ Singleton {
                 for (var i = 0; i < root.workspaces.length; ++i) {
                     var ws = root.workspaces[i];
                     tempWorkspaceById[ws.id] = ws;
-                    console.log(root.workspaces)
                 }
                 root.workspaceById = tempWorkspaceById;
                 root.workspaceIds = root.workspaces.map(ws => ws.id);

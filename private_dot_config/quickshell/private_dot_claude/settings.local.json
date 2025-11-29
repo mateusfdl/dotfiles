@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(quickshell:*)",
+      "Read(//home/matheus/Documents/codes/dots-hyprland/.config/quickshell/ii/**)",
+      "Read(//home/matheus/Documents/codes/shell/config/**)",
+      "Read(//home/matheus/Documents/codes/shell/**)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(xargs cat)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

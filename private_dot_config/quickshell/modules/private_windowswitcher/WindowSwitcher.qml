@@ -15,19 +15,71 @@ import Quickshell.Hyprland
 Scope {
     id: windowSwitcherScope
 
+    readonly property int maxHistorySize: 20
+    readonly property int focusGrabDelay: 100
+
     property int currentIndex: 0
     property var filteredWindows: []
     property var windowAddresses: []
+    property string snapshotFocusedAddress: ""
+    property string lastActivatedAddress: ""
+    property var windowHistory: []
+
+    Process {
+        id: getActiveWindowProcess
+        running: false
+        command: ["hyprctl", "activewindow", "-j"]
+        stdout: StdioCollector {
+            id: activeWindowCollector
+            onStreamFinished: {
+                try {
+                    const activeWindow = JSON.parse(activeWindowCollector.text)
+                    snapshotFocusedAddress = activeWindow.address || ""
+                } catch (e) {
+                    console.error("Failed to parse active window:", e)
+                    snapshotFocusedAddress = ""
+                } finally {
+                    windowSwitcherScope.continueUpdateWindowList()
+                }
+            }
+        }
+    }
 
     function updateWindowList() {
-        let windows = HyprlandData.windowList.filter(win => !win.hidden && win.mapped)
-        windows.sort((a, b) => {
-            if (a.address === Hyprland.focusedWindow?.address) return -1
-            if (b.address === Hyprland.focusedWindow?.address) return 1
+        getActiveWindowProcess.running = true
+    }
+
+    function updateHistory(address) {
+        if (!address || address === lastActivatedAddress) return
+
+        windowHistory = windowHistory.filter(addr => addr !== address)
+        windowHistory = [address].concat(windowHistory)
+
+        if (windowHistory.length > maxHistorySize) {
+            windowHistory = windowHistory.slice(0, maxHistorySize)
+        }
+    }
+
+    function sortWindowsByHistory(windows) {
+        return windows.sort((a, b) => {
+            const indexA = windowHistory.indexOf(a.address)
+            const indexB = windowHistory.indexOf(b.address)
+
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB
+            if (indexA !== -1) return -1
+            if (indexB !== -1) return 1
             return 0
         })
-        filteredWindows = windows
-        windowAddresses = windows.map(w => w.address)
+    }
+
+    function continueUpdateWindowList() {
+        updateHistory(snapshotFocusedAddress)
+
+        const windows = HyprlandData.windowList.filter(win => !win.hidden && win.mapped)
+        const sortedWindows = sortWindowsByHistory(windows)
+
+        filteredWindows = sortedWindows
+        windowAddresses = sortedWindows.map(w => w.address)
         currentIndex = filteredWindows.length > 1 ? 1 : 0
     }
 
@@ -46,9 +98,13 @@ Scope {
             GlobalStates.windowSwitcherOpen = false
             return
         }
-        let selectedAddress = windowAddresses[currentIndex]
+
+        const selectedAddress = windowAddresses[currentIndex]
+        lastActivatedAddress = selectedAddress
+
         GlobalStates.windowSwitcherOpen = false
-        Hyprland.dispatch("focuswindow", "address:" + selectedAddress)
+        Hyprland.dispatch(`focuswindow address:${selectedAddress}`)
+        Hyprland.dispatch(`bringactivetotop`)
     }
 
     Variants {
@@ -58,22 +114,19 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
+
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
-            property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor.id)
+            readonly property bool monitorIsFocused: Hyprland.focusedMonitor?.id == monitor.id
+
             screen: modelData
             visible: GlobalStates.windowSwitcherOpen
+            color: "transparent"
 
             WlrLayershell.namespace: "quickshell:windowswitcher"
             WlrLayershell.layer: WlrLayer.Overlay
-            color: "transparent"
 
-            mask: Region {
-                item: GlobalStates.windowSwitcherOpen ? switcherLayout : null
-            }
-
-            HyprlandWindow.visibleMask: Region {
-                item: GlobalStates.windowSwitcherOpen ? switcherLayout : null
-            }
+            mask: Region { item: GlobalStates.windowSwitcherOpen ? switcherLayout : null }
+            HyprlandWindow.visibleMask: Region { item: GlobalStates.windowSwitcherOpen ? switcherLayout : null }
 
             anchors {
                 top: true
@@ -85,15 +138,30 @@ Scope {
             HyprlandFocusGrab {
                 id: grab
                 windows: [root]
-                property bool canBeActive: root.monitorIsFocused
                 active: false
-                onCleared: () => {
+
+                readonly property bool canBeActive: root.monitorIsFocused
+
+                onCleared: {
                     if (!active) GlobalStates.windowSwitcherOpen = false
+                }
+            }
+
+            Timer {
+                id: delayedGrabTimer
+                interval: focusGrabDelay
+                repeat: false
+
+                onTriggered: {
+                    if (grab.canBeActive) {
+                        grab.active = GlobalStates.windowSwitcherOpen
+                    }
                 }
             }
 
             Connections {
                 target: GlobalStates
+
                 function onWindowSwitcherOpenChanged() {
                     if (GlobalStates.windowSwitcherOpen) {
                         windowSwitcherScope.updateWindowList()
@@ -102,19 +170,10 @@ Scope {
                 }
             }
 
-            Timer {
-                id: delayedGrabTimer
-                interval: 100
-                repeat: false
-                onTriggered: {
-                    if (!grab.canBeActive) return
-                    grab.active = GlobalStates.windowSwitcherOpen
-                }
-            }
-
             ColumnLayout {
                 id: switcherLayout
                 visible: GlobalStates.windowSwitcherOpen
+
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter
@@ -129,8 +188,13 @@ Scope {
 
                 Rectangle {
                     id: switcherContainer
-                    implicitWidth: listView.contentWidth + 60
-                    implicitHeight: 160
+
+                    readonly property int containerPadding: 60
+                    readonly property int containerHeight: 160
+
+                    implicitWidth: listView.contentWidth + containerPadding
+                    implicitHeight: containerHeight
+
                     Layout.preferredWidth: Math.min(implicitWidth, root.width * 0.85)
                     Layout.preferredHeight: implicitHeight
 
@@ -150,10 +214,15 @@ Scope {
 
                     ListView {
                         id: listView
+
+                        readonly property int itemSpacing: 15
+                        readonly property int listMargin: 30
+
                         anchors.fill: parent
-                        anchors.margins: 30
+                        anchors.margins: listMargin
+
                         orientation: ListView.Horizontal
-                        spacing: 15
+                        spacing: itemSpacing
                         clip: true
 
                         model: windowSwitcherScope.filteredWindows
@@ -168,40 +237,51 @@ Scope {
                             required property var modelData
                             required property int index
 
-                            property bool isSelected: index === windowSwitcherScope.currentIndex
-                            property string iconPath: Quickshell.iconPath(AppSearch.guessIcon(modelData?.class), "image-missing")
+                            readonly property bool isSelected: index === windowSwitcherScope.currentIndex
+                            readonly property string iconPath: Quickshell.iconPath(
+                                AppSearch.guessIcon(modelData?.class),
+                                "image-missing"
+                            )
 
-                            width: 100
-                            height: 100
+                            readonly property int itemSize: 100
+                            readonly property int iconContainerSize: 80
+                            readonly property int iconSize: 48
+                            readonly property int borderWidth: 2
+                            readonly property real selectedScale: 1.15
+
+                            width: itemSize
+                            height: itemSize
+                            scale: isSelected ? selectedScale : 1.0
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 250
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
 
                             Rectangle {
                                 anchors.centerIn: parent
-                                width: 80
-                                height: 80
+                                width: iconContainerSize
+                                height: iconContainerSize
                                 radius: Appearance.rounding.large
-                                color: windowItem.isSelected ? Appearance.m3colors.m3selectionBackground : Appearance.m3colors.m3layerBackground1
-                                border.color: windowItem.isSelected ? Appearance.m3colors.m3accentPrimary : "transparent"
-                                border.width: windowItem.isSelected ? 2 : 0
 
-                                Behavior on color {
-                                    ColorAnimation {
-                                        duration: 200
-                                    }
-                                }
+                                color: isSelected
+                                    ? Appearance.m3colors.m3selectionBackground
+                                    : Appearance.m3colors.m3layerBackground1
 
-                                Behavior on border.color {
-                                    ColorAnimation {
-                                        duration: 200
-                                    }
-                                }
+                                border.color: isSelected ? Appearance.m3colors.m3accentPrimary : "transparent"
+                                border.width: isSelected ? borderWidth : 0
+
+                                Behavior on color { ColorAnimation { duration: 200 } }
+                                Behavior on border.color { ColorAnimation { duration: 200 } }
 
                                 Image {
-                                    id: appIcon
                                     anchors.centerIn: parent
                                     source: windowItem.iconPath
-                                    width: 48
-                                    height: 48
-                                    sourceSize: Qt.size(48, 48)
+                                    width: iconSize
+                                    height: iconSize
+                                    sourceSize: Qt.size(iconSize, iconSize)
                                     smooth: true
 
                                     layer.enabled: true
@@ -212,15 +292,6 @@ Scope {
                                         samples: 13
                                         color: ColorUtils.transparentize("#000000", 0.6)
                                     }
-                                }
-                            }
-
-                            scale: isSelected ? 1.15 : 1.0
-
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: 250
-                                    easing.type: Easing.OutCubic
                                 }
                             }
 
@@ -246,7 +317,7 @@ Scope {
 
     GlobalShortcut {
         name: "windowSwitcherNext"
-        description: "Switch to next window in window switcher"
+        description: "Switch to next window"
 
         onPressed: {
             if (!GlobalStates.windowSwitcherOpen) {
@@ -259,7 +330,7 @@ Scope {
 
     GlobalShortcut {
         name: "windowSwitcherPrevious"
-        description: "Switch to previous window in window switcher"
+        description: "Switch to previous window"
 
         onPressed: {
             if (GlobalStates.windowSwitcherOpen) {
@@ -270,7 +341,7 @@ Scope {
 
     GlobalShortcut {
         name: "windowSwitcherActivate"
-        description: "Activate selected window and close switcher"
+        description: "Activate selected window"
 
         onReleased: {
             if (GlobalStates.windowSwitcherOpen) {

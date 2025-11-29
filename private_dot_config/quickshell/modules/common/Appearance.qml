@@ -7,10 +7,8 @@ pragma ComponentBehavior: Bound
 
 Singleton {
     id: root
-    property QtObject m3colors
     property QtObject animation
     property QtObject animationCurves
-    property QtObject colors
     property QtObject rounding
     property QtObject font
     property QtObject sizes
@@ -19,46 +17,137 @@ Singleton {
     property real contentTransparency: 0.1
     property real workpaceTransparency: 0.8
     property string background_image: Directories.config + "/rofi/.current_wallpaper"
-    
-m3colors: QtObject {
-    property bool darkmode: true
-    property bool transparent: true
 
-    property color m3windowBackground: "#1a1b26"      // Main background
-    property color m3primaryText: "#c0caf5"            // Primary text
-    property color m3layerBackground1: "#24283b"       // Slightly lighter background layer
-    property color m3layerBackground2: "#1f2335"       // Mid-layer background
-    property color m3layerBackground3: "#2f3549"       // Elevated surfaces
-    property color m3surfaceText: "#a9b1d6"            // Surface text
-    property color m3secondaryText: "#9aa5ce"          // Secondary text
-    property color m3borderPrimary: "#7aa2f7"          // Accent border
-    property color m3shadowColor: "#000000"            // Shadows
-    property color m3accentPrimary: "#7dcfff"          // Accent (cyan)
-    property color m3accentSecondary: "#bb9af7"        // Secondary accent (purple)
-    property color m3selectionBackground: "#33467c"    // Selection background
-    property color m3accentPrimaryText: "#1a1b26"      // Text on accent
-    property color m3selectionText: "#c0caf5"          // Text for selections
-    property color m3borderSecondary: "#414868"        // Secondary border
+    // Theme loading
+    property bool themeLoaded: false
+    property var themeData: null
+    property string currentThemeMode: "dark" // Default to dark mode
 
-    property color colTooltip: "#1f2335"               // Tooltip background
-    property color colOnTooltip: "#c0caf5"             // Tooltip text
+    // Helper to get current theme colors based on mode
+    readonly property var currentThemeColors: {
+        if (!themeData || !themeData.dark || !themeData.light) {
+            return null
+        }
+        const colors = currentThemeMode === "dark" ? themeData.dark : themeData.light
+        console.log("[Appearance] Theme colors updated:", currentThemeMode)
+        return colors
+    }
+
+    Component.onCompleted: {
+        loadTheme()
+    }
+
+    function loadTheme() {
+        try {
+            const themeJson = Qt.include(Directories.config + "/quickshell/config/theme.json")
+            if (themeJson.status === Qt.include.OK) {
+                console.error("[Appearance] Cannot use Qt.include for JSON, loading via file read")
+            }
+        } catch (e) {
+            console.error("[Appearance] Error in loadTheme:", e)
+        }
+
+        // For now, manually parse the theme
+        const darkColors = {
+            "windowBackground": "#1a1b26",
+            "primaryText": "#c0caf5",
+            "layerBackground1": "#24283b",
+            "layerBackground2": "#1f2335",
+            "layerBackground3": "#2e3248",
+            "surfaceText": "#c0caf5",
+            "secondaryText": "#565f89",
+            "borderPrimary": "#3b4261",
+            "shadowColor": "#000000",
+            "accentPrimary": "#7aa2f7",
+            "accentSecondary": "#bb9af7",
+            "selectionBackground": "#33467c",
+            "accentPrimaryText": "#1a1b26",
+            "selectionText": "#c0caf5",
+            "borderSecondary": "#292e42"
+        }
+
+        const lightColors = {
+            "windowBackground": "#f4f8f5",
+            "primaryText": "#2e3d32",
+            "layerBackground1": "#e6f0ea",
+            "layerBackground2": "#dce9e2",
+            "layerBackground3": "#c9dbcf",
+            "surfaceText": "#33493d",
+            "secondaryText": "#6b7f73",
+            "borderPrimary": "#b0c7b8",
+            "borderSecondary": "#d0e0d5",
+            "shadowColor": "#00000020",
+            "accentPrimary": "#3b8c59",
+            "accentSecondary": "#62a87c",
+            "selectionBackground": "#b2d6be",
+            "accentPrimaryText": "#ffffff",
+            "selectionText": "#1e2a21"
+        }
+
+        root.themeData = {
+            "dark": darkColors,
+            "light": lightColors
+        }
+
+        // Apply font config from Config.options
+        if (typeof Config !== 'undefined' && Config.options.font) {
+            if (Config.options.font.family && root.font.family) {
+                root.font.family.uiFont = Config.options.font.family.uiFont || "Open Sans"
+                root.font.family.iconFont = Config.options.font.family.iconFont || "FiraConde Nerd Font"
+                root.font.family.codeFont = Config.options.font.family.codeFont || "JetBrains Mono NF"
+            }
+            if (Config.options.font.pixelSize && root.font.pixelSize) {
+                root.font.pixelSize.textSmall = Config.options.font.pixelSize.textSmall || 13
+                root.font.pixelSize.textBase = Config.options.font.pixelSize.textBase || 15
+                root.font.pixelSize.textMedium = Config.options.font.pixelSize.textMedium || 16
+                root.font.pixelSize.textLarge = Config.options.font.pixelSize.textLarge || 19
+                root.font.pixelSize.iconLarge = Config.options.font.pixelSize.iconLarge || 22
+            }
+        }
+
+        root.themeLoaded = true
+        console.log("[Appearance] Theme loaded:", root.currentThemeMode)
+    }
+
+readonly property QtObject m3colors: QtObject {
+    readonly property bool darkmode: root.currentThemeMode === "dark"
+    readonly property bool transparent: true
+
+    readonly property color m3windowBackground: (root.currentThemeColors && root.currentThemeColors.windowBackground) || "#1a1b26"
+    readonly property color m3primaryText: (root.currentThemeColors && root.currentThemeColors.primaryText) || "#c0caf5"
+    readonly property color m3layerBackground1: (root.currentThemeColors && root.currentThemeColors.layerBackground1) || "#24283b"
+    readonly property color m3layerBackground2: (root.currentThemeColors && root.currentThemeColors.layerBackground2) || "#1f2335"
+    readonly property color m3layerBackground3: (root.currentThemeColors && root.currentThemeColors.layerBackground3) || "#2f3549"
+    readonly property color m3surfaceText: (root.currentThemeColors && root.currentThemeColors.surfaceText) || "#a9b1d6"
+    readonly property color m3secondaryText: (root.currentThemeColors && root.currentThemeColors.secondaryText) || "#9aa5ce"
+    readonly property color m3borderPrimary: (root.currentThemeColors && root.currentThemeColors.borderPrimary) || "#7aa2f7"
+    readonly property color m3shadowColor: (root.currentThemeColors && root.currentThemeColors.shadowColor) || "#000000"
+    readonly property color m3accentPrimary: (root.currentThemeColors && root.currentThemeColors.accentPrimary) || "#7dcfff"
+    readonly property color m3accentSecondary: (root.currentThemeColors && root.currentThemeColors.accentSecondary) || "#bb9af7"
+    readonly property color m3selectionBackground: (root.currentThemeColors && root.currentThemeColors.selectionBackground) || "#33467c"
+    readonly property color m3accentPrimaryText: (root.currentThemeColors && root.currentThemeColors.accentPrimaryText) || "#1a1b26"
+    readonly property color m3selectionText: (root.currentThemeColors && root.currentThemeColors.selectionText) || "#c0caf5"
+    readonly property color m3borderSecondary: (root.currentThemeColors && root.currentThemeColors.borderSecondary) || "#414868"
+
+    readonly property color colTooltip: darkmode ? "#1f2335" : "#e6f0ea"
+    readonly property color colOnTooltip: darkmode ? "#c0caf5" : "#2e3d32"
 }
 
-    colors: QtObject {
-        property color colSubtext: m3colors.m3borderPrimary
-        property color colLayer0: ColorUtils.transparentize(m3colors.m3windowBackground, root.transparency)
-        property color colLayer1: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground1, m3colors.m3windowBackground, 0.7), root.contentTransparency);
-        property color colOnLayer1: m3colors.m3secondaryText;
-        property color colLayer2: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground2, m3colors.m3layerBackground3, 0.55), root.contentTransparency)
-        property color colOnLayer2: m3colors.m3surfaceText;
-        property color colLayer1Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.92), root.contentTransparency)
-        property color colLayer1Active: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.85), root.contentTransparency);
-        property color colLayer2Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.90), root.contentTransparency)
-        property color colLayer2Active: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.80), root.contentTransparency);
-        property color colPrimary: m3colors.m3accentPrimary
-        property color colPrimaryHover: ColorUtils.mix(colors.colPrimary, colLayer1Hover, 0.87)
-        property color colPrimaryActive: ColorUtils.mix(colors.colPrimary, colLayer1Active, 0.7)
-        property color colShadow: ColorUtils.transparentize(m3colors.m3shadowColor, 0.7)
+    readonly property QtObject colors: QtObject {
+        readonly property color colSubtext: m3colors.m3borderPrimary
+        readonly property color colLayer0: ColorUtils.transparentize(m3colors.m3windowBackground, root.transparency)
+        readonly property color colLayer1: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground1, m3colors.m3windowBackground, 0.7), root.contentTransparency)
+        readonly property color colOnLayer1: m3colors.m3secondaryText
+        readonly property color colLayer2: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground2, m3colors.m3layerBackground3, 0.55), root.contentTransparency)
+        readonly property color colOnLayer2: m3colors.m3surfaceText
+        readonly property color colLayer1Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.92), root.contentTransparency)
+        readonly property color colLayer1Active: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.85), root.contentTransparency)
+        readonly property color colLayer2Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.90), root.contentTransparency)
+        readonly property color colLayer2Active: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.80), root.contentTransparency)
+        readonly property color colPrimary: m3colors.m3accentPrimary
+        readonly property color colPrimaryHover: ColorUtils.mix(colors.colPrimary, colLayer1Hover, 0.87)
+        readonly property color colPrimaryActive: ColorUtils.mix(colors.colPrimary, colLayer1Active, 0.7)
+        readonly property color colShadow: ColorUtils.transparentize(m3colors.m3shadowColor, 0.7)
     }
 
     rounding: QtObject {
@@ -198,5 +287,15 @@ m3colors: QtObject {
         property real elevationMargin: 10
         property real fabShadowRadius: 5
         property real fabHoveredShadowRadius: 7
+    }
+
+    // Material 3 style color aliases for launcher compatibility
+    readonly property QtObject color: QtObject {
+        property color surfaceContainer: colors.colLayer2
+        property color onSurface: colors.colOnLayer2
+        property color onSurfaceVariant: colors.colOnLayer1
+        property color surface: colors.colLayer0
+        property color primary: colors.colPrimary
+        property color onPrimary: m3colors.m3accentPrimaryText
     }
 }
