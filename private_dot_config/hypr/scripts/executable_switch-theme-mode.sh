@@ -9,7 +9,7 @@ KITTY_THEME_FILE="$HOME/.config/kitty/theme.conf"
 
 GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
 
-TMP_MODE_FILE="/tmp/theme-mode"
+TMP_MODE_FILE="$HOME/.cache/theme-mode"
 
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -59,10 +59,12 @@ switch_linux_theme() {
         if [ "$mode" = "light" ]; then
             gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+            quickshell ipc call theme setLight
             echo "Switched GNOME to light mode"
         else
             gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+            quickshell ipc call theme setDark
             echo "Switched GNOME to dark mode"
         fi
     else
@@ -143,11 +145,7 @@ case "$OS" in
         ;;
 esac
 
-if command -v pgrep >/dev/null 2>&1; then
-    pgrep nvim | xargs -n1 kill -SIGUSR1 2>/dev/null
-elif command -v pkill >/dev/null 2>&1; then
-    pkill -SIGUSR1 nvim 2>/dev/null
-fi
-
 echo "$NEW_MODE" > "$TMP_MODE_FILE"
 echo "Theme switched to $NEW_MODE mode on $OS"
+
+pgrep nvim | xargs -n1 kill -SIGUSR1 2>/dev/null

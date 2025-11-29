@@ -1,7 +1,4 @@
 #!/bin/bash
-# /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
-# wlogout (Power, Screen Lock, Suspend, etc)
-
 # Set variables for parameters. First numbers corresponts to Monitor Resolution
 # i.e 2160 means 2160p
 A_2160=600

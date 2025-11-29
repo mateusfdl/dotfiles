@@ -1,11 +1,6 @@
 #!/bin/bash
-# /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
-
-# Variables
 rofi_theme="$HOME/.config/rofi/config-emoji.rasi"
-msg='** note ** 👀 Click or Return to choose || Ctrl V to Paste'
 
-# Check if rofi is already running
 if pidof rofi > /dev/null; then
   pkill rofi
 fi
@@ -19,7 +14,6 @@ wl-copy
 
 exit
 
-# # DATA # #
 😀 grinning face face smile happy joy :D grin
 😃 grinning face with big eyes face happy joy haha :D :) smile funny
 😄 grinning face with smiling eyes face happy joy funny haha laugh like :D :) smile
