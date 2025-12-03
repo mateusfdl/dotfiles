@@ -105,9 +105,7 @@ Singleton {
                 if (result === "dir") {
                 } else if (result === "file") {
                     root.directory = Qt.resolvedUrl(FileUtils.parentDirectory(validateDirProc.nicePath))
-                } else {
-                    // Ignore
-                }
+                }  
             }
         }
     }

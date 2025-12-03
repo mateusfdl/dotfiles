@@ -1,15 +1,11 @@
 pragma Singleton
 
 import qs.modules.common
-import "../modules/common/functions/fuzzysort.js" as Fuzzy
-import "../modules/common/functions/levendist.js" as Levendist
+import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
+import "root:/modules/common/functions/levendist.js" as Levendist
 import Quickshell
 import Quickshell.Io
 
-/**
- * - Eases fuzzy searching for applications by name
- * - Guesses icon name for window class name
- */
 Singleton {
     id: root
     property bool sloppySearch: Config.options?.search.sloppy ?? false
@@ -46,7 +42,6 @@ Singleton {
     readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values)
         .sort((a, b) => a.name.localeCompare(b.name))
 
-    // Lazy-loaded prepared names - only computed when actually used
     readonly property var preppedNames: list.map(a => ({
         name: Fuzzy.prepare(`${a.name} `),
         entry: a
@@ -59,7 +54,6 @@ Singleton {
     function launch(entry: DesktopEntry): void {
         if (!entry) return;
 
-        // Try different execution methods
         if (typeof entry.execute === "function") {
             entry.execute();
         } else if (typeof entry.launch === "function") {
@@ -67,7 +61,6 @@ Singleton {
         } else if (typeof entry.run === "function") {
             entry.run();
         } else if (entry.command) {
-            // Fallback: execute command directly
             Quickshell.execDetached({
                 command: entry.command,
                 workingDirectory: entry.workingDirectory ?? ""
@@ -75,7 +68,7 @@ Singleton {
         }
     }
 
-    function fuzzyQuery(search: string): var { // Idk why list<DesktopEntry> doesn't work
+    function fuzzyQuery(search: string): var { 
         if (root.sloppySearch) {
             const results = list.map(obj => ({
                 entry: obj,
@@ -102,11 +95,9 @@ Singleton {
     function guessIcon(str) {
         if (!str || str.length == 0) return "image-missing";
 
-        // Normal substitutions
         if (substitutions[str])
             return substitutions[str];
 
-        // Regex substitutions
         for (let i = 0; i < regexSubstitutions.length; i++) {
             const substitution = regexSubstitutions[i];
             const replacedName = str.replace(
@@ -116,17 +107,13 @@ Singleton {
             if (replacedName != str) return replacedName;
         }
 
-        // If it gets detected normally, no need to guess
         if (iconExists(str)) return str;
 
         let guessStr = str;
-        // Guess: Take only app name of reverse domain name notation
         guessStr = str.split('.').slice(-1)[0].toLowerCase();
         if (iconExists(guessStr)) return guessStr;
-        // Guess: normalize to kebab case
         guessStr = str.toLowerCase().replace(/\s+/g, "-");
         if (iconExists(guessStr)) return guessStr;
-        // Guess: First fuzze desktop entry match
         const searchResults = root.fuzzyQuery(str);
         if (searchResults.length > 0) {
             const firstEntry = searchResults[0];
@@ -134,7 +121,6 @@ Singleton {
             if (iconExists(guessStr)) return guessStr;
         }
 
-        // Give up
         return str;
     }
 }

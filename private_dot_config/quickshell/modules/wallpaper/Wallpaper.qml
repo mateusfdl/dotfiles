@@ -25,6 +25,7 @@ Scope {
         mask: Region {
             item: GlobalStates.wallpaperSelectorOpen ? previewContent : null
         }
+
         HyprlandWindow.visibleMask: Region {
             item: GlobalStates.wallpaperSelectorOpen ? previewContent : null
         }
@@ -122,7 +123,6 @@ Scope {
                     implicitWidth: wallpaperPreview.implicitWidth
                     implicitHeight: wallpaperPreview.implicitHeight
 
-                    // Start from below and invisible
                     y: 200
                     opacity: 0
 
@@ -167,7 +167,6 @@ Scope {
 
         }
 
-        // Instructions overlay
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
