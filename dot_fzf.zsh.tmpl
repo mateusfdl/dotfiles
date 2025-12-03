@@ -2,11 +2,7 @@
 if [[ ! "$PATH" == ~/.fzf/bin* ]]; then
   PATH="${PATH:+${PATH}:}~/.fzf/bin"
 fi
-
 source <(fzf --zsh)
-export FZF_DEFAULT_OPTS='--height 1% --layout=reverse --bind "ctrl-y:execute-silent(echo {} | xclip -selection clipboard)" --bind "ctrl-c:execute-silent(cat {} | xclip -selection clipboard)"'
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 {{ end }}
 {{ if eq .chezmoi.os "darwin" }}
 if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
@@ -14,9 +10,44 @@ if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
 fi
 
 [[ $- == *i* ]] && source "/opt/homebrew/opt/fzf/shell/completion.zsh" 2> /dev/null
-
 source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-export FZF_DEFAULT_OPTS='--height 1% --layout=reverse'
+{{ end }}
+
+export FZF_DEFAULT_OPTS='--height 1% --layout=reverse --bind "ctrl-y:execute-silent(echo {} | xclip -selection clipboard)" --bind "ctrl-c:execute-silent(cat {} | xclip -selection clipboard)"'
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-{{ end }}
+export FZF_COMPLETION_OPTS=$FZF_DEFAULT_OPTS
+export FZF_CTRL_R_OPTS="
+--bind 'ctrl-y:execute-silent(echo -n {2..} | xclip -sel clip)+abort'
+--color header:italic
+--tmux 80%"
+export FZF_CTRL_T_OPTS="
+--walker-skip .git,node_modules,target
+--preview 'bat -n --color=always {}'
+--tmux 80%"
+
+tmfz-widget() {
+  local sessions
+  sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null) || return
+  local selected
+  selected=$(echo "$sessions" | fzf \
+    --prompt="tmux sessions > " \
+    --ansi \
+    --reverse \
+    --bind "enter:execute(tmux switch-client -t {+} >/dev/null 2>&1)" \
+    --bind "d:execute(tmux kill-session -t {+} >/dev/null 2>&1)+reload(tmux list-sessions -F \"#{session_name}\")" \
+    --bind "r:execute(bash -c '
+        read -rep \"New name: \" newn < /dev/tty &&
+        tmux rename-session -t {+} \"\$newn\" >/dev/null 2>&1
+      ')+reload(tmux list-sessions -F \"#{session_name}\")" \
+    --bind "n:execute(bash -c '
+        read -rep \"Session name: \" newn < /dev/tty &&
+        tmux new-session -ds \"\$newn\" >/dev/null 2>&1
+      ')+reload(tmux list-sessions -F \"#{session_name}\")" \
+    --preview 'tmux list-windows -t {}' \
+    --preview-window=right:50% \
+    --tmux 80%)
+  zle reset-prompt
+}
+zle -N tmfz-widget
+bindkey '^f' tmfz-widget
