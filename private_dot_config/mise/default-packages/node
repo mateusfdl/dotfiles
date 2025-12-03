@@ -13,3 +13,4 @@ vscode-langservers-extracted
 @vue/typescript-plugin
 markdownlint-cli
 eslint
+@anthropic-ai/claude-code
