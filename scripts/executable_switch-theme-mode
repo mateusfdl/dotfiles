@@ -4,10 +4,12 @@ TMUX_THEME_DIR="$HOME/.tmux/themes"
 TMUX_THEME_FILE="$HOME/.tmux/theme.conf"
 ALACRITTY_THEME_DIR="$HOME/.config/alacritty/themes"
 ALACRITTY_THEME_FILE="$ALACRITTY_THEME_DIR/.selected_theme.toml"
+KITTY_THEME_DIR="$HOME/.config/kitty/themes"
+KITTY_THEME_FILE="$HOME/.config/kitty/theme.conf"
 
 GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
 
-TMP_MODE_FILE="/tmp/theme-mode"
+TMP_MODE_FILE="$HOME/.cache/theme-mode"
 
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -55,12 +57,14 @@ switch_linux_theme() {
     local mode="$1"
     if command -v gsettings >/dev/null 2>&1; then
         if [ "$mode" = "light" ]; then
-            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+            gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+            quickshell ipc call theme setLight
             echo "Switched GNOME to light mode"
         else
-            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+            gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+            quickshell ipc call theme setDark
             echo "Switched GNOME to dark mode"
         fi
     else
@@ -80,10 +84,10 @@ fi
 
 if [ "$CURRENT_MODE" = "light" ]; then
     NEW_MODE="dark"
-    SELECTED_THEME="$DARK_THEME"
+    SELECTED_THEME=$DARK_THEME
 else
     NEW_MODE="light"
-    SELECTED_THEME="$LIGHT_THEME"
+    SELECTED_THEME=$LIGHT_THEME
 fi
 
 if [ -f "$TMUX_THEME_DIR/$SELECTED_THEME" ]; then
@@ -105,6 +109,15 @@ if [ -f "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" ]; then
     cp "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" "$ALACRITTY_THEME_FILE"
 else
     echo "Alacritty theme file $SELECTED_THEME.toml not found in $ALACRITTY_THEME_DIR!"
+fi
+
+if [ -f "$KITTY_THEME_DIR/$NEW_MODE.conf" ]; then
+    cp "$KITTY_THEME_DIR/$NEW_MODE.conf" "$KITTY_THEME_FILE"
+    if command -v pgrep >/dev/null 2>&1; then
+        pgrep kitty | xargs -I {} kill -SIGUSR1 {} 2>/dev/null
+    fi
+else
+    echo "Kitty theme file $SELECTED_THEME.conf not found in $KITTY_THEME_DIR!"
 fi
 
 case "$OS" in
@@ -132,11 +145,7 @@ case "$OS" in
         ;;
 esac
 
-if command -v pgrep >/dev/null 2>&1; then
-    pgrep nvim | xargs -n1 kill -SIGUSR1 2>/dev/null
-elif command -v pkill >/dev/null 2>&1; then
-    pkill -SIGUSR1 nvim 2>/dev/null
-fi
-
 echo "$NEW_MODE" > "$TMP_MODE_FILE"
 echo "Theme switched to $NEW_MODE mode on $OS"
+
+pgrep nvim | xargs -n1 kill -SIGUSR1 2>/dev/null
