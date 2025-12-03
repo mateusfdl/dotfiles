@@ -1,3 +1,5 @@
+#!/bin/bash
+
 unalias z 2> /dev/null
 
 z() {
@@ -12,9 +14,8 @@ japad() {
     fi
 
     directory_path="$1"
-    file_paths=find "$directory_path" -type f -name "*.spec.ts" -exec printf "%s," {} \;
+    file_paths=$(find "$directory_path" -type f -name "*.spec.ts" -exec printf "%s," {} \;)
 
-    # echo files found
     echo "$directory_path"
 
     if [ -z "$file_paths" ]; then
@@ -29,19 +30,62 @@ resize(){
   tmux resize-pane -y $1 -t $2
 }
 
-grl(){
+
+grl() {
   git log --graph --color=always \
-        --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
-    fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --preview='git show --color {1}' --height=100 \
-        --bind "ctrl-m:execute:
-                  (grep -o '[a-f0-9]\{7\}' | head -1 |
-                  xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-                  {}
-  FZF-EOF"
+    --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index \
+    --prompt="git log > " \
+    --bind=ctrl-s:toggle-sort \
+    --preview='echo {} | grep -o "[a-f0-9]\{7\}" | head -1 | xargs -I % git show --color=always %' \
+    --preview-window=right:50% \
+    --tmux 80% |
+  grep -o '[a-f0-9]\{7\}' | head -1 | xargs git rev-parse
 }
 
 on() {
   nvim -c ":ObsidianNew $*" -c "ObsidianTemplate notes"
+}
+
+detect_os() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if [ -n "$(command -v wsl.exe)" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+            echo "wsl"
+        else
+            echo "linux"
+        fi
+    else
+        echo "unknown"
+    fi
+}
+
+is_arch() {
+  if [ "$(detect_os)" = "linux" ]; then
+    if [ -f /etc/arch-release ]; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+zlaude() {
+  export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
+  export ANTHROPIC_AUTH_TOKEN=$(echo $Z_AI_API_KEY)
+  claude "$@"
+}
+
+open() {
+  if is_arch; then
+    if command -v thunar >/dev/null 2>&1; then
+      thunar "$@" &
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
 }
 
 scripts() {
@@ -50,5 +94,6 @@ scripts() {
   echo "resize - resize a tmux pane"
   echo "grl - git log with fzf"
   echo "on - create a new obsidian note"
+  echo "open - alias for thunar in Arch"
+  echo "zlaude - claude with Z"
 }
-
