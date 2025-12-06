@@ -1,0 +1,11 @@
+git:
+  paging:
+    colorArg: always
+    pager: delta
+notARepository: quit
+promptToReturnFromSubprocess: false
+keybinding:
+  universal:
+    edit: '<c-c>'
+os:
+  editPreset: 'nvim'
