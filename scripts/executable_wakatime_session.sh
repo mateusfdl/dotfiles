@@ -35,6 +35,7 @@ read_config() {
     local api_key=$(grep -E "^api_key\s*=" "$WAKATIME_CONFIG" | sed 's/^api_key\s*=\s*//' | tr -d ' ')
     local api_url=$(grep -E "^api_url\s*=" "$WAKATIME_CONFIG" | sed 's/^api_url\s*=\s*//' | tr -d ' ')
     
+    [ -z "$api_url" ] && api_url="https://wakatime.com/api"
     [ -z "$api_key" ] && return 1
     
     echo "${api_key}|${api_url}"
