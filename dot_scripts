@@ -43,6 +43,17 @@ grl() {
   grep -o '[a-f0-9]\{7\}' | head -1 | xargs git rev-parse
 }
 
+gdf() {
+  git diff --name-status "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index \
+    --prompt="git diff > " \
+    --bind=ctrl-s:toggle-sort \
+    --preview='echo {} | awk "{print \$2}" | xargs git diff --color=always "$@" --' \
+    --preview-window=right:50% \
+    --tmux 80% |
+  awk '{print $2}' | xargs -r nvim
+}
+
 on() {
   nvim -c ":ObsidianNew $*" -c "ObsidianTemplate notes"
 }
