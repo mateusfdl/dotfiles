@@ -104,6 +104,7 @@ scripts() {
   echo "japad - run japa tests for a directory"
   echo "resize - resize a tmux pane"
   echo "grl - git log with fzf"
+  echo "gdf - git diff files with fzf"
   echo "on - create a new obsidian note"
   echo "open - alias for thunar in Arch"
   echo "zlaude - claude with Z"
