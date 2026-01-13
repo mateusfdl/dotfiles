@@ -1,7 +1,8 @@
 ripgrep
 bat
-dust
+du-dust
 tokei
 stylua
 hyperfine
 fd-find
+sd
