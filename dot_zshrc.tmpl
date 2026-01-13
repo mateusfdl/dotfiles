@@ -49,7 +49,7 @@ export TERM="xterm-256color"
 {{ end }}
 
 if [[ -z "${TMUX}" && -z "$ZSH_NO_TMUX"  ]] then;
-  tmux attach || exec tmux new-session;
+  tmux attach || exec tmux new-session -s Personal; 
 fi
 
 bindkey '^Z' autosuggest-accept
