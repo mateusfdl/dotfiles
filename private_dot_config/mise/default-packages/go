@@ -5,4 +5,4 @@ github.com/jesseduffield/lazydocker@latest
 github.com/jesseduffield/lazygit@latest
 github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 github.com/go-delve/delve/cmd/dlv@latest
-
+mvdan.cc/gofumpt@latest
