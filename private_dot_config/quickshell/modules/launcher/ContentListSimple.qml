@@ -17,14 +17,15 @@ Item {
     required property int padding
     required property int rounding
 
-    readonly property Item currentList: appList.item
+    readonly property Item currentList: root.search.text.length > 0 ? appList.item : defaultList.item
 
     anchors.horizontalCenter: parent.horizontalCenter
 
     clip: true
 
     implicitWidth: parent.width
-    implicitHeight: appList.item ? appList.item.implicitHeight : 0
+    implicitHeight: (root.search.text.length > 0 && appList.item) ? appList.item.implicitHeight :
+                    (root.search.text.length === 0 && defaultList.item) ? defaultList.item.implicitHeight : 0
 
     Loader {
         id: appList
@@ -37,6 +38,20 @@ Item {
 
         sourceComponent: AppListSimple {
             search: root.search
+        }
+    }
+
+    // Default view: show quickshell apps when no search text
+    Loader {
+        id: defaultList
+
+        active: root.search.text.length === 0
+        visible: root.search.text.length === 0
+        anchors.fill: parent
+
+        sourceComponent: DefaultAppList {
+            maxHeight: root.maxHeight
+            padding: root.padding
         }
     }
 

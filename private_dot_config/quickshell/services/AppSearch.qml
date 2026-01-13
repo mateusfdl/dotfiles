@@ -39,6 +39,24 @@ Singleton {
         }
     ]
 
+    // Pre-defined quickshell internal apps
+    readonly property var quickshellApps: [
+        {
+            name: "Wallpaper Selector",
+            icon: "preferences-desktop-wallpaper",
+            comment: "Change your wallpaper",
+            isQuickshellApp: true,
+            command: "quickshell ipc wallpaper-selector open"
+        },
+        {
+            name: "Overview",
+            icon: "view-grid",
+            comment: "Open overview mode",
+            isQuickshellApp: true,
+            command: "quickshell ipc overview open"
+        }
+    ]
+
     readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values)
         .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -68,23 +86,33 @@ Singleton {
         }
     }
 
-    function fuzzyQuery(search: string): var { 
+    function fuzzyQuery(search: string): var {
+        const searchLower = search.toLowerCase();
+
+        // Search in desktop apps
+        let desktopResults = [];
         if (root.sloppySearch) {
-            const results = list.map(obj => ({
+            desktopResults = list.map(obj => ({
                 entry: obj,
-                score: Levendist.computeScore(obj.name.toLowerCase(), search.toLowerCase())
+                score: Levendist.computeScore(obj.name.toLowerCase(), searchLower)
             })).filter(item => item.score > root.scoreThreshold)
                 .sort((a, b) => b.score - a.score)
-            return results
-                .map(item => item.entry)
+                .map(item => item.entry);
+        } else {
+            desktopResults = Fuzzy.go(search, preppedNames, {
+                all: true,
+                key: "name"
+            }).map(r => r.obj.entry);
         }
 
-        return Fuzzy.go(search, preppedNames, {
-            all: true,
-            key: "name"
-        }).map(r => {
-            return r.obj.entry
-        });
+        // Search in quickshell apps
+        const quickshellResults = quickshellApps.filter(app =>
+            app.name.toLowerCase().includes(searchLower) ||
+            (app.comment && app.comment.toLowerCase().includes(searchLower))
+        );
+
+        // Merge results, putting quickshell apps first
+        return [...quickshellResults, ...desktopResults];
     }
 
     function iconExists(iconName) {

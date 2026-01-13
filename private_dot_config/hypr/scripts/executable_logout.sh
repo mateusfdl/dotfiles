@@ -12,7 +12,6 @@ B_1080=200
 A_720=50
 B_720=50
 
-# Check if wlogout is already running
 if pgrep -x "wlogout" > /dev/null; then
     pkill -x "wlogout"
     exit 0

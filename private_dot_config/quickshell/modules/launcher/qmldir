@@ -6,3 +6,5 @@ ContentSimple 1.0 ContentSimple.qml
 ContentListSimple 1.0 ContentListSimple.qml
 AppListSimple 1.0 AppListSimple.qml
 AppItemSimple 1.0 AppItemSimple.qml
+DefaultAppList 1.0 DefaultAppList.qml
+DefaultAppItem 1.0 DefaultAppItem.qml

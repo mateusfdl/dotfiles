@@ -1,11 +1,8 @@
 #!/bin/bash
-# /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
-# Scripts for refreshing ags, waybar, rofi, swaync, wallust
 
 SCRIPTSDIR=$HOME/.config/hypr/scripts
 scripts=$HOME/.config/hypr/scripts
 
-# Define file_exists function
 file_exists() {
     if [ -e "$1" ]; then
         return 0  # File exists

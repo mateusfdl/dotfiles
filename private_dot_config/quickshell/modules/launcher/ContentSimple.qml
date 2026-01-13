@@ -168,8 +168,14 @@ Item {
                     if (listView.count === 0) return;
 
                     const currentItem = listView.currentItem;
-                    if (currentItem && currentItem.modelData) {
-                        currentItem.clicked();
+                    if (currentItem) {
+                        // Call launchAndClose directly if available
+                        if (typeof currentItem.launchAndClose === "function") {
+                            currentItem.launchAndClose();
+                        } else if (currentItem.modelData) {
+                            // Fallback to clicking the delegate
+                            currentItem.clicked();
+                        }
                     }
                     event.accepted = true;
                 }
