@@ -44,10 +44,24 @@ tmfz-widget() {
         read -rep \"Session name: \" newn < /dev/tty &&
         tmux new-session -ds \"\$newn\" >/dev/null 2>&1
       ')+reload(tmux list-sessions -F \"#{session_name}\")" \
-    --preview 'tmux list-windows -t {}' \
+    --preview 'bash -c '\''
+      session_name="{}"
+      session_id=$(tmux list-sessions -F "#{session_id}:#{session_name}" | awk -F":" -v name="$session_name" "\$2 == name {print \$1}")
+      if [ -z "${session_id}" ]; then
+        echo "Unknown session: ${session_name}"
+        exit 1
+      fi
+      active_pane=$(tmux list-panes -t "${session_name}" -F "#{pane_id} #{pane_active}" | awk "\$2 == \"1\" {print \$1}")
+      if [ -z "${active_pane}" ]; then
+        echo "No active pane found for session ${session_name}"
+        exit 1
+      fi
+      tmux capture-pane -ep -t "${active_pane}"
+    '\''' \
     --preview-window=right:50% \
     --tmux 80%)
   zle reset-prompt
 }
+
 zle -N tmfz-widget
 bindkey '^f' tmfz-widget
