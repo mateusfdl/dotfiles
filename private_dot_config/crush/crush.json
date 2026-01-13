@@ -1,11 +1,24 @@
 {
   "$schema": "https://charm.land/crush.json",
+  "options": {
+    "context_paths": ["docs/", "CRUSH.md"]
+  },
   "permissions": {
     "allowed_tools": [
       "view",
       "ls",
       "grep",
-      "edit"
+      "edit",
+      "multiedit",
+      "write",
+      "glob",
+      "web_search",
+      "fetch",
+      "download",
+      "diagnostics",
+      "references",
+      "todo",
+      "mcp_context7_get-library-doc"
     ]
   },
   "lsp": {
@@ -15,6 +28,13 @@
     "typescript": {
       "command": "typescript-language-server",
       "args": ["--stdio"]
+    },
+    "biome": {
+      "command": "npx",
+      "args": [
+        "biome",
+        "lsp-proxy"
+      ]
     }
   },
   "mcp": {
@@ -26,11 +46,8 @@
         "git+https://github.com/oraios/serena",
         "serena-mcp-server",
         "--context",
-        "ide-assistant",
-        "--project",
-        "/Users/joaomatheusfurtadodelima/kairos/kairos-api"
-      ],
-      "env": { }
+        "ide-assistant"
+      ]
     },
     "context7": {
       "type": "stdio",
@@ -49,4 +66,3 @@
     }
   }
 }
-
