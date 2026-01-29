@@ -6,3 +6,4 @@ github.com/jesseduffield/lazygit@latest
 github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 github.com/go-delve/delve/cmd/dlv@latest
 mvdan.cc/gofumpt@latest
+github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
