@@ -7,6 +7,7 @@
     cliphist
     git
     glib
+    gnupg
     grim
     hyprcursor
     hypridle
