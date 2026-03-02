@@ -2,7 +2,9 @@
 {
   system.autoUpgrade = {
     enable = true;
+    flake = "github:mateusfdl/dotfiles?dir=nix#server";
     allowReboot = true;
+    rebootWindow = { lower = "04:00"; upper = "05:00"; };
     dates = "04:00";
   };
 
