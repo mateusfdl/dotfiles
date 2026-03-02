@@ -6,6 +6,7 @@
     ../../modules/common
     ../../modules/optional/firewall.nix
     ../../modules/optional/k3s.nix
+    ../../modules/optional/argocd.nix
     ../../modules/optional/maintenance.nix
     ../../modules/optional/openssh.nix
     ../../pkgs/server.nix
