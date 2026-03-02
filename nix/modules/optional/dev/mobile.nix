@@ -8,6 +8,8 @@ let
     platformVersions = [ "36" "35" "34" ];
     includeNDK = true;
     ndkVersions = [ "29.0.14206865" ];
+    includeCmake = true;
+    cmakeVersions = [ "3.22.1" "4.1.2" ];
 
     includeEmulator = true;
     includeSystemImages = true;
@@ -41,6 +43,7 @@ in
     ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
     ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
     ANDROID_NDK_ROOT = "${androidSdk}/libexec/android-sdk/ndk-bundle";
+    ANDROID_AVD_HOME = "$HOME/.android/avd";
     JAVA_HOME = "${pkgs.javaPackages.compiler.openjdk17}/lib/openjdk";
   };
 
@@ -67,6 +70,10 @@ in
     libx11.dev
     mesa-demos
   ];
+
+  programs.zsh.shellAliases = {
+    emu = "${androidSdk}/libexec/android-sdk/emulator/emulator -avd Pixel_7_API_35 -gpu swiftshader_indirect";
+  };
 
   users.users.matheus.extraGroups = [ "kvm" ];
 }
