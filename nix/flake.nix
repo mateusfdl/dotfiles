@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration for desktop";
+  description = "NixOS multi-host configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -16,10 +16,7 @@
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit zephyr; };
-        modules = [
-          ./hardware-configuration.nix
-          ./configuration.nix
-        ];
+        modules = [ ./hosts/desktop ];
       };
     };
 }

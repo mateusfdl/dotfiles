@@ -35,4 +35,10 @@
     wget
     wl-clipboard
   ];
+
+  users.users.matheus.packages = with pkgs; [
+    spotify
+    obsidian
+    discord
+  ];
 }
