@@ -18,5 +18,10 @@
         specialArgs = { inherit zephyr; };
         modules = [ ./hosts/desktop ];
       };
+
+      nixosConfigurations.server = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [ ./hosts/server ];
+      };
     };
 }
