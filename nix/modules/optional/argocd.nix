@@ -12,20 +12,8 @@ let
       name: argocd
   '';
 
-  argocdServerPatch = pkgs.writeText "argocd-server-nodeport.yaml" ''
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: argocd-server
-      namespace: argocd
-    spec:
-      type: NodePort
-      ports:
-        - name: https
-          port: 443
-          targetPort: 8080
-          nodePort: 30443
-          protocol: TCP
+  argocdServerPatch = ''
+    {"spec": {"type": "NodePort", "ports": [{"name": "http", "port": 80, "targetPort": 8080, "nodePort": 30080, "protocol": "TCP"}, {"name": "https", "port": 443, "targetPort": 8080, "nodePort": 30443, "protocol": "TCP"}]}}
   '';
 in
 {
@@ -60,7 +48,7 @@ in
 
       kubectl apply -n argocd -f ${argocdManifest}
 
-      kubectl apply -f ${argocdServerPatch}
+      kubectl patch svc argocd-server -n argocd --type=merge -p '${argocdServerPatch}'
 
       echo "ArgoCD installed successfully"
     '';
