@@ -2,7 +2,7 @@
 {
   environment.sessionVariables = {
     ZEPHYR_TOOLCHAIN_VARIANT = "zephyr";
-    ZEPHYR_SDK_INSTALL_DIR = "${zephyr.sdkFull}/zephyr-sdk";
+    ZEPHYR_SDK_INSTALL_DIR = "${zephyr.sdkFull}";
   };
 
   environment.systemPackages = with pkgs; [
@@ -60,6 +60,12 @@
     # nRF52/nRF53 DK boards
     ATTRS{idVendor}=="1915", MODE="0666", GROUP="plugdev"
 
+    # Zephyr USB CDC ACM default VID (used by XIAO nRF52840 with Zephyr firmware)
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="2fe3", MODE="0666", GROUP="plugdev"
+
+    # Seeed Studio XIAO (native bootloader)
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="2886", MODE="0666", GROUP="plugdev"
+
     # Raspberry Pi Debug Probe
     ATTRS{idVendor}=="2e8a", MODE="0666", GROUP="plugdev"
 
@@ -69,5 +75,6 @@
     ATTRS{idVendor}=="0403", MODE="0666", GROUP="dialout"
   '';
 
+  users.groups.plugdev = {};
   users.users.matheus.extraGroups = [ "dialout" "plugdev" ];
 }
