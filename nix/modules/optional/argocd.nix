@@ -18,11 +18,11 @@ let
 
   deployKeyPath = "/etc/argocd/deploy-key";
 
-  argocdApp = pkgs.writeText "argocd-minio-app.yaml" ''
+  argocdApps = map (app: pkgs.writeText "argocd-${app}-app.yaml" ''
     apiVersion: argoproj.io/v1alpha1
     kind: Application
     metadata:
-      name: minio
+      name: ${app}
       namespace: argocd
       labels:
         app.kubernetes.io/part-of: homelab-argo
@@ -33,17 +33,17 @@ let
       source:
         repoURL: git@github.com:mateusfdl/homelab-argo.git
         targetRevision: HEAD
-        path: services/minio
+        path: services/${app}
       destination:
         server: https://kubernetes.default.svc
-        namespace: minio
+        namespace: ${app}
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
-  '';
+  '') [ "minio" "vaultwarden" "uptime-kuma" "adguard-home" ];
 in
 {
   systemd.services.argocd-install = {
@@ -92,7 +92,7 @@ in
 
       kubectl rollout status deployment/argocd-server -n argocd --timeout=120s
 
-      kubectl apply -f ${argocdApp}
+      ${builtins.concatStringsSep "\n      " (map (app: "kubectl apply -f ${app}") argocdApps)}
     '';
   };
 
