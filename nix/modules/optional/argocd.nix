@@ -12,17 +12,51 @@ let
       name: argocd
   '';
 
-  argocdServerPatch = ''
-    {"spec": {"type": "NodePort", "ports": [{"name": "http", "port": 80, "targetPort": 8080, "nodePort": 30080, "protocol": "TCP"}, {"name": "https", "port": 443, "targetPort": 8080, "nodePort": 30443, "protocol": "TCP"}]}}
-  '';
-
   deployKeyPath = "/etc/argocd/deploy-key";
 
-  argocdApps = map (app: pkgs.writeText "argocd-${app}-app.yaml" ''
+  argocdApps =
+    map
+      (
+        app:
+        pkgs.writeText "argocd-${app}-app.yaml" ''
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: ${app}
+            namespace: argocd
+            labels:
+              app.kubernetes.io/part-of: homelab-argo
+            finalizers:
+              - resources-finalizer.argocd.argoproj.io
+          spec:
+            project: default
+            source:
+              repoURL: git@github.com:mateusfdl/homelab-argo.git
+              targetRevision: HEAD
+              path: services/${app}
+            destination:
+              server: https://kubernetes.default.svc
+              namespace: ${app}
+            syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
+              syncOptions:
+                - CreateNamespace=true
+        ''
+      )
+      [
+        "minio"
+        "vaultwarden"
+        "uptime-kuma"
+        "adguard-home"
+      ];
+
+  certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''
     apiVersion: argoproj.io/v1alpha1
     kind: Application
     metadata:
-      name: ${app}
+      name: cert-manager
       namespace: argocd
       labels:
         app.kubernetes.io/part-of: homelab-argo
@@ -30,20 +64,95 @@ let
         - resources-finalizer.argocd.argoproj.io
     spec:
       project: default
-      source:
-        repoURL: git@github.com:mateusfdl/homelab-argo.git
-        targetRevision: HEAD
-        path: services/${app}
+      sources:
+        - repoURL: https://charts.jetstack.io
+          chart: cert-manager
+          targetRevision: v1.14.4
+          helm:
+            valuesObject:
+              installCRDs: true
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          path: services/cert-manager
       destination:
         server: https://kubernetes.default.svc
-        namespace: ${app}
+        namespace: cert-manager
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
-  '') [ "minio" "vaultwarden" "uptime-kuma" "adguard-home" ];
+          - ServerSideApply=true
+  '';
+
+  argocdIngress = pkgs.writeText "argocd-ingress.yaml" ''
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: argocd-server
+      namespace: argocd
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    spec:
+      ingressClassName: traefik
+      tls:
+        - hosts:
+            - argocd.matheusfdl.dev
+          secretName: argocd-server-tls
+      rules:
+        - host: argocd.matheusfdl.dev
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: argocd-server
+                    port:
+                      number: 80
+  '';
+
+  traefikApp = pkgs.writeText "argocd-traefik-app.yaml" ''
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: traefik
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: homelab-argo
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: https://traefik.github.io/charts
+          chart: traefik
+          targetRevision: 26.1.0
+          helm:
+            valueFiles:
+              - $values/services/traefik/values.yaml
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: traefik
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  '';
 in
 {
   systemd.services.argocd-install = {
@@ -51,7 +160,11 @@ in
     wantedBy = [ "multi-user.target" ];
     after = [ "k3s.service" ];
     requires = [ "k3s.service" ];
-    path = [ pkgs.kubectl pkgs.kubernetes-helm ];
+    path = [
+      pkgs.kubectl
+      pkgs.kubernetes-helm
+      pkgs.gnugrep
+    ];
     environment.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
     serviceConfig = {
       Type = "oneshot";
@@ -61,21 +174,22 @@ in
     };
     script = ''
       for i in $(seq 1 60); do
-        if kubectl cluster-info > /dev/null 2>&1; then
-          break
-        fi
-        echo "Waiting for k3s API server... ($i/60)"
+        kubectl cluster-info > /dev/null 2>&1 && break
         sleep 5
       done
 
-      if ! kubectl cluster-info > /dev/null 2>&1; then
-        echo "k3s API server did not become ready in time"
-        exit 1
-      fi
+      kubectl cluster-info > /dev/null 2>&1 || exit 1
 
       kubectl apply -f ${argocdNamespace}
       kubectl apply -n argocd -f ${argocdManifest}
-      kubectl patch svc argocd-server -n argocd --type=merge -p '${argocdServerPatch}'
+
+      kubectl rollout status deployment/argocd-server -n argocd --timeout=120s
+
+      CURRENT_ARGS=$(kubectl get deployment argocd-server -n argocd -o jsonpath='{.spec.template.spec.containers[0].args}')
+      if ! echo "$CURRENT_ARGS" | grep -q -- '--insecure'; then
+        kubectl patch deployment argocd-server -n argocd --type=json \
+          -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
+      fi
 
       if [ -f ${deployKeyPath} ]; then
         kubectl create secret generic homelab-argo-repo \
@@ -86,17 +200,35 @@ in
           --dry-run=client -o yaml \
           | kubectl label --local -f - argocd.argoproj.io/secret-type=repository --dry-run=client -o yaml \
           | kubectl apply -f -
-      else
-        echo "WARNING: Deploy key not found at ${deployKeyPath}, skipping repo registration"
       fi
 
-      kubectl rollout status deployment/argocd-server -n argocd --timeout=120s
-
       ${builtins.concatStringsSep "\n      " (map (app: "kubectl apply -f ${app}") argocdApps)}
+
+      kubectl apply -f ${certManagerApp}
+      kubectl apply -f ${traefikApp}
+
+      for i in $(seq 1 60); do
+        HEALTH=$(kubectl get application cert-manager -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null)
+        SYNC=$(kubectl get application cert-manager -n argocd -o jsonpath='{.status.sync.status}' 2>/dev/null)
+        [ "$HEALTH" = "Healthy" ] && [ "$SYNC" = "Synced" ] && break
+        sleep 10
+      done
+
+      for i in $(seq 1 60); do
+        HEALTH=$(kubectl get application traefik -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null)
+        SYNC=$(kubectl get application traefik -n argocd -o jsonpath='{.status.sync.status}' 2>/dev/null)
+        [ "$HEALTH" = "Healthy" ] && [ "$SYNC" = "Synced" ] && break
+        sleep 10
+      done
+
+      kubectl apply -f ${argocdIngress}
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 30443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   environment.systemPackages = with pkgs; [ argocd ];
 }
