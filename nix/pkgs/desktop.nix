@@ -34,6 +34,7 @@
     vim
     wget
     wl-clipboard
+    wireguard-tools
   ];
 
   users.users.matheus.packages = with pkgs; [
