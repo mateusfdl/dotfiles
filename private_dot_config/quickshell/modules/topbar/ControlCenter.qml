@@ -2,6 +2,7 @@ import "." as Topbar
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import qs.modules.common
 import qs.modules.common.widgets
 
 Item {
@@ -17,7 +18,7 @@ Item {
         text: "more_vert"  // Three vertical dots like control center
         iconSize: 22
         fill: 0
-        color: Qt.rgba(1, 1, 1, 0.85)
+        color: Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.85)
 
         Behavior on color {
             ColorAnimation {
@@ -29,7 +30,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -6
-        color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.15) : "transparent"
+        color: mouseArea.containsMouse ? Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.15) : "transparent"
         radius: 4
         z: -1
 

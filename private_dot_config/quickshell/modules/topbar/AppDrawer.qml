@@ -15,7 +15,7 @@ Item {
 
         anchors.centerIn: parent
         icon: "󰣇"
-        size: 48
+        size: 28
 
         MouseArea {
             anchors.fill: parent

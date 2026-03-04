@@ -11,7 +11,7 @@ import qs.modules.common.widgets
 Rectangle {
     id: root
 
-    property string wallpaperPath: "/home/matheus/Pictures/wallpapers"
+    property string wallpaperPath: Directories.pictures + "/wallpapers"
     property int currentIndex: 0
     property string currentWallpaper: ""
     property string wallpaperToApply: ""
@@ -94,28 +94,19 @@ Rectangle {
     function applyWallpaper(wallpaperPath) {
           wallpaperToApply = wallpaperPath
           wallpaperProcess.running = true
-          copyWallpaperProcess.running = true
     }
 
     Process {
         id: wallpaperProcess
         command: [
-            "swww", "img", root.wallpaperToApply,
-            "--transition-bezier", ".43,1.19,1,.4",
-            "--transition-fps", "144",
-            "--transition-type", "grow",
-            "--transition-pos", "0.925,0.977",
-            "--transition-duration", "1"
+            "sh", "-c",
+            "swww img '" + root.wallpaperToApply + "'"
+            + " --transition-bezier .43,1.19,1,.4"
+            + " --transition-fps 144"
+            + " --transition-type grow"
+            + " --transition-pos 0.925,0.977"
+            + " --transition-duration 1"
         ]
-    }
-
-    Process {
-      id: copyWallpaperProcess
-      command: [
-            "bash", "-c",
-            `cp -f "${root.wallpaperToApply}" ~/.cache/current_wallpaper && \
-            sudo cp -f "${root.wallpaperToApply}" /usr/share/sddm/themes/my-sddm/Backgrounds/default`
-          ]
     }
 
     ColumnLayout {

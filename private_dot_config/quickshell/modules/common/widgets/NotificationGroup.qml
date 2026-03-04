@@ -170,7 +170,7 @@ MouseArea { // Notification group area
                     id: topRow
                     // spacing: 0
                     Layout.fillWidth: true
-                    property real fontSize: Appearance.font.pixelSize.smaller
+                    property real fontSize: Appearance.font.pixelSize.textSmall
                     property bool showAppName: root.multipleNotifications
                     implicitHeight: Math.max(topTextRow.implicitHeight, expandButton.implicitHeight)
 
@@ -189,7 +189,7 @@ MouseArea { // Notification group area
                                 notificationGroup?.notifications[0]?.summary) || ""
                             font.pixelSize: topRow.showAppName ?
                                 topRow.fontSize :
-                                Appearance.font.pixelSize.small
+                                Appearance.font.pixelSize.textSmall
                             color: topRow.showAppName ?
                                 Appearance.colors.colSubtext :
                                 Appearance.colors.colOnLayer2

@@ -1,0 +1,4 @@
+# PAM configuration for quickshell lockscreen
+# Simple authentication using pam_unix
+
+auth    required    pam_unix.so try_first_pass nullok

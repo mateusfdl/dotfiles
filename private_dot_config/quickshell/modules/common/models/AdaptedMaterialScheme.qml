@@ -2,9 +2,6 @@ import QtQuick
 import qs.modules.common
 import qs.modules.common.functions
 
-/**
- * Material color scheme adapted to a given color. It's incomplete but enough for what we need...
- */
 QtObject {
     id: root
 

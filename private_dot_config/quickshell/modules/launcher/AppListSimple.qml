@@ -20,6 +20,19 @@ ListView {
     clip: true
     currentIndex: 0
     interactive: false
+    focus: true
+    keyNavigationWraps: false
+
+    Keys.onReturnPressed: {
+        if (currentItem && typeof currentItem.launchAndClose === "function") {
+            currentItem.launchAndClose();
+        }
+    }
+    Keys.onEnterPressed: {
+        if (currentItem && typeof currentItem.launchAndClose === "function") {
+            currentItem.launchAndClose();
+        }
+    }
 
     highlightFollowsCurrentItem: false
     highlight: Rectangle {
@@ -39,9 +52,7 @@ ListView {
         }
     }
 
-    delegate: AppItemSimple {
-        visible: true
-    }
+    delegate: AppItemSimple {}
 
     add: Transition {
         NumberAnimation {

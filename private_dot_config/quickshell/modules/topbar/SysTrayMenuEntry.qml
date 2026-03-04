@@ -98,9 +98,14 @@ RippleButton {
             Loader {
                 anchors.centerIn: parent
                 active: root.menuEntry.icon.length > 0
-                sourceComponent: Image {
+                sourceComponent: IconImage {
                     asynchronous: true
-                    source: root.menuEntry.icon
+                    source: {
+                        const icon = root.menuEntry.icon ?? "";
+                        if (icon.startsWith("/") || icon.startsWith("file://") || icon.startsWith("image://"))
+                            return icon;
+                        return icon.length > 0 ? Quickshell.iconPath(icon, "image-missing") : "";
+                    }
                     width: 20
                     height: 20
                     mipmap: true

@@ -15,7 +15,7 @@ RippleButton {
         anchors.rightMargin: 14
         text: root.buttonText
         horizontalAlignment: Text.AlignLeft
-        font.pixelSize: Appearance.font.pixelSize.small
+        font.pixelSize: Appearance.font.pixelSize.textSmall
         color: root.enabled ? Appearance.m3colors.m3onSurface : Appearance.m3colors.m3outline
 
         Behavior on color {

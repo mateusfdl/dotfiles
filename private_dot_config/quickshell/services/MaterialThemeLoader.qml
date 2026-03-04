@@ -19,17 +19,10 @@ Singleton {
     }
 
     function applyColors(fileContent) {
-        const json = JSON.parse(fileContent)
-        for (const key in json) {
-            if (json.hasOwnProperty(key)) {
-                // Convert snake_case to CamelCase
-                const camelCaseKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase())
-                const m3Key = `m3${camelCaseKey}`
-                Appearance.m3colors[m3Key] = json[key]
-            }
-        }
-        
-        Appearance.m3colors.darkmode = (Appearance.m3colors.m3windowBackground.hslLightness < 0.5)
+        // Appearance.m3colors properties are readonly and cannot be assigned dynamically.
+        // The theme is already correctly loaded via Appearance.qml's JsonAdapter.
+        // This function is a no-op but kept for compatibility.
+        // Theme switching works through Appearance.currentThemeMode which is set by the IPC handlers.
     }
 
     Timer {

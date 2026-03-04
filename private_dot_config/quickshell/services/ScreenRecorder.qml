@@ -1,11 +1,13 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.modules.common
 pragma Singleton
 
 Singleton {
     id: root
 
+    property string recordScript: Directories.home + "/scripts/record_current_monitor.sh"
     property bool isRecording: false
 
     function toggle() {
@@ -24,7 +26,7 @@ Singleton {
         id: toggleProcess
 
         running: false
-        command: ["/home/matheus/scripts/record_current_monitor.sh", "toggle"]
+        command: [root.recordScript, "toggle"]
         onExited: {
             checkStatus();
         }
@@ -34,7 +36,7 @@ Singleton {
         id: statusProcess
 
         running: false
-        command: ["/home/matheus/scripts/record_current_monitor.sh", "status"]
+        command: [root.recordScript, "status"]
         onExited: {
             pidCheckProcess.running = true;
         }

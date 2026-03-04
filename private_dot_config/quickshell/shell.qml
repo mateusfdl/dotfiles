@@ -3,8 +3,6 @@
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
 import qs.modules.launcher
@@ -14,15 +12,19 @@ import qs.modules.theme
 import qs.modules.topbar
 import qs.modules.wallpaper
 import qs.modules.windowswitcher
+import qs.modules.aichat
+import qs.modules.lockscreen
 import qs.services
 
 ShellRoot {
-    property bool enableTopbar: true
-    property bool enableOverview: true
-    property bool enableWindowSwitcher: true
-    property bool enableLauncher: true
-    property bool enableWallpaper: true
-    property bool enableNotifications: true
+    property bool enableTopbar: Config.options.modules.topbar
+    property bool enableOverview: Config.options.modules.overview
+    property bool enableWindowSwitcher: Config.options.modules.windowSwitcher
+    property bool enableLauncher: Config.options.modules.launcher
+    property bool enableWallpaper: Config.options.modules.wallpaper
+    property bool enableNotifications: Config.options.modules.notifications
+    property bool enableAiChat: Config.options.modules.aiChat
+    property bool enableLockScreen: Config.options.modules.lockScreen
 
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme();
@@ -75,6 +77,22 @@ ShellRoot {
         active: enableNotifications
 
         sourceComponent: NotificationPopup {
+        }
+
+    }
+
+    Loader {
+        active: enableAiChat
+
+        sourceComponent: AiChat {
+        }
+
+    }
+
+    Loader {
+        active: enableLockScreen
+
+        sourceComponent: LockScreen {
         }
 
     }

@@ -35,7 +35,7 @@ Rectangle {
             id: keyText
             anchors.centerIn: parent
             font.family: Appearance.font.family.monospace
-            font.pixelSize: Appearance.font.pixelSize.smaller
+            font.pixelSize: Appearance.font.pixelSize.textSmall
             text: key
         }
     }

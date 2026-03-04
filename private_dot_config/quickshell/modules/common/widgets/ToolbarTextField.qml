@@ -15,7 +15,7 @@ TextField {
 
     placeholderTextColor: Appearance.colors.colSubtext
     color: Appearance.colors.colOnLayer1
-    font.pixelSize: Appearance.font.pixelSize.small
+    font.pixelSize: Appearance.font.pixelSize.textSmall
     renderType: Text.NativeRendering
     selectedTextColor: Appearance.colors.colOnSecondaryContainer
     selectionColor: Appearance.colors.colSecondaryContainer

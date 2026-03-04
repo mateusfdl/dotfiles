@@ -51,7 +51,7 @@ Item {
                 Layout.rightMargin: dialogPadding
                 Layout.alignment: Qt.AlignLeft
                 color: Appearance.m3colors.m3onSurface
-                font.pixelSize: Appearance.font.pixelSize.larger
+                font.pixelSize: Appearance.font.pixelSize.textMedium
                 text: root.titleText
             }
 

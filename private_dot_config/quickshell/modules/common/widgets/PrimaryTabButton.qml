@@ -149,7 +149,7 @@ TabButton {
                 Layout.alignment: Qt.AlignHCenter
                 horizontalAlignment: Text.AlignHCenter
                 text: buttonIcon
-                iconSize: Appearance?.font.pixelSize.hugeass ?? 25
+                iconSize: Appearance?.font.pixelSize.textLargeass ?? 25
                 fill: selected ? 1 : 0
                 color: selected ? button.colActive : button.colInactive
                 Behavior on color {
@@ -160,7 +160,7 @@ TabButton {
                 id: buttonTextWidget
                 Layout.alignment: Qt.AlignHCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Appearance?.font.pixelSize.small
+                font.pixelSize: Appearance?.font.pixelSize.textSmall
                 color: selected ? button.colActive : button.colInactive
                 text: buttonText
                 Behavior on color {

@@ -30,7 +30,7 @@ SpinBox {
             anchors.centerIn: parent
             text: root.value // displayText would make the numbers weird like 1,000 instead of 1000
             color: Appearance.colors.colOnLayer2
-            font.pixelSize: Appearance.font.pixelSize.small
+            font.pixelSize: Appearance.font.pixelSize.textSmall
             validator: root.validator
             onTextChanged: {
                 root.value = parseFloat(text);

@@ -1,36 +1,112 @@
 {
   "dark": {
-      "windowBackground": "#1a1b26",
-      "primaryText": "#c0caf5",
-      "layerBackground1": "#24283b",
-      "layerBackground2": "#1f2335",
-      "layerBackground3": "#2e3248",
-      "surfaceText": "#c0caf5",
-      "secondaryText": "#565f89",
-      "borderPrimary": "#3b4261",
-      "shadowColor": "#000000",
-      "accentPrimary": "#7aa2f7",
-      "accentSecondary": "#bb9af7",
-      "selectionBackground": "#33467c",
-      "accentPrimaryText": "#1a1b26",
-      "selectionText": "#c0caf5",
-      "borderSecondary": "#292e42"
+    "windowBackground": "#1a1b26",
+    "primaryText": "#c0caf5",
+    "layerBackground1": "#24283b",
+    "layerBackground2": "#1f2335",
+    "layerBackground3": "#2e3248",
+    "surfaceText": "#c0caf5",
+    "secondaryText": "#565f89",
+    "borderPrimary": "#3b4261",
+    "shadowColor": "#000000",
+    "accentPrimary": "#7aa2f7",
+    "accentSecondary": "#bb9af7",
+    "selectionBackground": "#33467c",
+    "accentPrimaryText": "#1a1b26",
+    "selectionText": "#c0caf5",
+    "borderSecondary": "#292e42"
   },
   "light": {
-      "windowBackground": "#f4f8f5",   
-      "primaryText": "#2e3d32",        
-      "layerBackground1": "#e6f0ea",   
-      "layerBackground2": "#dce9e2",   
-      "layerBackground3": "#c9dbcf",   
-      "surfaceText": "#33493d",        
-      "secondaryText": "#6b7f73",      
-      "borderPrimary": "#b0c7b8",      
-      "borderSecondary": "#d0e0d5",    
-      "shadowColor": "#00000020",      
-      "accentPrimary": "#3b8c59",
-      "accentSecondary": "#62a87c",
-      "selectionBackground": "#b2d6be",
-      "accentPrimaryText": "#ffffff",
-      "selectionText": "#1e2a21"
+    "windowBackground": "#FDF6E3",
+    "primaryText": "#5C6A72",
+    "layerBackground1": "#F4F0D9",
+    "layerBackground2": "#EFEBD4",
+    "layerBackground3": "#E6E2CC",
+    "surfaceText": "#5C6A72",
+    "secondaryText": "#939F91",
+    "borderPrimary": "#A6B0A0",
+    "borderSecondary": "#E0DCC7",
+    "shadowColor": "#00000015",
+    "accentPrimary": "#8DA101",
+    "accentSecondary": "#35A77C",
+    "selectionBackground": "#BDC3AF",
+    "accentPrimaryText": "#FDF6E3",
+    "selectionText": "#5C6A72"
+  },
+  "transparency": {
+    "background": 0.5,
+    "content": 0.1,
+    "workspace": 0.8
+  },
+  "rounding": {
+    "unsharpen": 2,
+    "unsharpenmore": 0,
+    "verysmall": 8,
+    "small": 12,
+    "normal": 17,
+    "medium": 20,
+    "large": 23,
+    "verylarge": 30,
+    "veryverylarge": 60,
+    "full": 9999,
+    "screen": "veryverylarge",
+    "window": "veryverylarge"
+  },
+  "sizes": {
+    "barHeight": 40,
+    "notificationPopupWidth": 410,
+    "searchWidthCollapsed": 260,
+    "searchWidth": 450,
+    "hyprlandGapsOut": 5,
+    "elevationMargin": 10,
+    "fabShadowRadius": 5,
+    "fabHoveredShadowRadius": 7
+  },
+  "animation": {
+    "curves": {
+      "expressiveFastSpatial": [0.42, 1.67, 0.21, 0.90, 1, 1],
+      "expressiveDefaultSpatial": [0.38, 1.21, 0.22, 1.00, 1, 1],
+      "expressiveSlowSpatial": [0.39, 1.29, 0.35, 0.98, 1, 1],
+      "expressiveEffects": [0.34, 0.80, 0.34, 1.00, 1, 1],
+      "emphasized": [0.05, 0, 0.13333333333, 0.06, 0.16666666667, 0.4, 0.20833333333, 0.82, 0.25, 1, 1, 1],
+      "emphasizedAccel": [0.3, 0, 0.8, 0.15, 1, 1],
+      "emphasizedDecel": [0.05, 0.7, 0.1, 1, 1, 1],
+      "standard": [0.2, 0, 0, 1, 1, 1],
+      "standardAccel": [0.3, 0, 1, 1, 1, 1],
+      "standardDecel": [0, 0, 0, 1, 1, 1]
+    },
+    "elementMove": {
+      "duration": 500,
+      "curve": "expressiveDefaultSpatial",
+      "velocity": 650
+    },
+    "elementMoveEnter": {
+      "duration": 400,
+      "curve": "emphasizedDecel",
+      "velocity": 650
+    },
+    "elementMoveExit": {
+      "duration": 200,
+      "curve": "emphasizedAccel",
+      "velocity": 650
+    },
+    "elementMoveFast": {
+      "duration": 200,
+      "curve": "expressiveEffects",
+      "velocity": 850
+    },
+    "clickBounce": {
+      "duration": 200,
+      "curve": "expressiveFastSpatial",
+      "velocity": 850
+    },
+    "scroll": {
+      "duration": 400,
+      "curve": "standardDecel"
+    },
+    "menuDecel": {
+      "duration": 350,
+      "easing": "OutExpo"
+    }
   }
 }

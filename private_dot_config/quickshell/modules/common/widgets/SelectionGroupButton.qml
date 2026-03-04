@@ -35,7 +35,7 @@ GroupButton {
                     id: materialSymbol
                     anchors.centerIn: parent
                     text: root.buttonIcon
-                    iconSize: Appearance.font.pixelSize.larger
+                    iconSize: Appearance.font.pixelSize.textMedium
                     color: root.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSecondaryContainer
                 }
             }

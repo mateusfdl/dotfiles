@@ -54,16 +54,12 @@ Singleton {
             target: modelData
 
             Component.onCompleted: {
-                // console.log("[MediaPlayer] Player registered:", modelData.identity)
                 if (root.trackedPlayer == null || modelData.playbackState === MprisPlaybackState.Playing) {
                     root.trackedPlayer = modelData
-                    // console.log("[MediaPlayer] Setting active player to:", modelData.identity)
                 }
             }
 
             Component.onDestruction: {
-                // console.log("[MediaPlayer] Player destroyed:", modelData.identity)
-                // If our tracked player is destroyed, find a new one
                 if (root.trackedPlayer === modelData) {
                     root.trackedPlayer = null
                     updateActivePlayer()
@@ -71,8 +67,6 @@ Singleton {
             }
 
             function onPlaybackStateChanged() {
-                // console.log("[MediaPlayer] Playback state changed for", modelData.identity, "to", modelData.playbackState)
-                // If a player starts playing, make it tracked
                 if (modelData.playbackState === MprisPlaybackState.Playing) {
                     root.trackedPlayer = modelData
                 }
@@ -83,11 +77,6 @@ Singleton {
     // Active player fallback: use tracked player or first available
     onTrackedPlayerChanged: {
         activePlayer = trackedPlayer ?? Mpris.players.values[0] ?? null
-        // if (activePlayer) {
-        //     console.log("[MediaPlayer] Active player changed to:", activePlayer.identity)
-        // } else {
-        //     console.log("[MediaPlayer] No active player")
-        // }
     }
 
     // Update active player when current one's state changes
@@ -95,8 +84,6 @@ Singleton {
         target: activePlayer
 
         function onPlaybackStateChanged() {
-            // console.log("[MediaPlayer] Active player state changed to", activePlayer.playbackState)
-            // If current player stops, look for another playing one
             if (activePlayer && activePlayer.playbackState === MprisPlaybackState.Stopped) {
                 updateActivePlayer()
             }
@@ -105,8 +92,6 @@ Singleton {
 
     // Select the most relevant active player
     function updateActivePlayer() {
-        // console.log("[MediaPlayer] Updating active player, available players:", Mpris.players.values.length)
-
         if (!Mpris.players || !Mpris.players.values || Mpris.players.values.length === 0) {
             trackedPlayer = null
             return

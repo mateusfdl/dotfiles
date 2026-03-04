@@ -1,5 +1,6 @@
 pragma Singleton
 
+import qs
 import qs.modules.common
 import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
 import "root:/modules/common/functions/levendist.js" as Levendist
@@ -45,15 +46,13 @@ Singleton {
             name: "Wallpaper Selector",
             icon: "preferences-desktop-wallpaper",
             comment: "Change your wallpaper",
-            isQuickshellApp: true,
-            command: "quickshell ipc wallpaper-selector open"
+            action: "wallpaperSelector"
         },
         {
             name: "Overview",
             icon: "view-grid",
             comment: "Open overview mode",
-            isQuickshellApp: true,
-            command: "quickshell ipc overview open"
+            action: "overview"
         }
     ]
 
@@ -69,20 +68,29 @@ Singleton {
         return fuzzyQuery(query)
     }
 
-    function launch(entry: DesktopEntry): void {
+    function launch(entry): void {
         if (!entry) return;
 
+        // Handle quickshell internal apps
+        if (entry.action) {
+            switch (entry.action) {
+                case "wallpaperSelector":
+                    GlobalStates.wallpaperSelectorOpen = true;
+                    break;
+                case "overview":
+                    GlobalStates.overviewOpen = true;
+                    break;
+            }
+            return;
+        }
+
+        // Handle desktop entries
         if (typeof entry.execute === "function") {
             entry.execute();
         } else if (typeof entry.launch === "function") {
             entry.launch();
         } else if (typeof entry.run === "function") {
             entry.run();
-        } else if (entry.command) {
-            Quickshell.execDetached({
-                command: entry.command,
-                workingDirectory: entry.workingDirectory ?? ""
-            });
         }
     }
 

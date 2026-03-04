@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import qs
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
@@ -7,7 +8,6 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Widgets
-import Quickshell.Hyprland
 
 ItemDelegate {
     id: root
@@ -17,8 +17,15 @@ ItemDelegate {
     implicitWidth: ListView.view.width
     implicitHeight: Config.options.launcher.sizes.itemHeight
 
+    focus: true
+    activeFocusOnTab: true
+
     function launchAndClose() {
-        AppSearch.launch(modelData);
+        if (typeof modelData.launch === "function") {
+            modelData.launch();
+        } else {
+            AppSearch.launch(modelData);
+        }
         GlobalStates.launcherOpen = false;
     }
 

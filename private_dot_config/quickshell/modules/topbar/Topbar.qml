@@ -3,6 +3,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Wayland
+import qs
 import qs.modules.common
 
 Scope {
@@ -15,8 +17,12 @@ Scope {
             required property var modelData
 
             screen: modelData
+            visible: !GlobalStates.screenLocked
             implicitHeight: Appearance.sizes.barHeight
             color: Appearance.colors.colLayer0
+
+            WlrLayershell.namespace: "quickshell:topbar"
+            WlrLayershell.layer: WlrLayer.Top
 
             anchors {
                 top: true
@@ -103,6 +109,10 @@ Scope {
                         }
 
                         Topbar.PomodoroIndicator {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
+                        Topbar.AiChatIndicator {
                             Layout.alignment: Qt.AlignVCenter
                         }
 

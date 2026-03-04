@@ -155,7 +155,7 @@ TabButton {
                 MaterialSymbol {
                     verticalAlignment: Text.AlignVCenter
                     text: buttonIcon
-                    iconSize: Appearance.font.pixelSize.huge
+                    iconSize: Appearance.font.pixelSize.textLarge
                     fill: selected ? 1 : 0
                     color: selected ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer1
                     Behavior on color {
@@ -166,7 +166,7 @@ TabButton {
             StyledText {
                 id: buttonTextWidget
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: Appearance.font.pixelSize.small
+                font.pixelSize: Appearance.font.pixelSize.textSmall
                 color: selected ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer1
                 text: buttonText
                 Behavior on color {

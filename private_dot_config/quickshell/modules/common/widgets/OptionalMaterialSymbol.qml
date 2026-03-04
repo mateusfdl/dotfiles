@@ -6,7 +6,7 @@ import qs.modules.common.widgets
 Loader {
     id: root
     required property string icon
-    property real iconSize: Appearance.font.pixelSize.larger
+    property real iconSize: Appearance.font.pixelSize.textMedium
     Layout.alignment: Qt.AlignVCenter
 
     active: root.icon && root.icon.length > 0

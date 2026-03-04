@@ -111,7 +111,7 @@ Scope {
                 x: volumePopupScope.popupX
                 y: volumePopupScope.popupY
                 width: 280
-                height:  80
+                height: volumePopupScope.protectionTriggered ? 130 : 100
                 radius: 12
                 color: Appearance.colors.colLayer1
                 border.color: Appearance.m3colors.m3borderSecondary
@@ -135,97 +135,134 @@ Scope {
                     z: -1
                 }
 
-                RowLayout {
+                ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 20
-                    spacing: 15
+                    anchors.margins: 14
+                    spacing: 10
 
+                    // Protection warning (only shown when triggered)
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 30
+                        Layout.preferredHeight: 26
                         radius: 6
-                        color: Qt.rgba(1, 0.6, 0, 0.3)
-                        border.color: Qt.rgba(1, 0.6, 0, 0.6)
+                        color: Qt.rgba(1, 0.6, 0, 0.15)
+                        border.color: Qt.rgba(1, 0.6, 0, 0.4)
                         border.width: 1
                         visible: volumePopupScope.protectionTriggered
 
                         RowLayout {
-                            anchors.fill: parent
-                            anchors.margins: 6
+                            anchors.centerIn: parent
                             spacing: 6
 
                             MaterialSymbol {
                                 text: "warning"
-                                iconSize: 16
+                                iconSize: 14
                                 fill: 1
-                                color: Qt.rgba(1, 0.8, 0, 1)
+                                color: Qt.rgba(1, 0.7, 0, 1)
                             }
 
                             StyledText {
                                 text: "Volume protection active"
                                 font.pixelSize: 11
                                 font.weight: Font.Medium
-                                color: Appearance.m3colors.m3primaryText
-                                Layout.fillWidth: true
+                                color: Qt.rgba(1, 0.8, 0.4, 1)
                             }
                         }
                     }
 
-                    // Header with icon and output device name
-                    RowLayout {
+                    // Main content
+                    Item {
                         Layout.fillWidth: true
-                        spacing: 12
-                        RippleButton {
-                            Layout.preferredWidth: 40
-                            Layout.preferredHeight: 32
-                            buttonRadius: 8
-                            onClicked: {
-                                if (Audio.sink?.audio) {
-                                    Audio.sink.audio.muted = !Audio.sink.audio.muted;
+                        Layout.fillHeight: true
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            spacing: 12
+
+                            // Volume slider row
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 10
+
+                                RippleButton {
+                                    Layout.preferredWidth: 40
+                                    Layout.preferredHeight: 40
+                                    buttonRadius: 8
+                                    onClicked: {
+                                        if (Audio.sink?.audio) {
+                                            Audio.sink.audio.muted = !Audio.sink.audio.muted;
+                                        }
+                                    }
+
+                                    contentItem: MaterialSymbol {
+                                        id: volumeIcon
+
+                                        text: {
+                                            if (Audio.sink?.audio?.muted ?? false)
+                                                return "volume_off";
+
+                                            const volume = (Audio.sink?.audio?.volume ?? 0) * 100;
+                                            if (volume >= 70)
+                                                return "volume_up";
+
+                                            if (volume >= 30)
+                                                return "volume_down";
+
+                                            if (volume > 0)
+                                                return "volume_mute";
+
+                                            return "volume_off";
+                                        }
+                                        iconSize: 24
+                                        fill: 1
+                                        color: Audio.sink?.audio?.muted ? Appearance.m3colors.m3secondaryText : Appearance.m3colors.m3primaryText
+                                    }
+                                }
+
+                                StyledSlider {
+                                    id: volumeSlider
+
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 32
+                                    from: 0
+                                    to: 1
+                                    value: Audio.sink?.audio?.volume ?? 0
+                                    onMoved: {
+                                        if (Audio.sink?.audio) {
+                                            Audio.sink.audio.volume = value;
+                                        }
+                                    }
+                                }
+
+                                StyledText {
+                                    Layout.preferredWidth: 36
+                                    text: Math.round((Audio.sink?.audio?.volume ?? 0) * 100) + "%"
+                                    font.pixelSize: 13
+                                    font.weight: Font.Medium
+                                    color: Appearance.m3colors.m3primaryText
+                                    horizontalAlignment: Text.AlignRight
                                 }
                             }
 
-                            contentItem: MaterialSymbol {
-                              id: volumeIcon
+                            // Output device info
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
 
-                              text: {
-                                  if (Audio.sink?.audio?.muted ?? false)
-                                      return "volume_off";
+                                MaterialSymbol {
+                                    text: "speaker"
+                                    iconSize: 16
+                                    fill: 1
+                                    color: Appearance.m3colors.m3secondaryText
+                                }
 
-                                  const volume = (Audio.sink?.audio?.volume ?? 0) * 100;
-                                  if (volume >= 70)
-                                      return "volume_up";
-
-                                  if (volume >= 30)
-                                      return "volume_down";
-
-                                  if (volume > 0)
-                                      return "volume_mute";
-
-                                  return "volume_off";
-                              }
-                              iconSize: 24
-                              fill: 1
-                              color: Appearance.m3colors.m3primaryText
-                          }
-
-                        }
-
-                    }
-
-                    // Volume slider
-                    StyledSlider {
-                        id: volumeSlider
-
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 30
-                        configuration: StyledSlider.Configuration.S
-                        from: 0
-                        to: 1
-                        value: Audio.sink?.audio?.volume ?? 0
-                        onMoved: {
-                            if (Audio.sink?.audio) {
-                                Audio.sink.audio.volume = value;
+                                StyledText {
+                                    text: volumePopupScope.outputDeviceName
+                                    font.pixelSize: 12
+                                    color: Appearance.m3colors.m3secondaryText
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                }
                             }
                         }
                     }

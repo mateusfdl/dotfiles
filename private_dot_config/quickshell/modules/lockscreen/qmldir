@@ -1,0 +1,5 @@
+module qs.modules.lockscreen
+
+LockScreen 1.0 LockScreen.qml
+LockContext 1.0 LockContext.qml
+LockContent 1.0 LockContent.qml

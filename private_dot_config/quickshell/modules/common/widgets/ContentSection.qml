@@ -17,11 +17,11 @@ ColumnLayout {
         spacing: 6
         OptionalMaterialSymbol {
             icon: root.icon
-            iconSize: Appearance.font.pixelSize.hugeass
+            iconSize: Appearance.font.pixelSize.textLargeass
         }
         StyledText {
             text: root.title
-            font.pixelSize: Appearance.font.pixelSize.larger
+            font.pixelSize: Appearance.font.pixelSize.textMedium
             font.weight: Font.Medium
         }
     }

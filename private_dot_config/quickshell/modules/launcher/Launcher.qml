@@ -24,21 +24,17 @@ Scope {
             id: root
             required property var modelData
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
-            property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor.id)
+            readonly property bool isActive: GlobalStates.launcherOpen && (Hyprland.focusedMonitor?.id == monitor.id)
 
             screen: modelData
-            visible: GlobalStates.launcherOpen && monitorIsFocused
+            visible: isActive
 
             WlrLayershell.namespace: "quickshell:launcher"
             WlrLayershell.layer: WlrLayer.Overlay
             color: "transparent"
 
-            mask: Region {
-                item: (GlobalStates.launcherOpen && monitorIsFocused) ? launcherContent : null
-            }
-            HyprlandWindow.visibleMask: Region {
-                item: (GlobalStates.launcherOpen && monitorIsFocused) ? launcherContent : null
-            }
+            mask: Region { item: isActive ? launcherContent : null }
+            HyprlandWindow.visibleMask: Region { item: isActive ? launcherContent : null }
 
             anchors {
                 top: true
@@ -50,7 +46,6 @@ Scope {
             HyprlandFocusGrab {
                 id: grab
                 windows: [ root ]
-                property bool canBeActive: root.monitorIsFocused
                 active: false
                 onCleared: () => {
                     if (!active) GlobalStates.launcherOpen = false
@@ -71,7 +66,7 @@ Scope {
                 interval: Config.options.hacks.arbitraryRaceConditionDelay
                 repeat: false
                 onTriggered: {
-                    if (!grab.canBeActive) return
+                    if (!root.isActive) return
                     grab.active = GlobalStates.launcherOpen
                 }
             }
@@ -81,7 +76,7 @@ Scope {
 
             Item {
                 id: launcherContent
-                visible: GlobalStates.launcherOpen && monitorIsFocused
+                visible: root.isActive
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: parent.top
@@ -99,10 +94,9 @@ Scope {
 
                 Loader {
                     id: wrapper
-                    active: GlobalStates.launcherOpen && monitorIsFocused
+                    active: root.isActive
                     sourceComponent: WrapperSimple {
                         screen: root.screen
-                        visible: GlobalStates.launcherOpen && monitorIsFocused
                     }
                 }
             }

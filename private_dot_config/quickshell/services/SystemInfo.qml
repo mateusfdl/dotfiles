@@ -31,14 +31,6 @@ Singleton {
         }
     }
 
-    Connections {
-        function onRawEvent(event) {
-            updateAll();
-        }
-
-        target: Hyprland
-    }
-
     Process {
         id: getUsername
 

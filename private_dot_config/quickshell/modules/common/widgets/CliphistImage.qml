@@ -10,7 +10,6 @@ import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.services
-import "root:/modules/common/functions/string_utils.js" as StringUtils
 
 Rectangle {
     id: root

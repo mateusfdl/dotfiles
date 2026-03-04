@@ -56,14 +56,20 @@ MouseArea {
 
     }
 
-    Image {
+    IconImage {
         id: trayIcon
 
         anchors.centerIn: parent
         width: Config.options.bar.tray.iconSize
         height: Config.options.bar.tray.iconSize
-        source: root.item.icon || ""
-        cache: false
+        source: {
+            const icon = root.item.icon ?? "";
+            // If the icon is already an absolute path or data URI, use it directly.
+            // Otherwise, resolve the icon name through the system icon theme.
+            if (icon.startsWith("/") || icon.startsWith("file://") || icon.startsWith("image://"))
+                return icon;
+            return icon.length > 0 ? Quickshell.iconPath(icon, "image-missing") : "";
+        }
         smooth: true
         mipmap: true
 

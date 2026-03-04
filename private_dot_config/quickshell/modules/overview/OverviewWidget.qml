@@ -17,8 +17,6 @@ Item {
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
-    readonly property int workspacesShown: Config.options.overview.numOfRows * Config.options.overview.numOfCols
-    readonly property int workspaceGroup: Math.floor((monitor.activeWorkspace?.id - 1) / workspacesShown)
     property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor.id)
     property var windows: HyprlandData.windowList
     property var windowByAddress: HyprlandData.windowByAddress
@@ -41,7 +39,7 @@ Item {
     property int workspaceZ: 0
     property int windowZ: 1
     property int windowDraggingZ: 99999
-    property real workspaceSpacing: 5
+    property real workspaceSpacing: 16
 
     property int draggingFromWorkspace: -1
     property int draggingTargetWorkspace: -1
@@ -60,7 +58,7 @@ Item {
         cache: true
         asynchronous: true
         smooth: true
-        opacity: Appearance.workpaceTransparency // Adds slight transparency (0.0 = fully transparent, 1.0 = fully opaque)
+        opacity: Appearance.workpaceTransparency ?? 1.0
     }
 
     StyledRectangularShadow {
@@ -68,155 +66,160 @@ Item {
     }
     Rectangle { // Background
         id: overviewBackground
-        property real padding: 10
+        property real padding: 20
         anchors.fill: parent
         anchors.margins: Appearance.sizes.elevationMargin
-        border.color : ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.2)
-        border.width : 2
+        border.color: ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.3)
+        border.width: 1
 
         implicitWidth: workspaceColumnLayout.implicitWidth + padding * 2
         implicitHeight: workspaceColumnLayout.implicitHeight + padding * 2
-        radius: Appearance.rounding.screenRounding * root.scale + padding
-        color: Appearance.colors.colLayer0
+        radius: 16
+        color: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.15)
 
 
-        ColumnLayout { // Workspaces
+        RowLayout { // Workspaces - now horizontal flow of open workspaces only
             id: workspaceColumnLayout
 
             z: root.workspaceZ
             anchors.centerIn: parent
             spacing: workspaceSpacing
-            Repeater {
-                model: Config.options.overview.numOfRows
-                delegate: RowLayout {
-                    id: row
-                    property int rowIndex: index
-                    spacing: workspaceSpacing
 
-                    Repeater { // Workspace repeater
-                        model: Config.options.overview.numOfCols
-                        Rectangle { // Workspace
-                            id: workspace
-                            property int colIndex: index
-                            property int workspaceValue: root.workspaceGroup * workspacesShown + rowIndex * Config.options.overview.numOfCols + colIndex + 1
-                            property color defaultWorkspaceColor: Appearance.colors.colLayer1
-                            property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
-                            property color hoveredBorderColor: Appearance.colors.colLayer2Hover
-                            property bool hoveredWhileDragging: false
-                            readonly property int padding: Config.options.overview.windowPadding
+            Repeater { // Workspace repeater - only open workspaces
+                model: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+                Rectangle { // Workspace
+                    id: workspace
+                    required property var modelData
+                    property int workspaceValue: modelData
+                    property color defaultWorkspaceColor: Appearance.colors.colLayer1
+                    property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
+                    property color hoveredBorderColor: Appearance.colors.colLayer2Hover
+                    property bool hoveredWhileDragging: false
+                    readonly property int padding: Config.options.overview.windowPadding
+                    property int workspaceIndex: {
+                        const sorted = HyprlandData.workspaceIds.slice().sort((a, b) => a - b);
+                        return sorted.indexOf(workspaceValue);
+                    }
 
-                            Layout.preferredWidth: root.workspaceImplicitWidth
-                            Layout.preferredHeight: root.workspaceImplicitHeight
-                            Layout.minimumWidth: 100
-                            Layout.minimumHeight: 60
-                            
-                            width: root.workspaceImplicitWidth
-                            height: root.workspaceImplicitHeight
-                            color: "transparent"
-                            radius: Appearance.rounding.screenRounding * root.scale
-                            clip: true
-                            opacity: Appearance.workpaceTransparency // Adds slight transparency (0.0 = fully transparent, 1.0 = fully opaque)
+                    Layout.preferredWidth: root.workspaceImplicitWidth
+                    Layout.preferredHeight: root.workspaceImplicitHeight
+                    Layout.minimumWidth: 100
+                    Layout.minimumHeight: 60
 
+                    width: root.workspaceImplicitWidth
+                    height: root.workspaceImplicitHeight
+                    color: "transparent"
+                    radius: 12
+                    clip: true
 
-                            // Efficient wallpaper using ShaderEffectSource
-                            Rectangle {
-                                id: wallpaperContainer
-                                anchors.fill: parent
-                                anchors.margins: 2 // Leave space for border
-                                radius: workspace.radius - 2
-                                color: workspace.defaultWorkspaceColor // Fallback color
-                                clip: true
-                                
-                                ShaderEffectSource {
-                                    id: wallpaperSource
-                                    anchors.fill: parent
-                                    sourceItem: sharedWallpaper
-                                    visible: sharedWallpaper.status === Image.Ready
-                                    smooth: true
-                                    
-                                    // Scale to fill while preserving aspect ratio
-                                    transform: Scale {
-                                        property real aspectRatio: sharedWallpaper.implicitWidth / Math.max(1, sharedWallpaper.implicitHeight)
-                                        property real containerRatio: wallpaperContainer.width / Math.max(1, wallpaperContainer.height)
-                                        
-                                        xScale: aspectRatio > containerRatio ? 
-                                            wallpaperContainer.height * aspectRatio / wallpaperContainer.width : 1
-                                        yScale: aspectRatio > containerRatio ? 
-                                            1 : wallpaperContainer.width / (wallpaperContainer.height * aspectRatio)
-                                        
-                                        origin.x: wallpaperContainer.width / 2
-                                        origin.y: wallpaperContainer.height / 2
-                                    }
-                                }
-                                
-                                // Fallback when image fails to load or isn't ready
-                                Rectangle {
-                                    anchors.fill: parent
-                                    color: workspace.defaultWorkspaceColor
-                                    visible: sharedWallpaper.status !== Image.Ready
-                                }
-                                
-                                // Optional: Add overlay for better text readability and hover effects
-                                Rectangle {
-                                    anchors.fill: parent
-                                    color: hoveredWhileDragging ? hoveredWorkspaceColor : "black"
-                                    opacity: hoveredWhileDragging ? 0.3 : 0.1
-                                }
+                    // Workspace background with wallpaper
+                    Rectangle {
+                        id: wallpaperContainer
+                        anchors.fill: parent
+                        radius: parent.radius
+                        color: workspace.defaultWorkspaceColor
+                        clip: true
+
+                        ShaderEffectSource {
+                            id: wallpaperSource
+                            anchors.fill: parent
+                            sourceItem: sharedWallpaper
+                            visible: sharedWallpaper.status === Image.Ready
+                            smooth: true
+
+                            transform: Scale {
+                                property real aspectRatio: sharedWallpaper.implicitWidth / Math.max(1, sharedWallpaper.implicitHeight)
+                                property real containerRatio: wallpaperContainer.width / Math.max(1, wallpaperContainer.height)
+
+                                xScale: aspectRatio > containerRatio ?
+                                    wallpaperContainer.height * aspectRatio / wallpaperContainer.width : 1
+                                yScale: aspectRatio > containerRatio ?
+                                    1 : wallpaperContainer.width / (wallpaperContainer.height * aspectRatio)
+
+                                origin.x: wallpaperContainer.width / 2
+                                origin.y: wallpaperContainer.height / 2
                             }
+                        }
 
-                            // Border overlay - on top of wallpaper
-                            Rectangle {
-                                anchors.fill: parent
-                                color: "transparent"
-                                radius: parent.radius
-                                border.width: 1
-                                border.color: hoveredWhileDragging ? hoveredBorderColor : ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.6)
-                                z: 10 // Ensure it's on top
+                        // Fallback color
+                        Rectangle {
+                            anchors.fill: parent
+                            color: workspace.defaultWorkspaceColor
+                            visible: sharedWallpaper.status !== Image.Ready
+                        }
+
+                        // Dim overlay
+                        Rectangle {
+                            anchors.fill: parent
+                            color: hoveredWhileDragging ? Appearance.colors.colLayer1Hover : "black"
+                            opacity: hoveredWhileDragging ? 0.4 : 0.2
+
+                            Behavior on opacity {
+                                NumberAnimation { duration: 150 }
                             }
+                        }
+                    }
 
-                            StyledText {
-                                // Position in top-left corner with padding
-                                anchors.top: parent.top
-                                anchors.left: parent.left
-                                anchors.topMargin: 12  // Padding from top edge
-                                anchors.leftMargin: 12 // Padding from left edge
-                                
-                                text: workspaceValue
-                                font.pixelSize: root.workspaceNumberSize * root.scale
-                                font.weight: Font.DemiBold
-                                color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
-                                horizontalAlignment: Text.AlignLeft
-                                verticalAlignment: Text.AlignTop
-                                z: 15 // Above border
+                    // Border
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "transparent"
+                        radius: parent.radius
+                        border.width: hoveredWhileDragging ? 2 : 1
+                        border.color: hoveredWhileDragging ? Appearance.m3colors.m3accentPrimary : ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.5)
+                        z: 10
+
+                        Behavior on border.width {
+                            NumberAnimation { duration: 100 }
+                        }
+                    }
+
+                    // Workspace number badge
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.topMargin: 8
+                        anchors.leftMargin: 8
+                        width: workspaceLabel.implicitWidth + 12
+                        height: workspaceLabel.implicitHeight + 6
+                        radius: 6
+                        color: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.3)
+                        z: 15
+
+                        StyledText {
+                            id: workspaceLabel
+                            anchors.centerIn: parent
+                            text: workspaceValue
+                            font.pixelSize: 11
+                            font.weight: Font.Medium
+                            color: Appearance.colors.colOnLayer1
+                        }
+                    }
+
+                    MouseArea {
+                        id: workspaceArea
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+                        z: 20
+                        onClicked: {
+                            if (root.draggingTargetWorkspace === -1) {
+                                GlobalStates.overviewOpen = false
+                                Hyprland.dispatch(`workspace ${workspaceValue}`)
                             }
+                        }
+                    }
 
-                            MouseArea {
-                                id: workspaceArea
-                                anchors.fill: parent
-                                acceptedButtons: Qt.LeftButton
-                                z: 20 // Above all visual elements
-                                onClicked: {
-                                    if (root.draggingTargetWorkspace === -1) {
-                                        GlobalStates.overviewOpen = false
-                                        Hyprland.dispatch(`workspace ${workspaceValue}`)
-                                    }
-                                }
-                            }
-
-                            DropArea {
-                                anchors.fill: parent
-                                z: 20 // Same level as MouseArea
-                                onEntered: {
-                                    root.draggingTargetWorkspace = workspaceValue
-                                    if (root.draggingFromWorkspace == root.draggingTargetWorkspace) return;
-                                    hoveredWhileDragging = true
-                                }
-                                onExited: {
-                                    hoveredWhileDragging = false
-                                    if (root.draggingTargetWorkspace == workspaceValue) root.draggingTargetWorkspace = -1
-                                }
-                            }
-
+                    DropArea {
+                        anchors.fill: parent
+                        z: 20
+                        onEntered: {
+                            root.draggingTargetWorkspace = workspaceValue
+                            if (root.draggingFromWorkspace == root.draggingTargetWorkspace) return;
+                            hoveredWhileDragging = true
+                        }
+                        onExited: {
+                            hoveredWhileDragging = false
+                            if (root.draggingTargetWorkspace == workspaceValue) root.draggingTargetWorkspace = -1
                         }
                     }
                 }
@@ -233,24 +236,26 @@ Item {
                 model: ScriptModel {
                     values: windowAddresses.filter((address) => {
                         var win = windowByAddress[address]
-                        return (root.workspaceGroup * root.workspacesShown < win?.workspace?.id && win?.workspace?.id <= (root.workspaceGroup + 1) * root.workspacesShown)
+                        // Only show windows in open workspaces
+                        return HyprlandData.workspaceIds.includes(win?.workspace?.id)
                     })
                 }
                 delegate: OverviewWindow {
                     id: window
                     windowData: windowByAddress[modelData]
-                    monitorData: HyprlandData.monitors.find(m => m.id === windowData?.monitor) // use monitorData of the monitor the window is on
-                    scale: root.scale * (monitorData?.scale / root.monitor?.scale) // adjust window scale to the monitor where the overview is displayed
+                    monitorData: HyprlandData.monitors.find(m => m.id === windowData?.monitor)
+                    scale: root.scale * (monitorData?.scale / root.monitor?.scale)
                     availableWorkspaceWidth: root.workspaceImplicitWidth
                     availableWorkspaceHeight: root.workspaceImplicitHeight
 
                     property bool atInitPosition: (initX == x && initY == y)
                     restrictToWorkspace: Drag.active || atInitPosition
 
-                    property int workspaceColIndex: (windowData?.workspace.id - 1) % Config.options.overview.numOfCols
-                    property int workspaceRowIndex: Math.floor((windowData?.workspace.id - 1) % root.workspacesShown / Config.options.overview.numOfCols)
-                    xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceColIndex
-                    yOffset: (root.workspaceImplicitHeight + workspaceSpacing) * workspaceRowIndex
+                    // Calculate workspace index in sorted list for horizontal positioning
+                    property var sortedWorkspaces: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+                    property int workspaceIndex: sortedWorkspaces.indexOf(windowData?.workspace?.id)
+                    xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceIndex
+                    yOffset: 0
 
                     Timer {
                         id: updateWindowPosition
@@ -318,24 +323,24 @@ Item {
 
             Rectangle { // Focused workspace indicator
                 id: focusedWorkspaceIndicator
-                property int activeWorkspaceInGroup: monitor.activeWorkspace?.id - (root.workspaceGroup * root.workspacesShown)
-                property int activeWorkspaceRowIndex: Math.floor((activeWorkspaceInGroup - 1) / Config.options.overview.numOfCols)
-                property int activeWorkspaceColIndex: (activeWorkspaceInGroup - 1) % Config.options.overview.numOfCols
-                x: (root.workspaceImplicitWidth + workspaceSpacing) * activeWorkspaceColIndex
-                y: (root.workspaceImplicitHeight + workspaceSpacing) * activeWorkspaceRowIndex
-                z: root.windowZ
+                property var sortedWorkspaces: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+                property int activeWorkspaceIndex: sortedWorkspaces.indexOf(monitor.activeWorkspace?.id ?? -1)
+                x: (root.workspaceImplicitWidth + workspaceSpacing) * activeWorkspaceIndex
+                y: 0
+                z: root.windowZ + 5
                 width: Math.max(100, root.workspaceImplicitWidth)
                 height: Math.max(60, root.workspaceImplicitHeight)
                 color: "transparent"
-                radius: Appearance.rounding.screenRounding * root.scale
-                border.width: 2
-                border.color: root.activeBorderColor
-                visible: width > 0 && height > 0 && activeWorkspaceInGroup > 0
+                radius: 12
+                border.width: 3
+                border.color: Appearance.m3colors.m3accentPrimary
+                visible: width > 0 && height > 0 && activeWorkspaceIndex >= 0
+
                 Behavior on x {
-                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                }
-                Behavior on y {
-                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
         }

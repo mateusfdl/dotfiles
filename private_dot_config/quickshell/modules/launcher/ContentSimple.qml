@@ -14,7 +14,6 @@ Item {
     required property real maxHeight
 
     readonly property int padding: 24
-    readonly property int rounding: 20
     readonly property int searchHeight: Math.max(searchIcon.implicitHeight, search.implicitHeight, clearIcon.implicitHeight) + 32
 
     implicitWidth: mainContainer.width
@@ -169,11 +168,9 @@ Item {
 
                     const currentItem = listView.currentItem;
                     if (currentItem) {
-                        // Call launchAndClose directly if available
                         if (typeof currentItem.launchAndClose === "function") {
                             currentItem.launchAndClose();
                         } else if (currentItem.modelData) {
-                            // Fallback to clicking the delegate
                             currentItem.clicked();
                         }
                     }
@@ -181,13 +178,19 @@ Item {
                 }
 
                 Keys.onUpPressed: {
-                    if (list.currentList) list.currentList.decrementCurrentIndex()
+                    if (list.currentList) {
+                        list.currentList.decrementCurrentIndex()
+                        list.currentList.forceActiveFocus()
+                    }
                 }
                 Keys.onDownPressed: {
-                    if (list.currentList) list.currentList.incrementCurrentIndex()
+                    if (list.currentList) {
+                        list.currentList.incrementCurrentIndex()
+                        list.currentList.forceActiveFocus()
+                    }
                 }
                 Keys.onEscapePressed: {
-                    GlobalStates.launcherOpen = false
+                    GlobalStates.launcherOpen = false;
                 }
 
                 Component.onCompleted: forceActiveFocus()
@@ -250,19 +253,15 @@ Item {
 
         ContentListSimple {
             id: list
-
             anchors.top: separator.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.topMargin: list.height > 0 ? root.padding : 0
             anchors.bottomMargin: list.height > 0 ? root.padding : 0
             z: 1
-
-            content: root
             maxHeight: root.maxHeight - searchHeight - root.padding * 2
             search: search
             padding: root.padding
-            rounding: root.rounding
         }
     }
 }

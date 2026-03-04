@@ -25,18 +25,11 @@ Item {
         }
     }
 
-    Loader {
+    ContentSimple {
         id: content
-
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-
-        active: GlobalStates.launcherOpen
-        visible: GlobalStates.launcherOpen
-
-        sourceComponent: ContentSimple {
-            maxHeight: root.maxHeight
-            onImplicitHeightChanged: root.contentHeight = implicitHeight
-        }
+        maxHeight: root.maxHeight
+        onImplicitHeightChanged: root.contentHeight = implicitHeight
     }
 }

@@ -8,7 +8,7 @@ RippleButton { // Expand button
     id: root
     required property int count
     required property bool expanded
-    property real fontSize: Appearance?.font.pixelSize.small ?? 12
+    property real fontSize: Appearance?.font.pixelSize.textSmall ?? 12
     property real iconSize: Appearance?.font.pixelSize.normal ?? 16
     implicitHeight: fontSize + 4 * 2
     implicitWidth: Math.max(contentItem.implicitWidth + 5 * 2, 30)

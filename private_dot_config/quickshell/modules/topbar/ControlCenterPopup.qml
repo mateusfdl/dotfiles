@@ -160,6 +160,8 @@ Scope {
                                 Layout.preferredHeight: 48
                                 buttonRadius: 24
                                 onClicked: {
+                                    controlCenterScope.hidePopup();
+                                    Topbar.SessionMenu.show();
                                 }
 
                                 contentItem: MaterialSymbol {
@@ -469,7 +471,21 @@ Scope {
                         id: themeSwitchProcess
 
                         running: false
-                        command: ["/home/matheus/scripts/switch-theme-mode"]
+                        command: [Directories.home + "/scripts/switch-theme-mode"]
+                    }
+
+                    Process {
+                        id: bluetoothProcess
+
+                        running: false
+                        command: ["blueman-manager"]
+                    }
+
+                    Process {
+                        id: settingsProcess
+
+                        running: false
+                        command: ["gnome-control-center"]
                     }
 
                     GridLayout {
@@ -497,9 +513,23 @@ Scope {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 70
                                 radius: 16
-                                color: modelData.active ? Appearance.m3colors.m3selectionBackground : Appearance.colors.colLayer2
+                                color: toggleMouseArea.pressed ? Qt.darker(modelData.active ? Appearance.m3colors.m3selectionBackground : Appearance.colors.colLayer2, 1.2) : (modelData.active ? Appearance.m3colors.m3selectionBackground : Appearance.colors.colLayer2)
                                 border.color: Appearance.m3colors.m3borderSecondary
                                 border.width: 1
+                                scale: toggleMouseArea.pressed ? 0.95 : 1.0
+
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: 100
+                                        easing.type: Easing.OutQuad
+                                    }
+                                }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: 100
+                                    }
+                                }
 
                                 ColumnLayout {
                                     anchors.fill: parent
@@ -523,13 +553,18 @@ Scope {
                                 }
 
                                 MouseArea {
+                                    id: toggleMouseArea
+
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
                                     z: 10
                                     onClicked: {
-                                        if (modelData.label === "Dark" || modelData.label === "Light")
+                                        if (modelData.label === "Dark" || modelData.label === "Light") {
                                             themeSwitchProcess.running = true;
-
+                                        } else if (modelData.label === "Bluetooth") {
+                                            bluetoothProcess.running = true;
+                                            controlCenterScope.hidePopup();
+                                        }
                                     }
                                 }
 
@@ -559,16 +594,26 @@ Scope {
                             }]
 
                             Rectangle {
+                                property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.colors.colLayer2
+
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 56
                                 radius: 14
-                                color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.colors.colLayer2
+                                color: actionMouseArea.pressed ? Qt.darker(baseColor, 1.2) : baseColor
                                 border.color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 0.8) : Appearance.m3colors.m3borderSecondary
                                 border.width: 1
+                                scale: actionMouseArea.pressed ? 0.95 : 1.0
+
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: 100
+                                        easing.type: Easing.OutQuad
+                                    }
+                                }
 
                                 Behavior on color {
                                     ColorAnimation {
-                                        duration: 300
+                                        duration: 100
                                     }
                                 }
 
@@ -611,6 +656,8 @@ Scope {
                                 }
 
                                 MouseArea {
+                                    id: actionMouseArea
+
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
                                     z: 100
@@ -619,6 +666,9 @@ Scope {
                                             ScreenRecorder.toggle();
                                         } else if (modelData.label === "Wallpaper") {
                                             GlobalStates.wallpaperSelectorOpen = true;
+                                        } else if (modelData.label === "Settings") {
+                                            settingsProcess.running = true;
+                                            controlCenterScope.hidePopup();
                                         }
                                     }
                                 }

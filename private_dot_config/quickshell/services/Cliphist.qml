@@ -11,7 +11,6 @@ import Quickshell.Io
 
 Singleton {
     id: root
-    // property string cliphistBinary: FileUtils.trimFileProtocol(`${Directories.home}/.cargo/bin/stash`)
     property string cliphistBinary: "cliphist"
     property real pasteDelay: 0.05
     property string pressPasteCommand: "ydotool key -d 1 29:1 47:1 47:0 29:0"
@@ -108,24 +107,6 @@ Singleton {
     function wipe() {
         wipeProc.running = true;
     }
-
-    // Disabled automatic refresh on clipboard change to save memory
-    // Cliphist will only refresh when explicitly needed (e.g., when search is opened)
-    // Connections {
-    //     target: Quickshell
-    //     function onClipboardTextChanged() {
-    //         delayedUpdateTimer.restart()
-    //     }
-    // }
-
-    // Timer {
-    //     id: delayedUpdateTimer
-    //     interval: Config.options.hacks.arbitraryRaceConditionDelay
-    //     repeat: false
-    //     onTriggered: {
-    //         root.refresh()
-    //     }
-    // }
 
     Process {
         id: readProc

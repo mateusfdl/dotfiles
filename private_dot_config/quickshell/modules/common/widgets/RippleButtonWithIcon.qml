@@ -12,7 +12,7 @@ RippleButton {
     property Component mainContentComponent: Component {
         StyledText {
             text: buttonWithIconRoot.mainText
-            font.pixelSize: Appearance.font.pixelSize.small
+            font.pixelSize: Appearance.font.pixelSize.textSmall
             color: Appearance.colors.colOnSecondaryContainer
         }
     }
@@ -31,7 +31,7 @@ RippleButton {
                 active: !nerdIcon
                 sourceComponent: MaterialSymbol {
                     text: buttonWithIconRoot.materialIcon
-                    iconSize: Appearance.font.pixelSize.larger
+                    iconSize: Appearance.font.pixelSize.textMedium
                     color: Appearance.colors.colOnSecondaryContainer
                     fill: buttonWithIconRoot.materialIconFill ? 1 : 0
                 }
@@ -42,7 +42,7 @@ RippleButton {
                 active: nerdIcon
                 sourceComponent: StyledText {
                     text: buttonWithIconRoot.nerdIcon
-                    font.pixelSize: Appearance.font.pixelSize.larger
+                    font.pixelSize: Appearance.font.pixelSize.textMedium
                     font.family: Appearance.font.family.iconNerd
                     color: Appearance.colors.colOnSecondaryContainer
                 }

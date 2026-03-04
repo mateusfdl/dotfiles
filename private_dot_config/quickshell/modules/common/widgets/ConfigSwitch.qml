@@ -10,7 +10,7 @@ RippleButton {
 
     Layout.fillWidth: true
     implicitHeight: contentItem.implicitHeight + 8 * 2
-    font.pixelSize: Appearance.font.pixelSize.small
+    font.pixelSize: Appearance.font.pixelSize.textSmall
     
     onClicked: checked = !checked
 
@@ -19,7 +19,7 @@ RippleButton {
         OptionalMaterialSymbol {
             icon: root.buttonIcon
             opacity: root.enabled ? 1 : 0.4
-            iconSize: Appearance.font.pixelSize.larger
+            iconSize: Appearance.font.pixelSize.textMedium
         }
         StyledText {
             id: labelWidget

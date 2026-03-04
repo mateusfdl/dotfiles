@@ -186,7 +186,6 @@ Singleton {
     }
 
     function discardNotification(id) {
-        // console.log("[Notifications] Discarding notification with ID: " + id);
         const index = root.list.findIndex((notif) => notif.notificationId === id);
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
         if (index !== -1) {
@@ -231,7 +230,6 @@ Singleton {
     }
 
     function attemptInvokeAction(id, notifIdentifier) {
-        // console.log("[Notifications] Attempting to invoke action with identifier: " + notifIdentifier + " for notification ID: " + id);
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
         if (notifServerIndex !== -1) {
             const notifServerNotif = notifServer.trackedNotifications.values[notifServerIndex];
@@ -248,7 +246,6 @@ Singleton {
     }
 
     Component.onCompleted: {
-        // console.log("[Notifications] Service initialized");
         root.initDone();
     }
 }

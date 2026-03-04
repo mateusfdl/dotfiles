@@ -36,7 +36,6 @@ Scope {
             }
 
             color: "transparent"
-            width: Appearance.sizes.notificationPopupWidth
             implicitWidth: Appearance.sizes.notificationPopupWidth
 
             ListView {

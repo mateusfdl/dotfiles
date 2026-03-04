@@ -21,7 +21,7 @@ ColumnLayout {
         MaterialSymbol {
             visible: root.tooltip && root.tooltip.length > 0
             text: "info"
-            iconSize: Appearance.font.pixelSize.large
+            iconSize: Appearance.font.pixelSize.textLarge
             
             color: Appearance.colors.colSubtext
             MouseArea {

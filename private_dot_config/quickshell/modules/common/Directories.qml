@@ -7,7 +7,6 @@ import QtQuick
 import Quickshell
 
 Singleton {
-    // XDG Dirs, with "file://"
     readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
     readonly property string config: StandardPaths.standardLocations(StandardPaths.ConfigLocation)[0]
     readonly property string state: StandardPaths.standardLocations(StandardPaths.StateLocation)[0]
@@ -19,7 +18,6 @@ Singleton {
     readonly property string music: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
     readonly property string videos: StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0]
 
-    // Other dirs used by the shell, without "file://"
     property string assetsPath: Quickshell.shellPath("assets")
     property string scriptPath: Quickshell.shellPath("scripts")
     property string favicons: FileUtils.trimFileProtocol(`${Directories.cache}/media/favicons`)
@@ -29,8 +27,10 @@ Singleton {
     property string shellConfigName: "config.json"
     property string shellConfigPath: `${Directories.shellConfig}/${Directories.shellConfigName}`
     property string notificationsPath: FileUtils.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
-    property string generatedMaterialThemePath: `${Directories.shellConfig}/config/theme.json}`
-    // Cleanup on init
+    property string generatedMaterialThemePath: `${Directories.shellConfig}/config/theme.json`
+    property string wallpaperSwitchScriptPath: `${home}/.config/hypr/scripts/switch-theme-mode.sh`
+    property string currentWallpaperScriptPath: `${home}/scripts/current_wallpaper`
+
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", `${shellConfig}`])
         Quickshell.execDetached(["mkdir", "-p", `${favicons}`])

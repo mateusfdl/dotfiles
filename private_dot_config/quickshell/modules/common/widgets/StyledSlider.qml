@@ -28,8 +28,8 @@ Slider {
 
     property var configuration: StyledSlider.Configuration.S
 
-    property real handleDefaultWidth: 3
-    property real handlePressedWidth: 1.5
+    property real handleDefaultWidth: 0
+    property real handlePressedWidth: 0
     property color highlightColor: Appearance.colors.colPrimary
     property color trackColor: Appearance.colors.colSecondaryContainer
     property color handleColor: Appearance.colors.colPrimary
@@ -170,23 +170,22 @@ Slider {
         }
     }
 
-    handle: Rectangle {
+    handle: Item {
         id: handle
 
-        implicitWidth: root.handleWidth
-        implicitHeight: root.handleHeight
-        x: root.handleMargins + (root.visualPosition * root.effectiveDraggingWidth) - (root.handleWidth / 2)
+        implicitWidth: percentLabel.width
+        implicitHeight: root.trackWidth
+        x: root.handleMargins + (root.visualPosition * root.effectiveDraggingWidth) - implicitWidth - 4
         anchors.verticalCenter: parent.verticalCenter
-        radius: Appearance.rounding.full
-        color: root.handleColor
 
-        Behavior on implicitWidth {
-            animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
-        }
-
-        StyledToolTip {
-            extraVisibleCondition: root.pressed
-            text: root.tooltipContent
+        StyledText {
+            id: percentLabel
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            text: `${Math.round(root.value * 100)}%`
+            font.pixelSize: 11
+            font.weight: Font.Bold
+            color: "#FFFFFF"
         }
     }
 }

@@ -3,7 +3,6 @@ import qs
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
-import "root:/modules/common/functions/string_utils.js" as StringUtils
 import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
 import QtQuick
 import QtQuick.Controls

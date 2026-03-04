@@ -3,6 +3,7 @@ singleton VolumePopup 1.0 VolumePopup.qml
 singleton PomodoroPopup 1.0 PomodoroPopup.qml
 singleton NowPlayingPopup 1.0 NowPlayingPopup.qml
 singleton ControlCenterPopup 1.0 ControlCenterPopup.qml
+singleton SessionMenu 1.0 SessionMenu.qml
 NerdFontIcon 1.0 NerdFontIcon.qml
 ActiveWindow 1.0 ActiveWindow.qml
 SysTray 1.0 SysTray.qml
@@ -11,3 +12,8 @@ Workspaces 1.0 Workspaces.qml
 PomodoroIndicator 1.0 PomodoroIndicator.qml
 NowPlayingIndicator 1.0 NowPlayingIndicator.qml
 RecordingIndicator 1.0 RecordingIndicator.qml
+AiChatIndicator 1.0 AiChatIndicator.qml
+VolumeIndicator 1.0 VolumeIndicator.qml
+ControlCenter 1.0 ControlCenter.qml
+Clock 1.0 Clock.qml
+AppDrawer 1.0 AppDrawer.qml

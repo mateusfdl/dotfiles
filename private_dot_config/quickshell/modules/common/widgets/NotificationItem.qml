@@ -14,7 +14,7 @@ Item { // Notification item area
     property var notificationObject
     property bool expanded: false
     property bool onlyNotification: false
-    property real fontSize: Appearance.font.pixelSize.small
+    property real fontSize: Appearance.font.pixelSize.textSmall
     property real padding: onlyNotification ? 0 : 8
     property real summaryElideRatio: 0.85
 
@@ -279,7 +279,7 @@ Item { // Notification item area
                                 }
 
                                 contentItem: MaterialSymbol {
-                                    iconSize: Appearance.font.pixelSize.large
+                                    iconSize: Appearance.font.pixelSize.textLarge
                                     horizontalAlignment: Text.AlignHCenter
                                     color: (notificationObject.urgency == NotificationUrgency.Critical) ? 
                                         Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
@@ -323,7 +323,7 @@ Item { // Notification item area
 
                                 contentItem: MaterialSymbol {
                                     id: copyIcon
-                                    iconSize: Appearance.font.pixelSize.large
+                                    iconSize: Appearance.font.pixelSize.textLarge
                                     horizontalAlignment: Text.AlignHCenter
                                     color: (notificationObject.urgency == NotificationUrgency.Critical) ? 
                                         Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface

@@ -38,7 +38,7 @@ Rectangle {
             onClicked: root.navigateToDirectory(FileUtils.parentDirectory(root.directory))
             contentItem: MaterialSymbol {
                 text: "drive_folder_upload"
-                iconSize: Appearance.font.pixelSize.larger
+                iconSize: Appearance.font.pixelSize.textMedium
             }
         }
 
@@ -108,7 +108,7 @@ Rectangle {
             onClicked: root.showBreadcrumb = !root.showBreadcrumb
             contentItem: MaterialSymbol {
                 text: "edit"
-                iconSize: Appearance.font.pixelSize.larger
+                iconSize: Appearance.font.pixelSize.textMedium
                 color: dirEditButton.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2
             }
 

@@ -3,7 +3,6 @@ pragma Singleton
 import Quickshell
 
 Singleton {
-    // Formats
     readonly property list<string> validImageTypes: ["jpeg", "png", "webp", "tiff", "svg"]
     readonly property list<string> validImageExtensions: ["jpg", "jpeg", "png", "webp", "tif", "tiff", "svg"]
 
@@ -11,8 +10,6 @@ Singleton {
         return validImageExtensions.some(t => name.endsWith(`.${t}`));
     }
 
-    // Thumbnails
-    // https://specifications.freedesktop.org/thumbnail-spec/latest/directory.html
     readonly property var thumbnailSizes: ({
         "normal": 128,
         "large": 256,

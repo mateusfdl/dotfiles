@@ -45,7 +45,7 @@ TextArea {
 
     font {
         family: Appearance?.font.family.main ?? "sans-serif"
-        pixelSize: Appearance?.font.pixelSize.small ?? 15
+        pixelSize: Appearance?.font.pixelSize.textSmall ?? 15
         hintingPreference: Font.PreferFullHinting
     }
     wrapMode: TextEdit.Wrap

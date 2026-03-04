@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
+import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 
@@ -34,7 +35,9 @@ Item {
         }
         iconSize: 22
         fill: 0
-        color: (Audio.sink?.audio?.muted ?? false) ? Qt.rgba(1, 1, 1, 0.5) : Qt.rgba(1, 1, 1, 0.85)
+        color: (Audio.sink?.audio?.muted ?? false)
+            ? Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.5)
+            : Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.85)
 
         Behavior on color {
             ColorAnimation {
@@ -48,7 +51,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -6
-        color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+        color: mouseArea.containsMouse ? Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.1) : "transparent"
         radius: 4
         z: -1
 
@@ -71,7 +74,7 @@ Item {
         onClicked: {
             var pos = mapToItem(null, 0, 0);
             var iconRightX = pos.x + root.width;
-            var popupX = iconRightX - 280;
+            var popupX = iconRightX - 240;
             var popupY = 2;
             Topbar.VolumePopup.togglePopup(popupX, popupY);
         }

@@ -2,6 +2,7 @@ import "." as Topbar
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 
@@ -40,7 +41,7 @@ Item {
                          Pomodoro.state === Pomodoro.State.LongBreak)
                     return Qt.rgba(0.4, 0.8, 1, 0.9)  // Blue for break
                 else
-                    return Qt.rgba(1, 1, 1, 0.7)      // White for idle
+                    return Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.7)  // Theme text for idle
             }
 
             Behavior on color {
@@ -61,7 +62,7 @@ Item {
                          Pomodoro.state === Pomodoro.State.LongBreak)
                     return Qt.rgba(0.4, 0.8, 1, 0.9)
                 else
-                    return Qt.rgba(1, 1, 1, 0.7)
+                    return Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.7)
             }
             font.pixelSize: 14
             font.weight: Font.Medium
@@ -90,7 +91,7 @@ Item {
                     radius: 2
                     color: index < Pomodoro.currentCycle ?
                         Qt.rgba(1, 0.4, 0.4, 0.9) :
-                        Qt.rgba(1, 1, 1, 0.3)
+                        Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.3)
 
                     Behavior on color {
                         ColorAnimation {
@@ -105,7 +106,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -6
-        color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+        color: mouseArea.containsMouse ? Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.1) : "transparent"
         radius: 4
         z: -1
 

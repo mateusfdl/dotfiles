@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs
+import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 import QtQuick
@@ -130,7 +131,6 @@ Scope {
                         id: wallpaperPreview
                         anchors.centerIn: parent
                         Component.onCompleted: {
-                            console.log("WallpaperPreview loaded with path:", wallpaperPath);
                             slideTimer.start();
                         }
                     }

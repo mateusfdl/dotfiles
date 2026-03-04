@@ -24,7 +24,7 @@ Rectangle {
             Layout.fillWidth: false
             Layout.alignment: Qt.AlignTop
             text: "info"
-            iconSize: Appearance.font.pixelSize.huge
+            iconSize: Appearance.font.pixelSize.textLarge
             color: Appearance.colors.colOnPrimaryContainer
         }
 

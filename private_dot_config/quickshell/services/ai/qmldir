@@ -1,0 +1,6 @@
+module qs.services.ai
+
+AiMessageData 1.0 AiMessageData.qml
+AiModel 1.0 AiModel.qml
+ApiStrategy 1.0 ApiStrategy.qml
+OpenRouterApiStrategy 1.0 OpenRouterApiStrategy.qml

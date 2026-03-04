@@ -11,7 +11,6 @@ Item {
     implicitWidth: recordingRect.implicitWidth
     implicitHeight: recordingRect.implicitHeight
 
-    // Pulsing animation for the recording indicator
     SequentialAnimation {
         running: ScreenRecorder.isRecording
         loops: Animation.Infinite
@@ -19,19 +18,21 @@ Item {
         NumberAnimation {
             target: recordingCircle
             property: "opacity"
-            from: 1.0
+            from: 1
             to: 0.3
             duration: 800
             easing.type: Easing.InOutSine
         }
+
         NumberAnimation {
             target: recordingCircle
             property: "opacity"
             from: 0.3
-            to: 1.0
+            to: 1
             duration: 800
             easing.type: Easing.InOutSine
         }
+
     }
 
     Rectangle {
@@ -44,20 +45,6 @@ Item {
         visible: ScreenRecorder.isRecording
         opacity: ScreenRecorder.isRecording ? 1 : 0
 
-        Behavior on implicitWidth {
-            NumberAnimation {
-                duration: 300
-                easing.type: Easing.OutCubic
-            }
-        }
-
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 300
-                easing.type: Easing.OutCubic
-            }
-        }
-
         Rectangle {
             id: recordingCircle
 
@@ -65,7 +52,25 @@ Item {
             width: 12
             height: 12
             radius: 6
-            color: Qt.rgba(1, 0.2, 0.2, 1)  // Red color
+            color: Qt.rgba(1, 0.2, 0.2, 1)
         }
+
+        Behavior on implicitWidth {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+
+        }
+
     }
+
 }

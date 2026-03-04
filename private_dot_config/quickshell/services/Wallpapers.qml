@@ -33,8 +33,6 @@ Singleton {
     signal thumbnailGenerated(directory: string)
     signal thumbnailGeneratedFile(filePath: string)
 
-    function load () {} // For forcing initialization
-
     // Executions
     Process {
         id: applyProc
@@ -83,7 +81,6 @@ Singleton {
         if (folderModel.count === 0) return;
         const randomIndex = Math.floor(Math.random() * folderModel.count);
         const filePath = folderModel.get(randomIndex, "filePath");
-        print("Randomly selected wallpaper:", filePath);
         root.select(filePath, darkMode);
     }
 
@@ -144,7 +141,6 @@ Singleton {
 
     // Thumbnail generation
     function generateThumbnail(size: string) {
-        // console.log("[Wallpapers] Updating thumbnails")
         if (!["normal", "large", "x-large", "xx-large"].includes(size)) throw new Error("Invalid thumbnail size");
         thumbgenProc.directory = root.directory
         thumbgenProc.running = false
@@ -160,7 +156,6 @@ Singleton {
         property string directory
         stdout: SplitParser {
             onRead: data => {
-                // print("thumb gen proc:", data)
                 let match = data.match(/PROGRESS (\d+)\/(\d+)/)
                 if (match) {
                     const completed = parseInt(match[1])

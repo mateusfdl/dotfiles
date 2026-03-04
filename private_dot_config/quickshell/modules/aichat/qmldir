@@ -1,0 +1,5 @@
+module qs.modules.aichat
+
+AiChat 1.0 AiChat.qml
+AiChatContent 1.0 AiChatContent.qml
+AiMessage 1.0 AiMessage.qml

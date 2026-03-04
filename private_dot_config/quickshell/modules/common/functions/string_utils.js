@@ -38,7 +38,6 @@ function getBaseUrl(url) {
 function shellSingleQuoteEscape(str) {
     //  escape single quotes
     return String(str)
-        // .replace(/\\/g, '\\\\')
         .replace(/'/g, "'\\''");
 }
 

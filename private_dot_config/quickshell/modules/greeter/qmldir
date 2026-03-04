@@ -1,0 +1,5 @@
+module qs.modules.greeter
+
+GreeterScreen 1.0 GreeterScreen.qml
+GreeterContext 1.0 GreeterContext.qml
+GreeterContent 1.0 GreeterContent.qml

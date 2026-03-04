@@ -113,7 +113,7 @@ RippleButton {
             }
             StyledText {
                 Layout.fillWidth: true
-                text: dark ? Translation.tr("Dark") : Translation.tr("Light")
+                text: dark ? "Dark" : "Light"
                 color: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer2
                 horizontalAlignment: Text.AlignHCenter
             }

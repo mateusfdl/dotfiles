@@ -11,44 +11,31 @@ import Quickshell
 Item {
     id: root
 
-    required property var content
     required property real maxHeight
     required property TextField search
     required property int padding
-    required property int rounding
 
-    readonly property Item currentList: root.search.text.length > 0 ? appList.item : defaultList.item
+    readonly property bool hasSearchText: search.text.length > 0
+    readonly property Item currentList: hasSearchText ? appList.item : defaultList.item
 
     anchors.horizontalCenter: parent.horizontalCenter
-
     clip: true
-
     implicitWidth: parent.width
-    implicitHeight: (root.search.text.length > 0 && appList.item) ? appList.item.implicitHeight :
-                    (root.search.text.length === 0 && defaultList.item) ? defaultList.item.implicitHeight : 0
+    implicitHeight: hasSearchText ? (appList.item?.implicitHeight ?? 0) : (defaultList.item?.implicitHeight ?? 0)
 
     Loader {
         id: appList
-
-        active: root.search.text.length > 0
-        visible: root.search.text.length > 0
+        active: root.hasSearchText
+        visible: active
         anchors.fill: parent
-        anchors.topMargin: 0
-        anchors.bottomMargin: 0
-
-        sourceComponent: AppListSimple {
-            search: root.search
-        }
+        sourceComponent: AppListSimple { search: root.search }
     }
 
-    // Default view: show quickshell apps when no search text
     Loader {
         id: defaultList
-
-        active: root.search.text.length === 0
-        visible: root.search.text.length === 0
+        active: !root.hasSearchText
+        visible: active
         anchors.fill: parent
-
         sourceComponent: DefaultAppList {
             maxHeight: root.maxHeight
             padding: root.padding
