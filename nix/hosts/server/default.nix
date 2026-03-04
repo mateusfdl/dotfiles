@@ -16,7 +16,7 @@
 
   virtualisation.docker.autoPrune.enable = true;
   users.users.matheus.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOKp5xAxoqTYtxvBcT6W+FMkVb0Bd7qE9Xk2IbHIRFh matheus@desktop"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOKp5xAxoqTYtxvBcT6W+FMkVb0Bd7qE9Xk2IbHIRFh"
   ];
 
   system.stateVersion = "25.11";
