@@ -20,12 +20,19 @@
     let
       system = "x86_64-linux";
       zephyr = zephyr-nix.packages.${system};
-      vscode-marketplace = nix-vscode-extensions.extensions.${system}.vscode-marketplace;
+      pkgsWithVscodeExts = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [ nix-vscode-extensions.overlays.default ];
+      };
+      vscode-marketplace = pkgsWithVscodeExts.nix-vscode-extensions.vscode-marketplace;
+      vscode-marketplace-universal =
+        pkgsWithVscodeExts.nix-vscode-extensions.vscode-marketplace-universal;
     in
     {
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit zephyr vscode-marketplace; };
+        specialArgs = { inherit zephyr vscode-marketplace vscode-marketplace-universal; };
         modules = [ ./hosts/desktop ];
       };
 
