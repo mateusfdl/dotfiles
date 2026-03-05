@@ -20,6 +20,10 @@
 
   networking.hostName = "desktop";
 
+  services.tailscale.extraUpFlags = [
+    "--ssh"
+  ];
+
   users.users.matheus.extraGroups = [
     "video"
     "audio"
