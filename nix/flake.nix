@@ -7,19 +7,23 @@
     zephyr-nix.url = "github:adisbladis/zephyr-nix";
 
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
+    # TODO: check if Handy already updated their flake file deps hash
+    handy.url = "github:cjpais/Handy/15fbc47f5a8d1127826a9d3a930336d059f6bf0f";
   };
 
   outputs =
     {
-      self,
       nixpkgs,
       zephyr-nix,
       nix-vscode-extensions,
+      handy,
       ...
     }:
     let
       system = "x86_64-linux";
       zephyr = zephyr-nix.packages.${system};
+      handy-pkg = handy.packages.${system}.default;
       pkgsWithVscodeExts = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -32,7 +36,14 @@
     {
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit zephyr vscode-marketplace vscode-marketplace-universal; };
+        specialArgs = {
+          inherit
+            zephyr
+            vscode-marketplace
+            vscode-marketplace-universal
+            handy-pkg
+            ;
+        };
         modules = [ ./hosts/desktop ];
       };
 
