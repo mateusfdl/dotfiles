@@ -10,7 +10,7 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    QML2_IMPORT_PATH = builtins.concatStringsSep ":" [
+    QML_IMPORT_PATH = builtins.concatStringsSep ":" [
       "${pkgs.qt6.qt5compat}/lib/qt-6/qml"
       "$HOME/.config/quickshell/plugin/build/qml"
     ];
