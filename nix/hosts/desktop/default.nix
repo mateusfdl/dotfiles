@@ -21,7 +21,7 @@
 
   networking.hostName = "desktop";
 
-  services.tailscale.extraUpFlags = [
+  services.tailscale.extraSetFlags = [
     "--ssh"
   ];
 
