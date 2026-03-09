@@ -121,6 +121,39 @@ let
                       number: 80
   '';
 
+  giteaApp = pkgs.writeText "argocd-gitea-app.yaml" ''
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: gitea
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: homelab-argo
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: https://dl.gitea.com/charts/
+          chart: gitea
+          targetRevision: 12.5.0
+          helm:
+            valueFiles:
+              - $values/services/gitea/values.yaml
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: gitea
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  '';
+
   traefikApp = pkgs.writeText "argocd-traefik-app.yaml" ''
     apiVersion: argoproj.io/v1alpha1
     kind: Application
@@ -206,6 +239,7 @@ in
 
       kubectl apply -f ${certManagerApp}
       kubectl apply -f ${traefikApp}
+      kubectl apply -f ${giteaApp}
 
       for i in $(seq 1 60); do
         HEALTH=$(kubectl get application cert-manager -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null)
@@ -228,6 +262,7 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
+    30022 # Gitea SSH
   ];
 
   environment.systemPackages = with pkgs; [ argocd ];
