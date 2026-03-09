@@ -154,6 +154,42 @@ let
           - CreateNamespace=true
   '';
 
+  redisApp = pkgs.writeText "argocd-redis-app.yaml" ''
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: redis
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: homelab-argo
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: oci://registry-1.docker.io/bitnamicharts
+          chart: redis
+          targetRevision: 25.3.2
+          helm:
+            valueFiles:
+              - $values/services/redis/values.yaml
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          path: services/redis
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: redis
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  '';
+
   traefikApp = pkgs.writeText "argocd-traefik-app.yaml" ''
     apiVersion: argoproj.io/v1alpha1
     kind: Application
@@ -240,6 +276,7 @@ in
       kubectl apply -f ${certManagerApp}
       kubectl apply -f ${traefikApp}
       kubectl apply -f ${giteaApp}
+      kubectl apply -f ${redisApp}
 
       for i in $(seq 1 60); do
         HEALTH=$(kubectl get application cert-manager -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null)
