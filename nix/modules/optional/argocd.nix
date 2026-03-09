@@ -167,7 +167,7 @@ let
     spec:
       project: default
       sources:
-        - repoURL: oci://registry-1.docker.io/bitnamicharts
+        - repoURL: https://charts.bitnami.com/bitnami
           chart: redis
           targetRevision: 25.3.2
           helm:
