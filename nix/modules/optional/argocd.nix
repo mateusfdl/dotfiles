@@ -122,6 +122,43 @@ let
                       number: 80
   '';
 
+  monitoringApp = pkgs.writeText "argocd-monitoring-app.yaml" ''
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: monitoring
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: homelab-argo
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: https://prometheus-community.github.io/helm-charts
+          chart: kube-prometheus-stack
+          targetRevision: 82.10.1
+          helm:
+            valueFiles:
+              - $values/services/monitoring/values.yaml
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          path: services/monitoring
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+  '';
+
   giteaApp = pkgs.writeText "argocd-gitea-app.yaml" ''
     apiVersion: argoproj.io/v1alpha1
     kind: Application
@@ -241,6 +278,7 @@ in
       kubectl apply -f ${certManagerApp}
       kubectl apply -f ${traefikApp}
       kubectl apply -f ${giteaApp}
+      kubectl apply -f ${monitoringApp}
 
       for i in $(seq 1 60); do
         HEALTH=$(kubectl get application cert-manager -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null)

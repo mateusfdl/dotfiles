@@ -9,6 +9,7 @@
     ../../modules/optional/argocd.nix
     ../../modules/optional/maintenance.nix
     ../../modules/optional/openssh.nix
+    ../../modules/optional/alloy.nix
     ../../pkgs/server.nix
   ];
 
