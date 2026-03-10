@@ -6,6 +6,9 @@ family = "IosevkaSS04 Nerd Font Mono"
 size = 16
 family = "IosevkaSS04 Nerd Font Mono"
 
+[notes.vault]
+path = ""
+
 [git]
 name = "Matheus Lima"
 email = ""

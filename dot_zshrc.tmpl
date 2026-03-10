@@ -42,6 +42,10 @@ export PATH="$HOME/scripts:$PATH"
 export PATH="$HOME/.luarocks/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
+export NOTES_VAULT={{ .notes.vault.path }}
+{{ if eq .chezmoi.os "linux" }}
+export QML2_IMPORT_PATH="$HOME/.config/quickshell/plugin/build/qml:${QML2_IMPORT_PATH:-}"
+{{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
 export PATH="/opt/homebrew/bin:$PATH"
@@ -51,5 +55,6 @@ export TERM="xterm-256color"
 if [[ -z "${TMUX}" && -z "$ZSH_NO_TMUX"  ]] then;
   tmux attach || exec tmux new-session -s Personal; 
 fi
+
 
 bindkey '^Z' autosuggest-accept
