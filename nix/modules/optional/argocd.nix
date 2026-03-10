@@ -208,9 +208,9 @@ let
     spec:
       project: default
       sources:
-        - repoURL: https://dl.gitea.com/act_runner/
-          chart: gitea-act-runner
-          targetRevision: 0.1.14
+        - repoURL: https://dl.gitea.com/charts/
+          chart: actions
+          targetRevision: 0.0.3
           helm:
             valueFiles:
               - $values/services/gitea-runner/values.yaml
