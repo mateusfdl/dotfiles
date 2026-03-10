@@ -181,9 +181,6 @@ let
         - repoURL: git@github.com:mateusfdl/homelab-argo.git
           targetRevision: HEAD
           ref: values
-        - repoURL: git@github.com:mateusfdl/homelab-argo.git
-          targetRevision: HEAD
-          path: services/gitea
       destination:
         server: https://kubernetes.default.svc
         namespace: gitea
@@ -217,9 +214,6 @@ let
         - repoURL: git@github.com:mateusfdl/homelab-argo.git
           targetRevision: HEAD
           ref: values
-        - repoURL: git@github.com:mateusfdl/homelab-argo.git
-          targetRevision: HEAD
-          path: services/gitea-runner
       destination:
         server: https://kubernetes.default.svc
         namespace: gitea-runner
