@@ -181,9 +181,48 @@ let
         - repoURL: git@github.com:mateusfdl/homelab-argo.git
           targetRevision: HEAD
           ref: values
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          path: services/gitea
       destination:
         server: https://kubernetes.default.svc
         namespace: gitea
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  '';
+
+  giteaRunnerApp = pkgs.writeText "argocd-gitea-runner-app.yaml" ''
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: gitea-runner
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: homelab-argo
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: https://dl.gitea.com/act_runner/
+          chart: gitea-act-runner
+          targetRevision: 0.1.14
+          helm:
+            valueFiles:
+              - $values/services/gitea-runner/values.yaml
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: git@github.com:mateusfdl/homelab-argo.git
+          targetRevision: HEAD
+          path: services/gitea-runner
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: gitea-runner
       syncPolicy:
         automated:
           prune: true
@@ -278,6 +317,7 @@ in
       kubectl apply -f ${certManagerApp}
       kubectl apply -f ${traefikApp}
       kubectl apply -f ${giteaApp}
+      kubectl apply -f ${giteaRunnerApp}
       kubectl apply -f ${monitoringApp}
 
       for i in $(seq 1 60); do
