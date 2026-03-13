@@ -8,6 +8,7 @@
         requests
       ]
     ))
+    uv
 
     gcc
     clang-tools
