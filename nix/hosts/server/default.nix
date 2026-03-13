@@ -10,10 +10,15 @@
     ../../modules/optional/maintenance.nix
     ../../modules/optional/openssh.nix
     ../../modules/optional/alloy.nix
+    ../../modules/optional/conntrack-exporter.nix
     ../../pkgs/server.nix
   ];
 
   networking.hostName = "beelink-n1";
+
+  services.tailscale.extraDaemonFlags = [
+    "--debug=localhost:41112"
+  ];
 
   virtualisation.docker.autoPrune.enable = true;
   users.users.matheus.openssh.authorizedKeys.keys = [

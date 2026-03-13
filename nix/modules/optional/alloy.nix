@@ -4,7 +4,9 @@
 
   environment.etc."alloy/config.alloy" = {
     text = ''
-      prometheus.exporter.unix "node" { }
+      prometheus.exporter.unix "node" {
+        textfile_directory = "/var/lib/prometheus-textfile"
+      }
 
       prometheus.scrape "node" {
         targets         = prometheus.exporter.unix.node.targets
@@ -16,6 +18,24 @@
         rule {
           target_label = "job"
           replacement  = "node"
+        }
+
+        forward_to = [prometheus.remote_write.default.receiver]
+      }
+
+      prometheus.scrape "tailscale" {
+        targets = [
+          {"__address__" = "localhost:41112"},
+        ]
+        metrics_path    = "/debug/metrics"
+        scrape_interval = "30s"
+        forward_to      = [prometheus.relabel.tailscale_job.receiver]
+      }
+
+      prometheus.relabel "tailscale_job" {
+        rule {
+          target_label = "job"
+          replacement  = "tailscale"
         }
 
         forward_to = [prometheus.remote_write.default.receiver]
