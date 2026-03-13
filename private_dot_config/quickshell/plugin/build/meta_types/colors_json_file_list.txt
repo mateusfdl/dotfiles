@@ -1,0 +1,1 @@
+/home/matheus/.config/quickshell/plugin/build/colors_autogen/include/../VSCBVMNR7M/moc_colors.cpp.json

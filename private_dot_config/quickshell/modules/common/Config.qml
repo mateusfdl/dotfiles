@@ -218,6 +218,7 @@ Singleton {
                 property bool notifications: true
                 property bool aiChat: true
                 property bool lockScreen: true
+                property bool cheatsheet: true
             }
 
             property JsonObject networking: JsonObject {

@@ -1,0 +1,230 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    },
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    }
+                ],
+                "className": "Colors",
+                "lineNumber": 7,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "ratio",
+                                "type": "qreal"
+                            }
+                        ],
+                        "index": 0,
+                        "lineNumber": 15,
+                        "name": "mix",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 1,
+                        "isCloned": true,
+                        "lineNumber": 15,
+                        "name": "mix",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "amount",
+                                "type": "qreal"
+                            }
+                        ],
+                        "index": 2,
+                        "lineNumber": 16,
+                        "name": "transparentize",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 3,
+                        "isCloned": true,
+                        "lineNumber": 16,
+                        "name": "transparentize",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "alpha",
+                                "type": "qreal"
+                            }
+                        ],
+                        "index": 4,
+                        "lineNumber": 17,
+                        "name": "applyAlpha",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 5,
+                        "lineNumber": 18,
+                        "name": "colorWithHueOf",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 6,
+                        "lineNumber": 19,
+                        "name": "colorWithSaturationOf",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "lightness",
+                                "type": "qreal"
+                            }
+                        ],
+                        "index": 7,
+                        "lineNumber": 20,
+                        "name": "colorWithLightness",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 8,
+                        "lineNumber": 21,
+                        "name": "colorWithLightnessOf",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color1",
+                                "type": "QColor"
+                            },
+                            {
+                                "name": "color2",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 9,
+                        "lineNumber": 22,
+                        "name": "adaptToAccent",
+                        "returnType": "QColor"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 10,
+                        "lineNumber": 23,
+                        "name": "luminance",
+                        "returnType": "qreal"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "color",
+                                "type": "QColor"
+                            }
+                        ],
+                        "index": 11,
+                        "lineNumber": 24,
+                        "name": "isDark",
+                        "returnType": "bool"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "Colors",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "colors.hpp",
+        "outputRevision": 69
+    }
+]

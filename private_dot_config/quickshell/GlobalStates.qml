@@ -22,6 +22,7 @@ Singleton {
     property bool workspaceShowNumbers: false
     property bool windowSwitcherOpen: false
     property bool aiChatOpen: false
+    property bool cheatsheetOpen: false
 
     Connections {
         target: Config

@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/matheus/.config/quickshell/plugin/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

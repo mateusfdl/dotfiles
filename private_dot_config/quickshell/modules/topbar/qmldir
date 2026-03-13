@@ -1,6 +1,7 @@
 singleton PopupManager 1.0 PopupManager.qml
 singleton VolumePopup 1.0 VolumePopup.qml
 singleton PomodoroPopup 1.0 PomodoroPopup.qml
+PomodoroBreakOverlay 1.0 PomodoroBreakOverlay.qml
 singleton NowPlayingPopup 1.0 NowPlayingPopup.qml
 singleton ControlCenterPopup 1.0 ControlCenterPopup.qml
 singleton SessionMenu 1.0 SessionMenu.qml
