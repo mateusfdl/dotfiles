@@ -38,8 +38,9 @@
   ];
 
   users.users.matheus.packages = with pkgs; [
-    spotify
-    obsidian
     discord
+    gh
+    obsidian
+    spotify
   ];
 }
