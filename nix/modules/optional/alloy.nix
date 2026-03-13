@@ -5,7 +5,10 @@
   environment.etc."alloy/config.alloy" = {
     text = ''
       prometheus.exporter.unix "node" {
-        textfile_directory = "/var/lib/prometheus-textfile"
+        set_collectors     = ["cpu", "diskstats", "filesystem", "loadavg", "meminfo", "netdev", "netstat", "sockstat", "stat", "uname", "vmstat", "hwmon", "pressure", "filefd", "conntrack", "textfile"]
+        textfile {
+          directory = "/var/lib/prometheus-textfile"
+        }
       }
 
       prometheus.scrape "node" {
