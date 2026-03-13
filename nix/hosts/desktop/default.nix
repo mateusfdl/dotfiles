@@ -4,6 +4,7 @@
     ./hardware-configuration.nix
     ../../modules/common
     ../../modules/optional/audio.nix
+    ../../modules/optional/blender.nix
     ../../modules/optional/bluetooth.nix
     ../../modules/optional/fonts.nix
     ../../modules/optional/greetd.nix
