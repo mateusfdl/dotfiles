@@ -8,6 +8,9 @@
 
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
 
+    claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
+    claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
+
     # TODO: check if Handy already updated their flake file deps hash
     handy.url = "github:cjpais/Handy/15fbc47f5a8d1127826a9d3a930336d059f6bf0f";
   };
@@ -17,6 +20,7 @@
       nixpkgs,
       zephyr-nix,
       nix-vscode-extensions,
+      claude-desktop,
       handy,
       ...
     }:
@@ -24,6 +28,7 @@
       system = "x86_64-linux";
       zephyr = zephyr-nix.packages.${system};
       handy-pkg = handy.packages.${system}.default;
+      claude-desktop-pkg = claude-desktop.packages.${system}.claude-desktop;
       pkgsWithVscodeExts = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -42,6 +47,7 @@
             vscode-marketplace
             vscode-marketplace-universal
             handy-pkg
+            claude-desktop-pkg
             ;
         };
         modules = [ ./hosts/desktop ];

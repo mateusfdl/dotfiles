@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, claude-desktop-pkg, ... }:
 {
   environment.systemPackages = with pkgs; [
     apple-cursor
@@ -38,6 +38,7 @@
   ];
 
   users.users.matheus.packages = with pkgs; [
+    claude-desktop-pkg
     discord
     gh
     obsidian
