@@ -14,3 +14,4 @@ vscode-langservers-extracted
 markdownlint-cli
 eslint
 @anthropic-ai/claude-code
+opencode-ai
