@@ -7,6 +7,7 @@ import Quickshell
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 pragma Singleton
 
 Scope {
@@ -15,15 +16,18 @@ Scope {
     property bool popupVisible: false
     property real popupX: 0
     property real popupY: 0
+    property bool todoPickerExpanded: false
 
     function showPopup(x, y) {
         popupX = x;
         popupY = y;
         popupVisible = true;
+        ObsidianTodo.fetchTodos();
     }
 
     function hidePopup() {
         popupVisible = false;
+        todoPickerExpanded = false;
     }
 
     function togglePopup(x, y) {
@@ -157,6 +161,223 @@ Scope {
                                         return Qt.rgba(0.4, 0.8, 1, 0.9);
                                     else
                                         return Qt.rgba(1, 1, 1, 0.6);
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Active Todo / Todo Picker ──
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        visible: Pomodoro.currentTodo !== null || (!Pomodoro.isRunning && !Pomodoro.isPaused)
+
+                        // Active todo display (shown when a todo is picked)
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: activeTodoRow.implicitHeight + 16
+                            radius: 8
+                            color: Pomodoro.currentTodo !== null
+                                ? Qt.rgba(1, 0.4, 0.4, 0.08)
+                                : "transparent"
+                            border.color: Pomodoro.currentTodo !== null
+                                ? Qt.rgba(1, 0.4, 0.4, 0.25)
+                                : Appearance.m3colors.m3borderSecondary
+                            border.width: 1
+                            visible: Pomodoro.currentTodo !== null || (!Pomodoro.isRunning && !Pomodoro.isPaused)
+
+                            RowLayout {
+                                id: activeTodoRow
+                                anchors.fill: parent
+                                anchors.margins: 8
+                                spacing: 8
+
+                                MaterialSymbol {
+                                    text: Pomodoro.currentTodo !== null ? "task_alt" : "add_task"
+                                    iconSize: 18
+                                    fill: Pomodoro.currentTodo !== null ? 1 : 0
+                                    color: Pomodoro.currentTodo !== null
+                                        ? Qt.rgba(1, 0.4, 0.4, 0.9)
+                                        : Appearance.m3colors.m3secondaryText
+                                }
+
+                                StyledText {
+                                    Layout.fillWidth: true
+                                    text: Pomodoro.currentTodo !== null
+                                        ? Pomodoro.currentTodo.description
+                                        : "Pick a task..."
+                                    font.pixelSize: 12
+                                    font.weight: Pomodoro.currentTodo !== null ? Font.Medium : Font.Normal
+                                    color: Pomodoro.currentTodo !== null
+                                        ? Appearance.m3colors.m3primaryText
+                                        : Appearance.m3colors.m3secondaryText
+                                    elide: Text.ElideRight
+                                    maximumLineCount: 1
+                                }
+
+                                // Clear button (only when todo is picked and idle)
+                                RippleButton {
+                                    Layout.preferredWidth: 22
+                                    Layout.preferredHeight: 22
+                                    buttonRadius: 11
+                                    visible: Pomodoro.currentTodo !== null && !Pomodoro.isRunning && !Pomodoro.isPaused
+                                    onClicked: {
+                                        Pomodoro.clearTodo();
+                                        pomodoroPopupScope.todoPickerExpanded = false;
+                                    }
+
+                                    contentItem: MaterialSymbol {
+                                        anchors.centerIn: parent
+                                        text: "close"
+                                        iconSize: 14
+                                        color: Appearance.m3colors.m3secondaryText
+                                    }
+                                }
+
+                                // Expand/collapse chevron (only when idle)
+                                MaterialSymbol {
+                                    text: pomodoroPopupScope.todoPickerExpanded ? "expand_less" : "expand_more"
+                                    iconSize: 16
+                                    color: Appearance.m3colors.m3secondaryText
+                                    visible: !Pomodoro.isRunning && !Pomodoro.isPaused
+                                }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: (!Pomodoro.isRunning && !Pomodoro.isPaused) ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                enabled: !Pomodoro.isRunning && !Pomodoro.isPaused
+                                onClicked: {
+                                    pomodoroPopupScope.todoPickerExpanded = !pomodoroPopupScope.todoPickerExpanded;
+                                    if (pomodoroPopupScope.todoPickerExpanded) {
+                                        ObsidianTodo.fetchTodos();
+                                    }
+                                }
+                            }
+                        }
+
+                        // Todo list (expanded when picker is open)
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: Math.min(todoListView.contentHeight + 4, 180)
+                            radius: 8
+                            color: Appearance.colors.colLayer2
+                            border.color: Appearance.m3colors.m3borderSecondary
+                            border.width: 1
+                            visible: pomodoroPopupScope.todoPickerExpanded && !Pomodoro.isRunning && !Pomodoro.isPaused
+                            clip: true
+
+                            ListView {
+                                id: todoListView
+                                anchors.fill: parent
+                                anchors.margins: 2
+                                model: ObsidianTodo.todos
+                                spacing: 1
+
+                                delegate: Rectangle {
+                                    id: todoDelegate
+
+                                    required property var modelData
+                                    required property int index
+
+                                    width: todoListView.width
+                                    height: todoDelegateRow.implicitHeight + 12
+                                    radius: 6
+                                    color: todoDelegateMouseArea.containsMouse
+                                        ? Qt.rgba(1, 1, 1, 0.06)
+                                        : "transparent"
+
+                                    RowLayout {
+                                        id: todoDelegateRow
+                                        anchors.fill: parent
+                                        anchors.margins: 6
+                                        spacing: 8
+
+                                        MaterialSymbol {
+                                            text: "radio_button_unchecked"
+                                            iconSize: 14
+                                            color: Appearance.m3colors.m3secondaryText
+                                        }
+
+                                        ColumnLayout {
+                                            Layout.fillWidth: true
+                                            spacing: 2
+
+                                            StyledText {
+                                                Layout.fillWidth: true
+                                                text: todoDelegate.modelData.description || ""
+                                                font.pixelSize: 12
+                                                color: Appearance.m3colors.m3primaryText
+                                                elide: Text.ElideRight
+                                                maximumLineCount: 1
+                                            }
+
+                                            // Tags row
+                                            Row {
+                                                spacing: 4
+                                                visible: todoDelegate.modelData.tags && todoDelegate.modelData.tags.length > 0
+
+                                                Repeater {
+                                                    model: todoDelegate.modelData.tags || []
+
+                                                    Rectangle {
+                                                        required property var modelData
+
+                                                        width: tagLabel.implicitWidth + 8
+                                                        height: tagLabel.implicitHeight + 4
+                                                        radius: 3
+                                                        color: Qt.rgba(1, 1, 1, 0.06)
+
+                                                        StyledText {
+                                                            id: tagLabel
+                                                            anchors.centerIn: parent
+                                                            text: "#" + parent.modelData
+                                                            font.pixelSize: 9
+                                                            color: Appearance.m3colors.m3secondaryText
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: todoDelegateMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            const todo = todoDelegate.modelData;
+                                            let noteId = todo.noteId || "";
+
+                                            // If no linked note, create one
+                                            if (noteId === "") {
+                                                noteId = ObsidianTodo.ensureNoteFile(
+                                                    todo.description,
+                                                    todo.tags || []
+                                                );
+                                                if (noteId === "") return; // failed
+                                                // Refresh todos to get updated data
+                                                ObsidianTodo.fetchTodos();
+                                            }
+
+                                            Pomodoro.pickupTodo(
+                                                todo.description,
+                                                noteId,
+                                                todo.tags || []
+                                            );
+                                            pomodoroPopupScope.todoPickerExpanded = false;
+                                        }
+                                    }
+                                }
+
+                                // Empty state
+                                StyledText {
+                                    anchors.centerIn: parent
+                                    text: "No open tasks for today"
+                                    font.pixelSize: 11
+                                    color: Appearance.m3colors.m3secondaryText
+                                    visible: todoListView.count === 0
                                 }
                             }
                         }

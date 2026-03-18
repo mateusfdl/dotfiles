@@ -6,6 +6,8 @@ import QsUtils
 pragma Singleton
 pragma ComponentBehavior: Bound
 
+// NOTE: ObsidianTodo is available via QsUtils (C++ singleton)
+
 /**
  * Pomodoro timer service with work/break intervals.
  * - Reads initial durations from Config.options.time.pomodoro
@@ -24,6 +26,13 @@ Singleton {
 
     // Lock-on-break: when true, a fullscreen overlay is shown during breaks
     property bool lockOnBreak: false
+
+    // ── Active todo tracking ──
+    property var currentTodo: null  // {description, noteId, tags} or null
+    property var _sessionEvents: []  // [{time: "HH:mm", text: "Start Session"}, ...]
+    property int _totalBreakSeconds: 0
+    property int _totalFocusSeconds: 0
+    property real _breakStartEpoch: 0  // track when break starts for accumulation
 
     // Timer state machine
     enum State {
@@ -155,18 +164,21 @@ Singleton {
         totalTime = workDuration
         _segmentStartEpoch = _nowEpoch()
         logEvent("started", Pomodoro.State.Working, workDuration, 0)
+        _pushEvent("Start Session")
     }
 
     function pause() {
         if (isRunning) {
             previousRunningState = state
             state = Pomodoro.State.Paused
+            _pushEvent("Pause")
         }
     }
 
     function resume() {
         if (isPaused && timeRemaining > 0) {
             state = previousRunningState
+            _pushEvent("Resume")
         }
     }
 
@@ -175,6 +187,16 @@ Singleton {
             const elapsed = Math.round(_nowEpoch() - _segmentStartEpoch)
             const wasState = isPaused ? previousRunningState : state
             logEvent("stopped", wasState, totalTime, elapsed)
+
+            // Accumulate focus time for the current segment if it was a work segment
+            if (wasState === Pomodoro.State.Working) {
+                _totalFocusSeconds += elapsed
+            } else if (wasState === Pomodoro.State.ShortBreak || wasState === Pomodoro.State.LongBreak) {
+                _totalBreakSeconds += elapsed
+            }
+
+            _pushEvent("Stopped")
+            _flushSessionToTodo()
         }
         state = Pomodoro.State.Idle
         timeRemaining = workDuration
@@ -192,6 +214,16 @@ Singleton {
             const elapsed = Math.round(_nowEpoch() - _segmentStartEpoch)
             const wasState = isPaused ? previousRunningState : state
             logEvent("skipped", wasState, totalTime, elapsed)
+
+            // Accumulate elapsed time for the skipped segment
+            if (wasState === Pomodoro.State.Working) {
+                _totalFocusSeconds += elapsed
+                _pushEvent("Skipped")
+            } else if (wasState === Pomodoro.State.ShortBreak || wasState === Pomodoro.State.LongBreak) {
+                _totalBreakSeconds += elapsed
+                _pushEvent("Break Skipped")
+            }
+
             _advanceAfterComplete(wasState)
         }
     }
@@ -202,6 +234,15 @@ Singleton {
 
         const elapsed = totalTime  // ran to zero → full duration
         logEvent("completed", state, totalTime, elapsed)
+
+        // Accumulate time for the completed segment
+        if (state === Pomodoro.State.Working) {
+            _totalFocusSeconds += elapsed
+            _pushEvent("Finish")
+        } else if (state === Pomodoro.State.ShortBreak || state === Pomodoro.State.LongBreak) {
+            _totalBreakSeconds += elapsed
+            _pushEvent("Break End")
+        }
 
         _advanceAfterComplete(state)
     }
@@ -227,12 +268,56 @@ Singleton {
             }
             _segmentStartEpoch = _nowEpoch()
             logEvent("started", state, totalTime, 0)
+            _pushEvent(state === Pomodoro.State.LongBreak ? "Long Break" : "Short Break")
         } else {
             // Break finished → go to Idle (user must click Start again)
+            // Flush the complete session to the todo file
+            _flushSessionToTodo()
             state = Pomodoro.State.Idle
             timeRemaining = workDuration
             totalTime = workDuration
         }
+    }
+
+    // ── Todo integration ──
+    function pickupTodo(description: string, noteId: string, tags: list<string>) {
+        if (state !== Pomodoro.State.Idle) return
+        currentTodo = { description: description, noteId: noteId, tags: tags }
+        _sessionEvents = []
+        _totalBreakSeconds = 0
+        _totalFocusSeconds = 0
+    }
+
+    function clearTodo() {
+        currentTodo = null
+        _sessionEvents = []
+        _totalBreakSeconds = 0
+        _totalFocusSeconds = 0
+    }
+
+    function _pushEvent(text: string) {
+        const timeStr = new Date().toLocaleTimeString(Qt.locale(), "HH:mm")
+        let events = _sessionEvents.slice()
+        events.push({ time: timeStr, text: text })
+        _sessionEvents = events
+    }
+
+    function _flushSessionToTodo() {
+        if (!currentTodo || !currentTodo.noteId || _sessionEvents.length === 0) return
+
+        const focusMin = Math.round(_totalFocusSeconds / 60)
+        const breakMin = Math.round(_totalBreakSeconds / 60)
+
+        // Convert JS array to QVariantList-compatible format
+        let events = []
+        for (let i = 0; i < _sessionEvents.length; i++) {
+            events.push(_sessionEvents[i])
+        }
+
+        ObsidianTodo.appendSessionLog(currentTodo.noteId, focusMin, breakMin, events)
+        _sessionEvents = []
+        _totalBreakSeconds = 0
+        _totalFocusSeconds = 0
     }
 
     // ── Settings ──

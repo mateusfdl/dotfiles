@@ -50,10 +50,15 @@ Item {
     property Component windowComponent: OverviewWindow {}
     property list<OverviewWindow> windowWidgets: []
 
+    // Refresh wallpaper path from swww when overview becomes visible
+    onVisibleChanged: {
+        if (visible) Appearance.refreshWallpaper();
+    }
+
     // Shared wallpaper image - loaded once and reused, only when visible
     Image {
         id: sharedWallpaper
-        source: root.visible ? (Appearance.background_image || "") : ""  // Only load when overview is visible
+        source: root.visible ? (Appearance.background_image ? "file://" + Appearance.background_image : "") : ""
         visible: false // Hidden as it's only used as a source
         cache: true
         asynchronous: true
@@ -75,10 +80,10 @@ Item {
         implicitWidth: workspaceColumnLayout.implicitWidth + padding * 2
         implicitHeight: workspaceColumnLayout.implicitHeight + padding * 2
         radius: 16
-        color: Colors.transparentize(Appearance.colors.colLayer0, 0.15)
+        color: Appearance.colors.colBackground
 
 
-        RowLayout { // Workspaces - now horizontal flow of open workspaces only
+        RowLayout { // Workspaces - horizontal flow of open workspaces only
             id: workspaceColumnLayout
 
             z: root.workspaceZ

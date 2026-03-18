@@ -65,7 +65,7 @@ Rectangle {
 
     FolderListModel {
         id: folderModel
-        folder: "file://" + wallpaperPath
+        folder: Qt.resolvedUrl(wallpaperPath)
         nameFilters: searchField.text.length > 0
             ? extensions.map(ext => "*" + searchField.text + ext)
             : extensions

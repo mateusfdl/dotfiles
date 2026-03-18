@@ -95,6 +95,11 @@ Scope {
                             implicitHeight: 1
                         }
 
+                        Topbar.MusicIsland {
+                            Layout.alignment: Qt.AlignVCenter
+                            Layout.rightMargin: 16
+                        }
+
                         Topbar.SysTray {
                             visible: true
                             Layout.fillWidth: false

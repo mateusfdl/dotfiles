@@ -169,7 +169,7 @@ Scope {
                                     text: "power_settings_new"
                                     iconSize: 24
                                     fill: 0
-                                    color: Qt.rgba(1, 0.3, 0.3, 1)
+                                    color: Appearance.m3colors.m3selectionText
                                 }
 
                             }
@@ -418,7 +418,7 @@ Scope {
                                         text: "skip_previous"
                                         iconSize: 24
                                         fill: 1
-                                        color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoPrevious) ? Appearance.m3colors.m3primaryText : Appearance.m3colors.m3secondaryText
+                                        color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoPrevious) ? Appearance.m3colors.m3selectionText : Appearance.m3colors.m3secondaryText
                                     }
 
                                 }
@@ -435,7 +435,7 @@ Scope {
                                         text: MediaPlayer.isPlaying ? "pause" : "play_arrow"
                                         iconSize: 32
                                         fill: 1
-                                        color: Qt.rgba(1, 0.6, 0.8, 1)
+                                        color: Appearance.m3colors.m3selectionText
                                     }
 
                                 }
@@ -452,7 +452,7 @@ Scope {
                                         text: "skip_next"
                                         iconSize: 24
                                         fill: 1
-                                        color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoNext) ? Appearance.m3colors.m3primaryText : Appearance.m3colors.m3secondaryText
+                                        color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoNext) ? Appearance.m3colors.m3selectionText : Appearance.m3colors.m3secondaryText
                                     }
 
                                 }
@@ -513,7 +513,7 @@ Scope {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 70
                                 radius: 16
-                                color: toggleMouseArea.pressed ? Qt.darker(modelData.active ? Appearance.m3colors.m3selectionBackground : Appearance.colors.colLayer2, 1.2) : (modelData.active ? Appearance.m3colors.m3selectionBackground : Appearance.colors.colLayer2)
+                                color: toggleMouseArea.pressed ? Qt.darker(Appearance.m3colors.m3selectionBackground, 1.2) : Appearance.m3colors.m3selectionBackground
                                 border.color: Appearance.m3colors.m3borderSecondary
                                 border.width: 1
                                 scale: toggleMouseArea.pressed ? 0.95 : 1.0
@@ -540,14 +540,14 @@ Scope {
                                         text: modelData.icon
                                         iconSize: 24
                                         fill: modelData.active ? 1 : 0
-                                        color: modelData.active ? Appearance.m3colors.m3accentPrimary : Appearance.m3colors.m3surfaceText
+                                        color: Appearance.m3colors.m3selectionText
                                     }
 
                                     StyledText {
                                         text: modelData.label
                                         font.pixelSize: 12
                                         font.weight: Font.Medium
-                                        color: Appearance.m3colors.m3surfaceText
+                                        color: Appearance.m3colors.m3selectionText
                                     }
 
                                 }
@@ -594,7 +594,7 @@ Scope {
                             }]
 
                             Rectangle {
-                                property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.colors.colLayer2
+                                property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.m3colors.m3selectionBackground
 
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 56
@@ -631,7 +631,7 @@ Scope {
                                         text: (modelData.action === "record" && ScreenRecorder.isRecording) ? "stop_circle" : modelData.icon
                                         iconSize: 20
                                         fill: (modelData.action === "record" && ScreenRecorder.isRecording) ? 1 : 0
-                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3surfaceText
+                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3selectionText
 
                                         Behavior on color {
                                             ColorAnimation {
@@ -644,7 +644,7 @@ Scope {
                                         text: (modelData.action === "record" && ScreenRecorder.isRecording) ? "Stop" : modelData.label
                                         font.pixelSize: 13
                                         font.weight: Font.Medium
-                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3surfaceText
+                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3selectionText
 
                                         Behavior on color {
                                             ColorAnimation {

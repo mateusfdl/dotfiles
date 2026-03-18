@@ -10,9 +10,28 @@ Singleton {
 
     property var themeData: null
     property bool themeLoaded: false
-    property string background_image: Directories.config + "/rofi/.current_wallpaper"
+    property string background_image: ""
 
     property string currentThemeMode: "dark"
+
+    // Query swww for the current wallpaper path
+    Process {
+        id: wallpaperQuery
+        command: [Directories.currentWallpaperScriptPath]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                const path = data.trim();
+                if (path.length > 0) {
+                    root.background_image = path;
+                }
+            }
+        }
+    }
+
+    function refreshWallpaper() {
+        wallpaperQuery.running = true;
+    }
 
     Component.onCompleted: {
         currentThemeMode = Config.options.ui.theme;

@@ -9,6 +9,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import QsUtils
 
 Scope {
     id: overviewScope
@@ -26,6 +27,7 @@ Scope {
 
             WlrLayershell.namespace: "quickshell:overview"
             WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
             color: "transparent"
 
             mask: Region {
@@ -79,10 +81,32 @@ Scope {
                 anchors.centerIn: parent
                 implicitWidth: overviewLoader.item?.implicitWidth ?? 0
                 implicitHeight: overviewLoader.item?.implicitHeight ?? 0
+                focus: GlobalStates.overviewOpen
 
                 Keys.onPressed: (event) => {
                     if (event.key === Qt.Key_Escape) {
                         GlobalStates.overviewOpen = false;
+                        event.accepted = true;
+                    } else if (event.key >= Qt.Key_1 && event.key <= Qt.Key_9) {
+                        var workspaceNum = event.key - Qt.Key_0;
+                        GlobalStates.overviewOpen = false;
+                        Hyprland.dispatch(`workspace ${workspaceNum}`);
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_W || event.key === Qt.Key_L || event.key === Qt.Key_Right) {
+                        var nextId = HyprlandWorkspace.navigateForward(
+                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                        if (nextId >= 0) Hyprland.dispatch(`workspace ${nextId}`);
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_B || event.key === Qt.Key_H || event.key === Qt.Key_Left) {
+                        var prevId = HyprlandWorkspace.navigateBackward(
+                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                        if (prevId >= 0) Hyprland.dispatch(`workspace ${prevId}`);
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_N) {
+                        var newId = HyprlandWorkspace.insertWorkspaceAfter(
+                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                        if (newId >= 0) Hyprland.dispatch(`workspace ${newId}`);
+                        event.accepted = true;
                     }
                 }
 

@@ -3,6 +3,7 @@ singleton VolumePopup 1.0 VolumePopup.qml
 singleton PomodoroPopup 1.0 PomodoroPopup.qml
 PomodoroBreakOverlay 1.0 PomodoroBreakOverlay.qml
 singleton NowPlayingPopup 1.0 NowPlayingPopup.qml
+singleton MusicIslandPopup 1.0 MusicIslandPopup.qml
 singleton ControlCenterPopup 1.0 ControlCenterPopup.qml
 singleton SessionMenu 1.0 SessionMenu.qml
 NerdFontIcon 1.0 NerdFontIcon.qml
@@ -18,3 +19,4 @@ VolumeIndicator 1.0 VolumeIndicator.qml
 ControlCenter 1.0 ControlCenter.qml
 Clock 1.0 Clock.qml
 AppDrawer 1.0 AppDrawer.qml
+MusicIsland 1.0 MusicIsland.qml

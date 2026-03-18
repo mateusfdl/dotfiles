@@ -77,6 +77,35 @@ Item {
             }
         }
 
+        // Active todo description (truncated)
+        Text {
+            text: Pomodoro.currentTodo ? Pomodoro.currentTodo.description : ""
+            color: Appearance.m3colors.m3primaryText
+            font.pixelSize: 11
+            font.weight: Font.Normal
+            verticalAlignment: Text.AlignVCenter
+            visible: (Pomodoro.isRunning || Pomodoro.isPaused) && Pomodoro.currentTodo !== null
+            elide: Text.ElideRight
+            maximumLineCount: 1
+
+            Layout.maximumWidth: 140
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 300
+                }
+            }
+        }
+
+        // Separator dot between todo text and cycle dots
+        Rectangle {
+            width: 3
+            height: 3
+            radius: 1.5
+            color: Qt.rgba(1, 1, 1, 0.3)
+            visible: (Pomodoro.isRunning || Pomodoro.isPaused) && Pomodoro.currentTodo !== null
+        }
+
         // Cycle indicator dots
         Row {
             spacing: 3

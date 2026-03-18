@@ -28,9 +28,13 @@ Item {
         passwordInput.forceActiveFocus();
     }
 
+    // Read wallpaper path from swww cache files directly.
+    // At boot, the swww daemon isn't running yet, so `swww query` fails.
+    // However, swww persists the last wallpaper in ~/.cache/swww/<monitor>.
+    // The cache files are null-delimited: \0<filter>\0<path>\0
     Process {
         id: wallpaperQuery
-        command: [Directories.currentWallpaperScriptPath]
+        command: ["sh", "-c", `for f in "$HOME/.cache/swww/"*; do [ -f "$f" ] && tr '\\0' '\\n' < "$f" | sed -n '3p' && break; done`]
         running: true
         stdout: SplitParser {
             onRead: data => {
