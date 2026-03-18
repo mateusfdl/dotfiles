@@ -12,6 +12,7 @@
     ../../modules/optional/hyprland.nix
     ../../modules/optional/nvidia.nix
     ../../modules/optional/nix-ld.nix
+    ../../modules/optional/obs.nix
     ../../pkgs/desktop.nix
     ../../modules/optional/portals.nix
     ../../modules/optional/sshfs.nix
