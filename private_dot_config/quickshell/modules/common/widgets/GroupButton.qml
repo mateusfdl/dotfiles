@@ -1,8 +1,8 @@
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
+import QsUtils
 import QtQuick.Layouts
 
 /**
@@ -32,7 +32,7 @@ Button {
     implicitWidth: (root.down && bounce) ? clickedWidth : baseWidth
     implicitHeight: (root.down && bounce) ? clickedHeight : baseHeight
 
-    property color colBackground: ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+    property color colBackground: Colors.transparentize(Appearance.colors.colLayer1Hover, 1)
     property color colBackgroundHover: Appearance.colors.colLayer1Hover
     property color colBackgroundActive: Appearance.colors.colLayer1Active
     property color colBackgroundToggled: Appearance.colors.colPrimary

@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.modules.common
-import qs.modules.common.functions
+import QsUtils
 pragma Singleton
 pragma ComponentBehavior: Bound
 
@@ -64,7 +64,7 @@ Singleton {
     property real _segmentStartEpoch: 0
 
     // ── Log file path ──
-    readonly property string _logDir: FileUtils.trimFileProtocol(`${Directories.state}`)
+    readonly property string _logDir: Files.trimFileProtocol(`${Directories.state}`)
     readonly property string _logPath: `${_logDir}/pomodoro-sessions.jsonl`
 
     // ── Timer ──

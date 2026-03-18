@@ -3,11 +3,11 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 import Quickshell.Widgets
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 
 RippleButton {
     id: root
@@ -21,7 +21,7 @@ RippleButton {
     signal dismiss()
     signal openSubmenu(handle: QsMenuHandle)
 
-    colBackground: menuEntry.isSeparator ? Appearance.m3colors.m3borderSecondary : ColorUtils.transparentize(Appearance.colors.colLayer1)
+    colBackground: menuEntry.isSeparator ? Appearance.m3colors.m3borderSecondary : Colors.transparentize(Appearance.colors.colLayer1)
     colBackgroundHover: Appearance.colors.colLayer2
     enabled: !menuEntry.isSeparator
     opacity: 1

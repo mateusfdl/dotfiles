@@ -51,7 +51,6 @@ Singleton {
         }
     }
 
-    // Properties
     property bool silent: false
     property int unread: 0
     property list<Notif> list: []
@@ -60,14 +59,12 @@ Singleton {
     property var latestTimeForApp: ({})
     property int idOffset: 0
 
-    // Signals
     signal initDone()
     signal notify(notification: var)
     signal discard(id: int)
     signal discardAll()
     signal timeout(id: var)
 
-    // Components
     Component {
         id: notifComponent
         Notif {}
@@ -78,7 +75,6 @@ Singleton {
         NotifTimer {}
     }
 
-    // Notification Server
     NotificationServer {
         id: notifServer
         actionsSupported: true
@@ -91,7 +87,6 @@ Singleton {
         persistenceSupported: true
 
         onNotification: (notification) => {
-            // Removed debug console.log statements for better performance
 
             notification.tracked = true
             const newNotifObject = notifComponent.createObject(root, {
@@ -101,7 +96,6 @@ Singleton {
             });
             root.list = [...root.list, newNotifObject];
 
-            // Popup logic
             if (!root.popupInhibited) {
                 newNotifObject.popup = true;
                 if (notification.expireTimeout != 0) {
@@ -117,7 +111,6 @@ Singleton {
         }
     }
 
-    // Helper functions
     function notifToJSON(notif) {
         return {
             "notificationId": notif.notificationId,
@@ -159,20 +152,17 @@ Singleton {
         });
     }
 
-    // Computed properties
     property var groupsByAppName: groupsForList(root.list)
     property var popupGroupsByAppName: groupsForList(root.popupList)
     property var appNameList: appNameListForGroups(root.groupsByAppName)
     property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
 
     onListChanged: {
-        // Update latest time for each app
         root.list.forEach((notif) => {
             if (!root.latestTimeForApp[notif.appName] || notif.time > root.latestTimeForApp[notif.appName]) {
                 root.latestTimeForApp[notif.appName] = Math.max(root.latestTimeForApp[notif.appName] || 0, notif.time);
             }
         });
-        // Remove apps that no longer have notifications
         Object.keys(root.latestTimeForApp).forEach((appName) => {
             if (!root.list.some((notif) => notif.appName === appName)) {
                 delete root.latestTimeForApp[appName];
@@ -180,7 +170,6 @@ Singleton {
         });
     }
 
-    // Public functions
     function markAllRead() {
         root.unread = 0;
     }

@@ -1,6 +1,6 @@
 import qs.modules.common
 import qs.modules.common.models
-import qs.modules.common.functions
+import QsUtils
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
@@ -15,17 +15,17 @@ pragma ComponentBehavior: Bound
 Singleton {
     id: root
 
-    property string thumbgenScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/thumbgen.py`
-    property string generateThumbnailsMagickScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
+    property string thumbgenScriptPath: `${Files.trimFileProtocol(Directories.scriptPath)}/thumbnails/thumbgen.py`
+    property string generateThumbnailsMagickScriptPath: `${Files.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
     property alias directory: folderModel.folder
-    readonly property string effectiveDirectory: FileUtils.trimFileProtocol(folderModel.folder.toString())
+    readonly property string effectiveDirectory: Files.trimFileProtocol(folderModel.folder.toString())
     property url defaultFolder: Qt.resolvedUrl(`${Directories.pictures}/Wallpapers`)
-    property alias folderModel: folderModel // Expose for direct binding when needed
+    property alias folderModel: folderModel 
     property string searchQuery: ""
-    readonly property list<string> extensions: [ // TODO: add videos
+    readonly property list<string> extensions: [ 
         "jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"
     ]
-    property list<string> wallpapers: [] // List of absolute file paths (without file://)
+    property list<string> wallpapers: [] 
     readonly property bool thumbnailGenerationRunning: thumbgenProc.running
     property real thumbnailGenerationProgress: 0
 
@@ -33,7 +33,6 @@ Singleton {
     signal thumbnailGenerated(directory: string)
     signal thumbnailGeneratedFile(filePath: string)
 
-    // Executions
     Process {
         id: applyProc
     }
@@ -62,7 +61,7 @@ Singleton {
         function select(filePath, darkMode = Appearance.m3colors.darkmode) {
             selectProc.filePath = filePath
             selectProc.darkMode = darkMode
-            selectProc.exec(["test", "-d", FileUtils.trimFileProtocol(filePath)])
+            selectProc.exec(["test", "-d", Files.trimFileProtocol(filePath)])
         }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
@@ -88,7 +87,7 @@ Singleton {
         id: validateDirProc
         property string nicePath: ""
         function setDirectoryIfValid(path) {
-            validateDirProc.nicePath = FileUtils.trimFileProtocol(path).replace(/\/+$/, "")
+            validateDirProc.nicePath = Files.trimFileProtocol(path).replace(/\/+$/, "")
             if (/^\/*$/.test(validateDirProc.nicePath)) validateDirProc.nicePath = "/";
             validateDirProc.exec([
                 "bash", "-c",
@@ -101,7 +100,7 @@ Singleton {
                 const result = text.trim()
                 if (result === "dir") {
                 } else if (result === "file") {
-                    root.directory = Qt.resolvedUrl(FileUtils.parentDirectory(validateDirProc.nicePath))
+                    root.directory = Qt.resolvedUrl(Files.parentDirectory(validateDirProc.nicePath))
                 }  
             }
         }
@@ -119,7 +118,6 @@ Singleton {
         folderModel.navigateForward()
     }
 
-    // Folder model
     FolderListModelWithHistory {
         id: folderModel
         folder: Qt.resolvedUrl(root.defaultFolder)
@@ -133,20 +131,19 @@ Singleton {
         onCountChanged: {
             root.wallpapers = []
             for (let i = 0; i < folderModel.count; i++) {
-                const path = folderModel.get(i, "filePath") || FileUtils.trimFileProtocol(folderModel.get(i, "fileURL"))
+                const path = folderModel.get(i, "filePath") || Files.trimFileProtocol(folderModel.get(i, "fileURL"))
                 if (path && path.length) root.wallpapers.push(path)
             }
         }
     }
 
-    // Thumbnail generation
     function generateThumbnail(size: string) {
         if (!["normal", "large", "x-large", "xx-large"].includes(size)) throw new Error("Invalid thumbnail size");
         thumbgenProc.directory = root.directory
         thumbgenProc.running = false
         thumbgenProc.command = [
             "bash", "-c",
-            `${thumbgenScriptPath} --size ${size} --machine_progress -d ${FileUtils.trimFileProtocol(root.directory)} || ${generateThumbnailsMagickScriptPath} --size ${size} -d ${root.directory}`,
+            `${thumbgenScriptPath} --size ${size} --machine_progress -d ${Files.trimFileProtocol(root.directory)} || ${generateThumbnailsMagickScriptPath} --size ${size} -d ${root.directory}`,
         ]
         root.thumbnailGenerationProgress = 0
         thumbgenProc.running = true

@@ -1,7 +1,7 @@
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import Qt5Compat.GraphicalEffects
+import QsUtils
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -15,7 +15,7 @@ TabButton {
     height: buttonBackground.height
     property int tabContentWidth: buttonBackground.width - buttonBackground.radius*2
 
-    property color colBackground: ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+    property color colBackground: Colors.transparentize(Appearance.colors.colLayer1Hover, 1)
     property color colBackgroundHover: Appearance.colors.colLayer1Hover
     property color colRipple: Appearance.colors.colLayer1Active
 

@@ -53,7 +53,7 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
             property JsonObject ui: JsonObject {
-                property string theme: "dark" // "dark" or "light"
+                property string theme: "dark"
                 property real scale: 1.25
             }
 
@@ -74,15 +74,17 @@ Singleton {
 
             property JsonObject ai: JsonObject {
                 property string systemPrompt: "## Style\n- Use casual tone, don't be formal! Make sure you answer precisely without hallucination and prefer bullet points over walls of text. You can have a friendly greeting at the beginning of the conversation, but don't repeat the user's question\n\n## Context (ignore when irrelevant)\n- You are a helpful and inspiring sidebar assistant on a {DISTRO} Linux system\n- Desktop environment: {DE}\n- Current date & time: {DATETIME}\n- Focused app: {WINDOWCLASS}\n\n## Presentation\n- Use Markdown features in your response: \n  - **Bold** text to **highlight keywords** in your response\n  - **Split long information into small sections** with h2 headers and a relevant emoji at the start of it (for example `## 🐧 Linux`). Bullet points are preferred over long paragraphs, unless you're offering writing support or instructed otherwise by the user.\n- Asked to compare different options? You should firstly use a table to compare the main aspects, then elaborate or include relevant comments from online forums *after* the table. Make sure to provide a final recommendation for the user's use case!\n- Use LaTeX formatting for mathematical and scientific notations whenever appropriate. Enclose all LaTeX '$$' delimiters. NEVER generate LaTeX code in a latex block unless the user explicitly asks for it. DO NOT use LaTeX for regular documents (resumes, letters, essays, CVs, etc.).\n"
-                property string tool: "functions" // search, functions, or none
+                property string tool: "functions"
                 property list<var> extraModels: [
                     {
-                        "api_format": "openai", // Most of the time you want "openai". Use "gemini" for Google's models
+                        "api_format": "openai",
                         "description": "This is a custom model. Edit the config to add more! | Anyway, this is DeepSeek R1 Distill LLaMA 70B",
                         "endpoint": "https://openrouter.ai/api/v1/chat/completions",
-                        "homepage": "https://openrouter.ai/deepseek/deepseek-r1-distill-llama-70b:free", // Not mandatory
-                        "icon": "spark-symbolic", // Not mandatory
-                        "key_get_link": "https://openrouter.ai/settings/keys", // Not mandatory
+                        "homepage": "https://openrouter.ai/deepseek/deepseek-r1-distill-llama-70b:free" // Not mandatory
+                        ,
+                        "icon": "spark-symbolic",
+                        "key_get_link": "https://openrouter.ai/settings/keys" // Not mandatory
+                        ,
                         "key_id": "openrouter",
                         "model": "deepseek/deepseek-r1-distill-llama-70b:free",
                         "name": "Custom: DS R1 Dstl. LLaMA 70B",
@@ -93,16 +95,14 @@ Singleton {
 
             property JsonObject appearance: JsonObject {
                 property bool extraBackgroundTint: true
-                property int fakeScreenRounding: 2 // 0: None | 1: Always | 2: When not fullscreen
+                property int fakeScreenRounding: 2
                 property JsonObject palette: JsonObject {
-                    property string type: "auto" // Allowed: auto, scheme-content, scheme-expressive, scheme-fidelity, scheme-fruit-salad, scheme-monochrome, scheme-neutral, scheme-rainbow, scheme-tonal-spot
+                    property string type: "auto"
                 }
             }
 
             property JsonObject audio: JsonObject {
-                // Values in %
                 property JsonObject protection: JsonObject {
-                    // Prevent sudden bangs
                     property bool enable: false
                     property real maxAllowedIncrease: 10
                     property real maxAllowed: 99
@@ -114,7 +114,7 @@ Singleton {
                 property string network: "kitty -1 fish -c nmtui"
                 property string networkEthernet: "kcmshell6 kcm_networkmanagement"
                 property string taskManager: "plasma-systemmonitor --page-name Processes"
-                property string terminal: "kitty -1" // This is only for shell actions
+                property string terminal: "kitty -1"
             }
 
             property JsonObject bar: JsonObject {
@@ -127,11 +127,12 @@ Singleton {
                         property int delay: 140
                     }
                 }
-                property bool bottom: false // Instead of top
-                property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
-                property bool borderless: false // true for no grouping of items
-                property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
+                property bool bottom: false
+                property int cornerStyle: 0
+                property bool borderless: false
+                property string topLeftIcon: "spark"
                 property bool showBackground: true
+                property string iconColor: ""
                 property bool verbose: true
                 property bool vertical: false
                 property int margins: 15
@@ -143,7 +144,7 @@ Singleton {
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
                 }
-                property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                property list<string> screenList: []
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: false
@@ -155,8 +156,8 @@ Singleton {
                 property JsonObject tray: JsonObject {
                     property bool monochromeIcons: true
                     property bool showItemId: false
-                    property bool invertPinnedItems: true // Makes the below a whitelist for the tray and blacklist for the pinned area
-                    property list<string> pinnedItems: [ ]
+                    property bool invertPinnedItems: true
+                    property list<string> pinnedItems: []
                     property int itemSize: 24
                     property int iconSize: 20
                     property int spacing: 14
@@ -169,27 +170,29 @@ Singleton {
                     property int iconSize: 16
                     property bool showAppIcons: true
                     property bool alwaysShowNumbers: false
-                    property int showNumberDelay: 300 // milliseconds
+                    property int showNumberDelay: 300
                     property list<string> numberMap: ["1", "2"] // Characters to show instead of numbers on workspace indicator
                     property bool useNerdFont: false
+                    property int activeSize: 8
+                    property int inactiveSize: 8
                 }
                 property JsonObject weather: JsonObject {
                     property bool enable: false
-                    property bool enableGPS: true // gps based location
-                    property string city: "" // When 'enableGPS' is false
-                    property bool useUSCS: false // Instead of metric (SI) units
-                    property int fetchInterval: 10 // minutes
+                    property bool enableGPS: true
+                    property string city: ""
+                    property bool useUSCS: false
+                    property int fetchInterval: 10
                 }
             }
 
             property JsonObject interactions: JsonObject {
                 property JsonObject scrolling: JsonObject {
-                    property bool fasterTouchpadScroll: false // Enable faster scrolling with touchpad
-                    property int mouseScrollDeltaThreshold: 120 // delta >= this then it gets detected as mouse scroll rather than touchpad
+                    property bool fasterTouchpadScroll: false
+                    property int mouseScrollDeltaThreshold: 120
                     property int mouseScrollFactor: 120
                     property int touchpadScrollFactor: 450
                 }
-                property JsonObject deadPixelWorkaround: JsonObject { // Hyprland leaves out 1 pixel on the right for interactions
+                property JsonObject deadPixelWorkaround: JsonObject {
                     property bool enable: false
                 }
             }
@@ -219,6 +222,7 @@ Singleton {
                 property bool aiChat: true
                 property bool lockScreen: true
                 property bool cheatsheet: true
+                property bool obsidianTodo: true
             }
 
             property JsonObject networking: JsonObject {
@@ -235,13 +239,13 @@ Singleton {
 
             property JsonObject overview: JsonObject {
                 property bool enable: true
-                property real scale: 0.18 // Relative to screen size
+                property real scale: 0.18
                 property real numOfRows: 2
                 property real numOfCols: 5
                 property bool showXwaylandIndicator: true
                 property real windowPadding: 6
-                property real position: 1 // 0: top | 1: middle | 2: bottom
-                property real workspaceNumberSize: 120 // Set 0, dynamic calculation based on monitor size
+                property real position: 1
+                property real workspaceNumberSize: 120
             }
 
             property JsonObject resources: JsonObject {
@@ -250,10 +254,10 @@ Singleton {
 
             property JsonObject search: JsonObject {
                 property bool searchEnabled: false
-                property int nonAppResultDelay: 30 // This prevents lagging when typing
+                property int nonAppResultDelay: 30
                 property string engineBaseUrl: "https://www.google.com/search?q="
                 property list<string> excludedSites: ["quora.com"]
-                property bool sloppy: false // Uses levenshtein distance based scoring instead of fuzzy sort. Very weird.
+                property bool sloppy: false
                 property JsonObject prefix: JsonObject {
                     property bool showDefaultActionsWithoutPrefix: true
                     property string action: "/"
@@ -278,7 +282,7 @@ Singleton {
             }
 
             property JsonObject time: JsonObject {
-                // https://doc.qt.io/qt-6/qtime.html#toString
+
                 property string format: "hh:mm"
                 property string shortDateFormat: "dd/MM"
                 property string dateFormat: "ddd, dd/MM"
@@ -290,18 +294,18 @@ Singleton {
                     property int longBreak: 900
                 }
             }
-            
+
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
             }
-            
+
             property JsonObject windows: JsonObject {
-                property bool showTitlebar: true // Client-side decoration for shell apps
+                property bool showTitlebar: true
                 property bool centerTitle: true
             }
 
             property JsonObject hacks: JsonObject {
-                property int arbitraryRaceConditionDelay: 20 // milliseconds
+                property int arbitraryRaceConditionDelay: 20
             }
         }
     }

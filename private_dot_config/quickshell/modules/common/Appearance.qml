@@ -1,10 +1,9 @@
-import QtQuick
-import Quickshell
-import Quickshell.Io
-import qs.modules.common.functions
-
 pragma Singleton
 pragma ComponentBehavior: Bound
+import QtQuick
+import QsUtils
+import Quickshell
+import Quickshell.Io
 
 Singleton {
     id: root
@@ -16,16 +15,16 @@ Singleton {
     property string currentThemeMode: "dark"
 
     Component.onCompleted: {
-        currentThemeMode = Config.options.ui.theme
+        currentThemeMode = Config.options.ui.theme;
     }
 
     readonly property var currentThemeColors: themeData?.[currentThemeMode]
 
     function loadThemeFromText(text) {
         try {
-            root.themeData = JSON.parse(text)
+            root.themeData = JSON.parse(text);
         } catch (e) {
-            console.error("[Appearance] Failed to parse theme JSON:", e)
+            console.error("[Appearance] Failed to parse theme JSON:", e);
         }
     }
 
@@ -35,22 +34,20 @@ Singleton {
         watchChanges: true
         onFileChanged: reload()
         onLoaded: {
-            root.themeLoaded = true
-            root.loadThemeFromText(themeFileView.text())
+            root.themeLoaded = true;
+            root.loadThemeFromText(themeFileView.text());
         }
         onLoadFailed: error => {
-            console.error("[Appearance] Failed to load theme.json:", error)
+            console.error("[Appearance] Failed to load theme.json:", error);
         }
     }
 
     readonly property var theme: themeData || {}
 
-    // Helper property that explicitly depends on both themeData and currentThemeMode
-    // This ensures QML tracks both dependencies for proper binding updates
     readonly property var _colors: {
-        const mode = root.currentThemeMode  // explicit dependency
-        const data = root.themeData         // explicit dependency
-        return data?.[mode] ?? {}
+        const mode = root.currentThemeMode;
+        const data = root.themeData;
+        return data?.[mode] ?? {};
     }
 
     readonly property QtObject m3colors: QtObject {
@@ -72,15 +69,15 @@ Singleton {
         readonly property color m3selectionText: root._colors?.selectionText ?? "#c0caf5"
         readonly property color m3borderSecondary: root._colors?.borderSecondary ?? "#414868"
 
-        readonly property color m3outline: ColorUtils.mix(m3borderPrimary, m3windowBackground, 0.5)
-        readonly property color m3outlineVariant: ColorUtils.mix(m3borderSecondary, m3windowBackground, 0.6)
+        readonly property color m3outline: Colors.mix(m3borderPrimary, m3windowBackground, 0.5)
+        readonly property color m3outlineVariant: Colors.mix(m3borderSecondary, m3windowBackground, 0.6)
         readonly property color m3surface: m3windowBackground
         readonly property color m3onSurface: m3primaryText
         readonly property color m3onPrimary: m3accentPrimaryText
-        readonly property color m3onSecondaryContainer: ColorUtils.mix(m3accentPrimary, m3windowBackground, 0.3)
+        readonly property color m3onSecondaryContainer: Colors.mix(m3accentPrimary, m3windowBackground, 0.3)
         readonly property color m3primary: m3accentPrimary
-        readonly property color m3surfaceContainerLow: ColorUtils.mix(m3layerBackground1, m3windowBackground, 0.6)
-        readonly property color m3secondaryContainer: ColorUtils.transparentize(ColorUtils.mix(m3layerBackground2, m3accentSecondary, 0.7), 0.4)
+        readonly property color m3surfaceContainerLow: Colors.mix(m3layerBackground1, m3windowBackground, 0.6)
+        readonly property color m3secondaryContainer: Colors.transparentize(Colors.mix(m3layerBackground2, m3accentSecondary, 0.7), 0.4)
 
         readonly property color colTooltip: darkmode ? "#1f2335" : "#F4F0D9"
         readonly property color colOnTooltip: darkmode ? "#c0caf5" : "#5C6A72"
@@ -93,26 +90,26 @@ Singleton {
         readonly property real contentTransparency: theme.transparency?.content || 0.1
         readonly property real workspaceTransparency: theme.transparency?.workspace || 0.8
 
-        readonly property color colLayer0: ColorUtils.transparentize(m3colors.m3windowBackground, transparency)
+        readonly property color colLayer0: Colors.transparentize(m3colors.m3windowBackground, transparency)
         readonly property color colOnLayer0: m3colors.m3primaryText
-        readonly property color colLayer1: ColorUtils.mix(m3colors.m3layerBackground1, m3colors.m3windowBackground, 1)
+        readonly property color colLayer1: Colors.mix(m3colors.m3layerBackground1, m3colors.m3windowBackground, 1)
         readonly property color colOnLayer1: m3colors.m3secondaryText
-        readonly property color colLayer2: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground2, m3colors.m3layerBackground3, 0.55), contentTransparency)
+        readonly property color colLayer2: Colors.transparentize(Colors.mix(m3colors.m3layerBackground2, m3colors.m3layerBackground3, 0.55), contentTransparency)
         readonly property color colOnLayer2: m3colors.m3surfaceText
-        readonly property color colLayer1Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.92), contentTransparency)
-        readonly property color colLayer1Active: ColorUtils.transparentize(ColorUtils.mix(colLayer1, colOnLayer1, 0.85), contentTransparency)
-        readonly property color colLayer2Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.90), contentTransparency)
-        readonly property color colLayer2Active: ColorUtils.transparentize(ColorUtils.mix(colLayer2, colOnLayer2, 0.80), contentTransparency)
+        readonly property color colLayer1Hover: Colors.transparentize(Colors.mix(colLayer1, colOnLayer1, 0.92), contentTransparency)
+        readonly property color colLayer1Active: Colors.transparentize(Colors.mix(colLayer1, colOnLayer1, 0.85), contentTransparency)
+        readonly property color colLayer2Hover: Colors.transparentize(Colors.mix(colLayer2, colOnLayer2, 0.90), contentTransparency)
+        readonly property color colLayer2Active: Colors.transparentize(Colors.mix(colLayer2, colOnLayer2, 0.80), contentTransparency)
         readonly property color colPrimary: m3colors.m3accentPrimary
-        readonly property color colPrimaryHover: ColorUtils.mix(colors.colPrimary, colLayer1Hover, 0.87)
-        readonly property color colPrimaryActive: ColorUtils.mix(colors.colPrimary, colLayer1Active, 0.7)
-        readonly property color colShadow: ColorUtils.transparentize(m3colors.m3shadowColor, 0.7)
+        readonly property color colPrimaryHover: Colors.mix(colors.colPrimary, colLayer1Hover, 0.87)
+        readonly property color colPrimaryActive: Colors.mix(colors.colPrimary, colLayer1Active, 0.7)
+        readonly property color colShadow: Colors.transparentize(m3colors.m3shadowColor, 0.7)
 
-        readonly property color colSecondaryContainer: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground2, m3colors.m3accentPrimary, 0.85), 0.5)
-        readonly property color colSurfaceContainerHighest: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3layerBackground3, m3colors.m3windowBackground, 0.5), 0.3)
-        readonly property color colPrimaryContainer: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.7), 0.4)
-        readonly property color colPrimaryContainerHover: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.6), 0.3)
-        readonly property color colPrimaryContainerActive: ColorUtils.transparentize(ColorUtils.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.5), 0.2)
+        readonly property color colSecondaryContainer: Colors.transparentize(Colors.mix(m3colors.m3layerBackground2, m3colors.m3accentPrimary, 0.85), 0.5)
+        readonly property color colSurfaceContainerHighest: Colors.transparentize(Colors.mix(m3colors.m3layerBackground3, m3colors.m3windowBackground, 0.5), 0.3)
+        readonly property color colPrimaryContainer: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.7), 0.4)
+        readonly property color colPrimaryContainerHover: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.6), 0.3)
+        readonly property color colPrimaryContainerActive: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.5), 0.2)
         readonly property color colOnPrimaryContainer: m3colors.m3accentPrimaryText
         readonly property color colOnSecondaryContainer: m3colors.m3primaryText
     }
@@ -132,12 +129,14 @@ Singleton {
         readonly property int windowRounding: getRoundingValue(theme.rounding?.window) ?? veryverylarge
 
         function getRoundingValue(key) {
-            if (!key) return null
-            if (typeof key === 'number') return key
+            if (!key)
+                return null;
+            if (typeof key === 'number')
+                return key;
             if (theme.rounding && theme.rounding[key] !== undefined) {
-                return theme.rounding[key]
+                return theme.rounding[key];
             }
-            return null
+            return null;
         }
     }
 
@@ -159,9 +158,9 @@ Singleton {
     }
 
     function getCurve(name) {
-        const curves = theme.animation?.curves
+        const curves = theme.animation?.curves;
         if (curves && curves[name]) {
-            return curves[name]
+            return curves[name];
         }
         const defaults = {
             "expressiveFastSpatial": [0.42, 1.67, 0.21, 0.90, 1, 1],
@@ -174,8 +173,8 @@ Singleton {
             "standard": [0.2, 0, 0, 1, 1, 1],
             "standardAccel": [0.3, 0, 1, 1, 1, 1],
             "standardDecel": [0, 0, 0, 1, 1, 1]
-        }
-        return defaults[name] || [0.2, 0, 0, 1, 1, 1]
+        };
+        return defaults[name] || [0.2, 0, 0, 1, 1, 1];
     }
 
     readonly property QtObject animationCurves: QtObject {
@@ -295,6 +294,7 @@ Singleton {
         readonly property real searchWidthCollapsed: theme.sizes?.searchWidthCollapsed ?? 260
         readonly property real searchWidth: theme.sizes?.searchWidth ?? 450
         readonly property real hyprlandGapsOut: theme.sizes?.hyprlandGapsOut ?? 5
+        readonly property real barTopMargin: theme.sizes?.barTopMargin ?? 8
         readonly property real elevationMargin: theme.sizes?.elevationMargin ?? 10
         readonly property real fabShadowRadius: theme.sizes?.fabShadowRadius ?? 5
         readonly property real fabHoveredShadowRadius: theme.sizes?.fabHoveredShadowRadius ?? 7

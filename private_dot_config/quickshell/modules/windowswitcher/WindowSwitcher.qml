@@ -1,12 +1,12 @@
 import qs
 import qs.modules.common.widgets
 import qs.modules.common
-import qs.modules.common.functions
 import qs.services
 import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -209,7 +209,7 @@ Scope {
                         verticalOffset: 8
                         radius: 24
                         samples: 49
-                        color: ColorUtils.transparentize(Appearance.m3colors.m3shadowColor, 0.4)
+                        color: Colors.transparentize(Appearance.m3colors.m3shadowColor, 0.4)
                     }
 
                     ListView {
@@ -290,7 +290,7 @@ Scope {
                                         verticalOffset: 2
                                         radius: 6
                                         samples: 13
-                                        color: ColorUtils.transparentize("#000000", 0.6)
+                                        color: Colors.transparentize("#000000", 0.6)
                                     }
                                 }
                             }

@@ -1,7 +1,7 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
 
-import qs.modules.common.functions
+import QsUtils
 import Qt.labs.platform
 import QtQuick
 import Quickshell
@@ -20,13 +20,13 @@ Singleton {
 
     property string assetsPath: Quickshell.shellPath("assets")
     property string scriptPath: Quickshell.shellPath("scripts")
-    property string favicons: FileUtils.trimFileProtocol(`${Directories.cache}/media/favicons`)
-    property string booruPreviews: FileUtils.trimFileProtocol(`${Directories.cache}/media/boorus`)
-    property string latexOutput: FileUtils.trimFileProtocol(`${Directories.cache}/media/latex`)
-    property string shellConfig: FileUtils.trimFileProtocol(`${Directories.config}/quickshell`)
+    property string favicons: Files.trimFileProtocol(`${Directories.cache}/media/favicons`)
+    property string booruPreviews: Files.trimFileProtocol(`${Directories.cache}/media/boorus`)
+    property string latexOutput: Files.trimFileProtocol(`${Directories.cache}/media/latex`)
+    property string shellConfig: Files.trimFileProtocol(`${Directories.config}/quickshell`)
     property string shellConfigName: "config.json"
     property string shellConfigPath: `${Directories.shellConfig}/${Directories.shellConfigName}`
-    property string notificationsPath: FileUtils.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
+    property string notificationsPath: Files.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
     property string generatedMaterialThemePath: `${Directories.shellConfig}/config/theme.json`
     property string wallpaperSwitchScriptPath: `${home}/.config/hypr/scripts/switch-theme-mode.sh`
     property string currentWallpaperScriptPath: `${home}/scripts/current_wallpaper`

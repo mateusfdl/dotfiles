@@ -19,7 +19,7 @@ Scope {
             screen: modelData
             visible: !GlobalStates.screenLocked
             implicitHeight: Appearance.sizes.barHeight
-            color: Appearance.colors.colLayer0
+            color: Config.options.bar.showBackground ? Appearance.colors.colLayer0 : "transparent"
 
             WlrLayershell.namespace: "quickshell:topbar"
             WlrLayershell.layer: WlrLayer.Top
@@ -29,6 +29,8 @@ Scope {
                 left: true
                 right: true
             }
+
+            margins.top: Appearance.sizes.barTopMargin
 
             RowLayout {
                 anchors.fill: parent

@@ -1,0 +1,4 @@
+module qs.modules.obsidiantodo
+
+ObsidianTodoWindow 1.0 ObsidianTodoWindow.qml
+ObsidianTodoContent 1.0 ObsidianTodoContent.qml

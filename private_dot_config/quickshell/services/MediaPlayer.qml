@@ -1,9 +1,9 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
 import QtQml.Models
 import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
-pragma Singleton
-pragma ComponentBehavior: Bound
 
 /**
  * Media Player service using MPRIS
@@ -12,10 +12,8 @@ pragma ComponentBehavior: Bound
 Singleton {
     id: root
 
-    // Current active player (prioritizes playing/paused players)
     property MprisPlayer activePlayer: null
 
-    // Convenience properties for the active player
     readonly property bool hasActivePlayer: activePlayer !== null
     readonly property string title: activePlayer?.metadata["xesam:title"] ?? ""
     readonly property string artist: activePlayer?.metadata["xesam:artist"] ?? ""
@@ -29,23 +27,18 @@ Singleton {
     readonly property real position: activePlayer?.position ?? 0
     readonly property real length: activePlayer?.length ?? 0
 
-    // Player identity
     readonly property string identity: activePlayer?.identity ?? ""
 
-    // Formatted position/length for display
     readonly property string positionText: formatTime(position)
     readonly property string lengthText: formatTime(length)
     readonly property real progress: length > 0 ? position / length : 0
 
-    // Playback state helpers
     readonly property bool isPlaying: playbackState === MprisPlaybackState.Playing
     readonly property bool isPaused: playbackState === MprisPlaybackState.Paused
     readonly property bool isStopped: playbackState === MprisPlaybackState.Stopped
 
-    // Track the preferred player
     property MprisPlayer trackedPlayer: null
 
-    // Monitor all available players using Instantiator
     Instantiator {
         model: Mpris.players
 
@@ -55,119 +48,114 @@ Singleton {
 
             Component.onCompleted: {
                 if (root.trackedPlayer == null || modelData.playbackState === MprisPlaybackState.Playing) {
-                    root.trackedPlayer = modelData
+                    root.trackedPlayer = modelData;
                 }
             }
 
             Component.onDestruction: {
                 if (root.trackedPlayer === modelData) {
-                    root.trackedPlayer = null
-                    updateActivePlayer()
+                    root.trackedPlayer = null;
+                    updateActivePlayer();
                 }
             }
 
             function onPlaybackStateChanged() {
                 if (modelData.playbackState === MprisPlaybackState.Playing) {
-                    root.trackedPlayer = modelData
+                    root.trackedPlayer = modelData;
                 }
             }
         }
     }
 
-    // Active player fallback: use tracked player or first available
     onTrackedPlayerChanged: {
-        activePlayer = trackedPlayer ?? Mpris.players.values[0] ?? null
+        activePlayer = trackedPlayer ?? Mpris.players.values[0] ?? null;
     }
 
-    // Update active player when current one's state changes
     Connections {
         target: activePlayer
 
         function onPlaybackStateChanged() {
             if (activePlayer && activePlayer.playbackState === MprisPlaybackState.Stopped) {
-                updateActivePlayer()
+                updateActivePlayer();
             }
         }
     }
 
-    // Select the most relevant active player
     function updateActivePlayer() {
         if (!Mpris.players || !Mpris.players.values || Mpris.players.values.length === 0) {
-            trackedPlayer = null
-            return
+            trackedPlayer = null;
+            return;
         }
 
-        // Priority: Playing > Paused > Any
-        let playingPlayer = null
-        let pausedPlayer = null
-        let anyPlayer = null
+        let playingPlayer = null;
+        let pausedPlayer = null;
+        let anyPlayer = null;
 
         for (const player of Mpris.players.values) {
-            if (!anyPlayer) anyPlayer = player
+            if (!anyPlayer)
+                anyPlayer = player;
 
             if (player.playbackState === MprisPlaybackState.Playing) {
-                playingPlayer = player
-                break  // Highest priority, stop searching
+                playingPlayer = player;
+                break;
             } else if (player.playbackState === MprisPlaybackState.Paused && !pausedPlayer) {
-                pausedPlayer = player
+                pausedPlayer = player;
             }
         }
 
-        trackedPlayer = playingPlayer || pausedPlayer || anyPlayer
+        trackedPlayer = playingPlayer || pausedPlayer || anyPlayer;
     }
 
-    // Player controls
     function play() {
         if (activePlayer && canPlay) {
-            activePlayer.play()
+            activePlayer.play();
         }
     }
 
     function pause() {
         if (activePlayer && canPause) {
-            activePlayer.pause()
+            activePlayer.pause();
         }
     }
 
     function playPause() {
         if (activePlayer) {
             if (isPlaying) {
-                pause()
+                pause();
             } else {
-                play()
+                play();
             }
         }
     }
 
     function next() {
         if (activePlayer && canGoNext) {
-            activePlayer.next()
+            activePlayer.next();
         }
     }
 
     function previous() {
         if (activePlayer && canGoPrevious) {
-            activePlayer.previous()
+            activePlayer.previous();
         }
     }
 
     function stop() {
         if (activePlayer) {
-            activePlayer.stop()
+            activePlayer.stop();
         }
     }
 
-    // Format time in seconds to MM:SS
     function formatTime(seconds) {
-        if (!seconds || seconds < 0) return "0:00"
+        if (!seconds || seconds < 0)
+            return "0:00";
 
-        const mins = Math.floor(seconds / 60)
-        const secs = Math.floor(seconds % 60)
-        return mins + ":" + (secs < 10 ? "0" : "") + secs
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ":" + (secs < 10 ? "0" : "") + secs;
     }
 
-    // Initialize
     Component.onCompleted: {
-        updateActivePlayer()
+        updateActivePlayer();
     }
 }

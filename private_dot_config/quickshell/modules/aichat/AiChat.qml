@@ -32,10 +32,11 @@ Scope {
 
         HyprlandFocusGrab {
             id: grab
-            windows: [ aiChatWindow ]
+            windows: [aiChatWindow]
             active: false
             onCleared: () => {
-                if (!active) GlobalStates.aiChatOpen = false
+                if (!active)
+                    GlobalStates.aiChatOpen = false;
             }
         }
 
@@ -43,7 +44,7 @@ Scope {
             target: GlobalStates
             function onAiChatOpenChanged() {
                 if (GlobalStates.aiChatOpen) {
-                    delayedGrabTimer.start()
+                    delayedGrabTimer.start();
                 }
             }
         }
@@ -53,11 +54,10 @@ Scope {
             interval: 50
             repeat: false
             onTriggered: {
-                grab.active = GlobalStates.aiChatOpen
+                grab.active = GlobalStates.aiChatOpen;
             }
         }
 
-        // Click outside to close
         MouseArea {
             anchors.fill: parent
             z: 0
@@ -77,7 +77,7 @@ Scope {
             width: wrapper.implicitWidth
             height: wrapper.implicitHeight
 
-            Keys.onPressed: (event) => {
+            Keys.onPressed: event => {
                 if (event.key === Qt.Key_Escape) {
                     GlobalStates.aiChatOpen = false;
                 }
@@ -110,7 +110,7 @@ Scope {
                         }
 
                         onCloseRequested: {
-                            GlobalStates.aiChatOpen = false
+                            GlobalStates.aiChatOpen = false;
                         }
                     }
 
@@ -150,13 +150,13 @@ Scope {
         target: "aichat"
 
         function toggle() {
-            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen
+            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen;
         }
         function close() {
-            GlobalStates.aiChatOpen = false
+            GlobalStates.aiChatOpen = false;
         }
         function open() {
-            GlobalStates.aiChatOpen = true
+            GlobalStates.aiChatOpen = true;
         }
     }
 
@@ -165,7 +165,7 @@ Scope {
         description: qsTr("Toggles AI chat on press")
 
         onPressed: {
-            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen
+            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen;
         }
     }
 
@@ -174,7 +174,7 @@ Scope {
         description: qsTr("Closes AI chat")
 
         onPressed: {
-            GlobalStates.aiChatOpen = false
+            GlobalStates.aiChatOpen = false;
         }
     }
 }

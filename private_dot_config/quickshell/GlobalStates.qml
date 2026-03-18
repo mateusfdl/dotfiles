@@ -23,6 +23,7 @@ Singleton {
     property bool windowSwitcherOpen: false
     property bool aiChatOpen: false
     property bool cheatsheetOpen: false
+    property bool obsidianTodoOpen: false
 
     Connections {
         target: Config

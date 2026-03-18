@@ -1,4 +1,5 @@
 import qs.modules.common
+import QsUtils
 import "./notification_utils.js" as NotificationUtils
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -38,7 +39,7 @@ Rectangle { // App icon
             }
             anchors.fill: parent
             color: (root.urgency == NotificationUrgency.Critical) ? 
-                ColorUtils.mix(Appearance.m3colors.m3onSecondary, Appearance.m3colors.m3onSecondaryContainer, 0.1) :
+                Colors.mix(Appearance.m3colors.m3onSecondary, Appearance.m3colors.m3onSecondaryContainer, 0.1) :
                 Appearance.m3colors.m3onSecondaryContainer
             iconSize: root.materialIconSize
             horizontalAlignment: Text.AlignHCenter

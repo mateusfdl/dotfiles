@@ -17,7 +17,6 @@ Item {
     property bool hasToolCalls: (messageData?.toolCalls?.length ?? 0) > 0
     property bool isThinking: (messageData?.thinking ?? false) && !(messageData?.done ?? true)
 
-    // Syntax highlighting colors from theme
     readonly property var highlightColors: ({
         keyword: Appearance.m3colors.m3accentSecondary,
         string: "#9ece6a",
@@ -35,21 +34,18 @@ Item {
         linkColor: Appearance.m3colors.m3accentPrimary
     })
 
-    // Process markdown content with syntax highlighting
     readonly property var processedContent: {
         const content = messageData?.content ?? "";
         if (!content) return { html: "", missingColors: [] };
         return MarkdownHighlight.markdownToHtml(content, highlightColors);
     }
 
-    // Show warning for missing colors
     onProcessedContentChanged: {
         if (processedContent.missingColors && processedContent.missingColors.length > 0) {
             console.warn("[AiMessage] Missing highlight colors:", processedContent.missingColors.join(", "));
         }
     }
 
-    // Hide tool messages from display
     visible: !isTool
     implicitWidth: parent?.width ?? 0
     implicitHeight: isTool ? 0 : messageLayout.implicitHeight + 12
@@ -115,7 +111,6 @@ Item {
                         color: Appearance.m3colors.m3secondaryText
                     }
 
-                    // Animated dots
                     Row {
                         spacing: 4
                         Repeater {
@@ -137,7 +132,6 @@ Item {
                     }
                 }
 
-                // Tool call indicator
                 RowLayout {
                     visible: hasToolCalls && (messageData?.content?.length ?? 0) === 0
                     Layout.fillWidth: true

@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 import qs.modules.common
-import qs.modules.common.functions
 import qs.modules.common.widgets
 
 Rectangle {
@@ -21,7 +21,7 @@ Rectangle {
         }
     }
 
-    color: root.show ? Appearance.colors.colScrim : ColorUtils.transparentize(Appearance.colors.colScrim)
+    color: root.show ? Appearance.colors.colScrim : Colors.transparentize(Appearance.colors.colScrim)
     Behavior on color {
         animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
     }

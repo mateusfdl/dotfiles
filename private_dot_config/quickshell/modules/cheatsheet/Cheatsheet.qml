@@ -39,7 +39,6 @@ Scope {
                 bottom: true
             }
 
-            // Click outside to close
             MouseArea {
                 anchors.fill: parent
                 z: 0
@@ -49,7 +48,6 @@ Scope {
                 }
             }
 
-            // Content panel — elevator animation with elevation shadow
             Elevation {
                 id: panelElevation
 
@@ -72,7 +70,6 @@ Scope {
                 border.width: 1
                 z: 10
 
-                // Swallow clicks inside the panel
                 MouseArea {
                     anchors.fill: parent
                     onClicked: (mouse) => {
@@ -81,7 +78,6 @@ Scope {
                     z: -1
                 }
 
-                // Keyboard handling
                 focus: GlobalStates.cheatsheetOpen
                 Keys.onPressed: (event) => {
                     if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {

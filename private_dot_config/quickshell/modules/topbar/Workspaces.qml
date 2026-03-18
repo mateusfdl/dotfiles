@@ -13,6 +13,7 @@ Item {
     implicitHeight: workspacesRow.implicitHeight
 
     property int workspaceCount: HyprlandData.workspaces.length
+    property color indicatorColor: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
 
     RowLayout {
         id: workspacesRow
@@ -38,20 +39,24 @@ Item {
                     return activeWs === workspaceId
                 }
 
-                NerdIconImage {
+                Rectangle {
                     anchors.centerIn: parent
-                    icon: {
-                        if (parent.isActive) return ""  
-                        return ""  
-                    }
-                    size: Config.options.bar.workspaces.iconSize
-                    color: Appearance.m3colors.m3primaryText
+                    width: parent.isActive ? Config.options.bar.workspaces.activeSize : Config.options.bar.workspaces.inactiveSize
+                    height: width
+                    radius: width / 2
+                    color: parent.isActive ? root.indicatorColor : "transparent"
+                    border.width: parent.isActive ? 0 : 1.5
+                    border.color: root.indicatorColor
 
-                    Behavior on size {
+                    Behavior on width {
                         NumberAnimation { duration: Appearance.animation.elementMoveFast.duration }
                     }
 
                     Behavior on color {
+                        ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
+                    }
+
+                    Behavior on border.color {
                         ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
                     }
                 }
@@ -65,10 +70,6 @@ Item {
                     onClicked: {
                         Hyprland.dispatch("workspace " + parent.workspaceId)
                     }
-                }
-
-                Behavior on color {
-                    ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
                 }
             }
         }

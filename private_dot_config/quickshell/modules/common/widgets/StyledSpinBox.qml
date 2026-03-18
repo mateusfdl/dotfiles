@@ -1,7 +1,7 @@
 import qs.modules.common
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
+import QsUtils
 
 /**
  * Material 3 styled SpinBox component.
@@ -52,7 +52,7 @@ SpinBox {
 
         color: root.down.pressed ? Appearance.colors.colLayer2Active : 
             root.down.hovered ? Appearance.colors.colLayer2Hover : 
-            ColorUtils.transparentize(Appearance.colors.colLayer2)
+            Colors.transparentize(Appearance.colors.colLayer2)
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }
@@ -79,7 +79,7 @@ SpinBox {
 
         color: root.up.pressed ? Appearance.colors.colLayer2Active : 
             root.up.hovered ? Appearance.colors.colLayer2Hover : 
-            ColorUtils.transparentize(Appearance.colors.colLayer2)
+            Colors.transparentize(Appearance.colors.colLayer2)
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }

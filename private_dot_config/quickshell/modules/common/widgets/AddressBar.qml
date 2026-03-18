@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
+import QsUtils
 
 Rectangle {
     id: root
@@ -35,7 +35,7 @@ Rectangle {
 
         RippleButton {
             id: parentDirButton
-            onClicked: root.navigateToDirectory(FileUtils.parentDirectory(root.directory))
+            onClicked: root.navigateToDirectory(Files.parentDirectory(root.directory))
             contentItem: MaterialSymbol {
                 text: "drive_folder_upload"
                 iconSize: Appearance.font.pixelSize.textMedium

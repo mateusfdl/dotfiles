@@ -2,8 +2,7 @@
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
-import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
+import QsUtils
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -31,7 +30,7 @@ RippleButton {
     property string highlightSuffix: `</font></u>`
     function highlightContent(content, query) {
         if (!query || query.length === 0 || content == query || fontType === "codeFont")
-            return StringUtils.escapeHtml(content);
+            return Strings.escapeHtml(content);
 
         let contentLower = content.toLowerCase();
         let queryLower = query.toLowerCase();
@@ -44,16 +43,16 @@ RippleButton {
             if (contentLower[i] === queryLower[qIndex]) {
                 // Add non-highlighted part (escaped)
                 if (i > lastIndex)
-                    result += StringUtils.escapeHtml(content.slice(lastIndex, i));
+                    result += Strings.escapeHtml(content.slice(lastIndex, i));
                 // Add highlighted character (escaped)
-                result += root.highlightPrefix + StringUtils.escapeHtml(content[i]) + root.highlightSuffix;
+                result += root.highlightPrefix + Strings.escapeHtml(content[i]) + root.highlightSuffix;
                 lastIndex = i + 1;
                 qIndex++;
             }
         }
         // Add the rest of the string (escaped)
         if (lastIndex < content.length)
-            result += StringUtils.escapeHtml(content.slice(lastIndex));
+            result += Strings.escapeHtml(content.slice(lastIndex));
 
         return result;
     }
@@ -79,7 +78,7 @@ RippleButton {
     buttonRadius: Appearance.rounding.normal
     colBackground: (root.down || root.keyboardDown) ? Appearance.colors.colLayer1Active : 
         ((root.hovered || root.focus) ? Appearance.colors.colLayer1Hover : 
-        ColorUtils.transparentize(Appearance.m3colors.m3layerBackground3, 1))
+        Colors.transparentize(Appearance.m3colors.m3layerBackground3, 1))
     colBackgroundHover: Appearance.colors.colLayer1Hover
     colRipple: Appearance.colors.colLayer1Active
 

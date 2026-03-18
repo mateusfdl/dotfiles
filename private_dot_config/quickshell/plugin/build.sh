@@ -29,4 +29,5 @@ cmake -B "${BUILD_DIR}" -S "${SCRIPT_DIR}" \
 cmake --build "${BUILD_DIR}"
 
 QML_DIR="${BUILD_DIR}/qml"
+export QML_IMPORT_PATH="${QML_DIR}:${QML_IMPORT_PATH:-}"
 export QML2_IMPORT_PATH="${QML_DIR}:${QML2_IMPORT_PATH:-}"

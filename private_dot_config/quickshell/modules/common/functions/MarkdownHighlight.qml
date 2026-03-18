@@ -8,7 +8,6 @@ import Quickshell
 Singleton {
     id: root
 
-    // Language definitions for syntax highlighting
     readonly property var languages: {
         const sh = {
             keywords: /\b(if|then|else|elif|fi|case|esac|for|while|do|done|in|function|select|until|return|exit|break|continue|local|export|readonly|declare|typeset|unset|shift|source)\b/g,

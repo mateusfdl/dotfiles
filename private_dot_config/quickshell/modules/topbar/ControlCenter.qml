@@ -18,7 +18,7 @@ Item {
         text: "more_vert"  // Three vertical dots like control center
         iconSize: 22
         fill: 0
-        color: Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.85)
+        color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
 
         Behavior on color {
             ColorAnimation {

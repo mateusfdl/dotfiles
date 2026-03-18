@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/Colors">/home/matheus/.config/quickshell/plugin/build/qml/Colors</file>
-
-  </qresource>
-</RCC>

@@ -1,1 +1,6 @@
 dot_tmux/plugins/
+
+# Quickshell C++ plugin build artifacts
+private_dot_config/quickshell/plugin/build/
+private_dot_config/quickshell/plugin/compile_commands.json
+private_dot_config/quickshell/plugin/.cache/

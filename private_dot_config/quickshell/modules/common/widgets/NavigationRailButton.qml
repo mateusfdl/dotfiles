@@ -1,8 +1,8 @@
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
+import QsUtils
 import QtQuick.Layouts
 
 TabButton {
@@ -53,8 +53,8 @@ TabButton {
             color: toggled ? 
                 root.showToggledHighlight ?
                     (root.down ? Appearance.colors.colSecondaryContainerActive : root.hovered ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer)
-                    : ColorUtils.transparentize(Appearance.colors.colSecondaryContainer) :
-                (root.down ? Appearance.colors.colLayer1Active : root.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1))
+                    : Colors.transparentize(Appearance.colors.colSecondaryContainer) :
+                (root.down ? Appearance.colors.colLayer1Active : root.hovered ? Appearance.colors.colLayer1Hover : Colors.transparentize(Appearance.colors.colLayer1Hover, 1))
 
             states: State {
                 name: "expanded"

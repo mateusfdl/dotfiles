@@ -3,7 +3,6 @@
 #include <QColor>
 #include <QObject>
 #include <QtQml/qqmlregistration.h>
-#include <qcolor.h>
 
 class Colors : public QObject {
     Q_OBJECT

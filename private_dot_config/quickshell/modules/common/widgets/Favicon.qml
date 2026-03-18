@@ -1,7 +1,7 @@
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
-import qs.modules.common.functions
+import QsUtils
 import Qt5Compat.GraphicalEffects
 import QtQuick
 import Quickshell.Io
@@ -15,7 +15,7 @@ FavIconImage {
     property real size: 32
     property string downloadUserAgent: Config.options?.networking.userAgent ?? ""
     property string faviconDownloadPath: Directories.favicons
-    property string domainName: url.includes("vertexaisearch") ? displayText : StringUtils.getDomain(url)
+    property string domainName: url.includes("vertexaisearch") ? displayText : Strings.getDomain(url)
     property string faviconUrl: `https://www.google.com/s2/favicons?domain=${domainName}&sz=32`
     property string fileName: `${domainName}.ico`
     property string faviconFilePath: `${faviconDownloadPath}/${fileName}`

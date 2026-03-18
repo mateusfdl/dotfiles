@@ -1,8 +1,0 @@
-module Colors
-linktarget colorsplugin
-optional plugin colorsplugin
-classname ColorsPlugin
-typeinfo colors.qmltypes
-prefer :/Colors/
-depends QtQuick
-

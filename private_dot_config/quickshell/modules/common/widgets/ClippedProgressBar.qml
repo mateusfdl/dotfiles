@@ -1,8 +1,8 @@
 import qs.modules.common
-import qs.modules.common.functions
 import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Controls
+import QsUtils
 import Qt5Compat.GraphicalEffects
 
 /**
@@ -14,7 +14,7 @@ ProgressBar {
     property real valueBarWidth: 30
     property real valueBarHeight: 18
     property color highlightColor: Appearance?.colors.colOnSecondaryContainer ?? "#685496"
-    property color trackColor: ColorUtils.transparentize(highlightColor, 0.5) ?? "#F1D3F9"
+    property color trackColor: Colors.transparentize(highlightColor, 0.5) ?? "#F1D3F9"
     property alias radius: contentItem.radius
     property string text
     default property Item textMask: Item {

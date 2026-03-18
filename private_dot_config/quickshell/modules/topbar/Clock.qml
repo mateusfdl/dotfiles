@@ -15,9 +15,9 @@ Item {
 
         anchors.centerIn: parent
         text: Qt.formatDateTime(new Date(), root.format)
-        color: Appearance.m3colors.m3primaryText
-        font.pixelSize: Appearance.font.pixelSize.textMedium
-        font.weight: Font.Medium
+        color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
+        font.pixelSize: 16
+        font.weight: Font.Normal
         font.family: Appearance.font.family.uiFont
         verticalAlignment: Text.AlignVCenter
 

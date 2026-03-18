@@ -72,9 +72,9 @@ Item {
             return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase()
         }
 
-        color: Appearance.m3colors.m3primaryText
-        font.pixelSize: Appearance.font.pixelSize.iconLarge
-        font.weight: Font.Black
+        color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
+        font.pixelSize: 18
+        font.weight: Font.DemiBold
         font.family: Appearance.font.family.uiFont
         elide: Text.ElideRight
         verticalAlignment: Text.AlignVCenter

@@ -1,10 +1,10 @@
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Io
@@ -67,7 +67,7 @@ Rectangle { // Window
 
     radius: 8
     color: pressed ? Appearance.colors.colLayer2Active : hovered ? Appearance.colors.colLayer2Hover : Appearance.colors.colLayer2
-    border.color: hovered ? Appearance.m3colors.m3accentPrimary : ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.5)
+    border.color: hovered ? Appearance.m3colors.m3accentPrimary : Colors.transparentize(Appearance.m3colors.m3borderPrimary, 0.5)
     border.pixelAligned: false
     border.width: hovered ? 2 : 1
     clip: true

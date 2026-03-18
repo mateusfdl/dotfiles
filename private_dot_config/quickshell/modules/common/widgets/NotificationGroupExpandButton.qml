@@ -1,8 +1,8 @@
 import qs.services
 import qs.modules.common
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Layouts
+import QsUtils
 
 RippleButton { // Expand button
     id: root
@@ -16,7 +16,7 @@ RippleButton { // Expand button
     Layout.fillHeight: false
 
     buttonRadius: Appearance.rounding.full
-    colBackground: ColorUtils.mix(Appearance?.colors.colLayer2, Appearance?.colors.colLayer2Hover, 0.5)
+    colBackground: Colors.mix(Appearance?.colors.colLayer2, Appearance?.colors.colLayer2Hover, 0.5)
     colBackgroundHover: Appearance?.colors.colLayer2Hover ?? "#E5DFED"
     colRipple: Appearance?.colors.colLayer2Active ?? "#D6CEE2"
 

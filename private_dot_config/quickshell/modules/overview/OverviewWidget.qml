@@ -2,10 +2,10 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 import Quickshell.Io
 import Quickshell.Widgets
@@ -69,13 +69,13 @@ Item {
         property real padding: 20
         anchors.fill: parent
         anchors.margins: Appearance.sizes.elevationMargin
-        border.color: ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.3)
+        border.color: Colors.transparentize(Appearance.m3colors.m3borderPrimary, 0.3)
         border.width: 1
 
         implicitWidth: workspaceColumnLayout.implicitWidth + padding * 2
         implicitHeight: workspaceColumnLayout.implicitHeight + padding * 2
         radius: 16
-        color: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.15)
+        color: Colors.transparentize(Appearance.colors.colLayer0, 0.15)
 
 
         RowLayout { // Workspaces - now horizontal flow of open workspaces only
@@ -92,7 +92,7 @@ Item {
                     required property var modelData
                     property int workspaceValue: modelData
                     property color defaultWorkspaceColor: Appearance.colors.colLayer1
-                    property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
+                    property color hoveredWorkspaceColor: Colors.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
                     property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                     property bool hoveredWhileDragging: false
                     readonly property int padding: Config.options.overview.windowPadding
@@ -166,7 +166,7 @@ Item {
                         color: "transparent"
                         radius: parent.radius
                         border.width: hoveredWhileDragging ? 2 : 1
-                        border.color: hoveredWhileDragging ? Appearance.m3colors.m3accentPrimary : ColorUtils.transparentize(Appearance.m3colors.m3borderPrimary, 0.5)
+                        border.color: hoveredWhileDragging ? Appearance.m3colors.m3accentPrimary : Colors.transparentize(Appearance.m3colors.m3borderPrimary, 0.5)
                         z: 10
 
                         Behavior on border.width {
@@ -183,7 +183,7 @@ Item {
                         width: workspaceLabel.implicitWidth + 12
                         height: workspaceLabel.implicitHeight + 6
                         radius: 6
-                        color: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.3)
+                        color: Colors.transparentize(Appearance.colors.colLayer0, 0.3)
                         z: 15
 
                         StyledText {

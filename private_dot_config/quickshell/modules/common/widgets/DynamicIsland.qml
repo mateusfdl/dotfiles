@@ -3,7 +3,6 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import qs.modules.common
-import qs.modules.common.functions
 
 Item {
     id: root

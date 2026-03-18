@@ -2,8 +2,7 @@ pragma Singleton
 
 import qs
 import qs.modules.common
-import "root:/modules/common/functions/fuzzysort.js" as Fuzzy
-import "root:/modules/common/functions/levendist.js" as Levendist
+import QsUtils
 import Quickshell
 import Quickshell.Io
 
@@ -60,7 +59,7 @@ Singleton {
         .sort((a, b) => a.name.localeCompare(b.name))
 
     readonly property var preppedNames: list.map(a => ({
-        name: Fuzzy.prepare(`${a.name} `),
+        name: FuzzySort.prepare(`${a.name} `),
         entry: a
     }))
 
@@ -107,7 +106,7 @@ Singleton {
                 .sort((a, b) => b.score - a.score)
                 .map(item => item.entry);
         } else {
-            desktopResults = Fuzzy.go(search, preppedNames, {
+            desktopResults = FuzzySort.go(search, preppedNames, {
                 all: true,
                 key: "name"
             }).map(r => r.obj.entry);

@@ -17,7 +17,7 @@ Item {
         text: "auto_awesome"
         iconSize: 20
         fill: GlobalStates.aiChatOpen ? 1 : 0
-        color: GlobalStates.aiChatOpen ? Appearance.colors.colPrimary : Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.7)
+        color: GlobalStates.aiChatOpen ? Appearance.colors.colPrimary : (Config.options.bar.iconColor || Appearance.m3colors.m3primaryText)
 
         Behavior on color {
             ColorAnimation {

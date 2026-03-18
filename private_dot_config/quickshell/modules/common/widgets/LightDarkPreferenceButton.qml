@@ -1,17 +1,17 @@
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Layouts
+import QsUtils
 import Quickshell
 
 RippleButton {
     id: lightDarkButtonRoot
     required property bool dark
-    property color previewBg: dark ? ColorUtils.colorWithHueOf("#3f3838", Appearance.m3colors.m3primary) : 
-        ColorUtils.colorWithHueOf("#F7F9FF", Appearance.m3colors.m3primary)
-    property color previewFg: dark ? Qt.lighter(previewBg, 2.2) : ColorUtils.mix(previewBg, "#292929", 0.85)
+    property color previewBg: dark ? Colors.colorWithHueOf("#3f3838", Appearance.m3colors.m3primary) : 
+        Colors.colorWithHueOf("#F7F9FF", Appearance.m3colors.m3primary)
+    property color previewFg: dark ? Qt.lighter(previewBg, 2.2) : Colors.mix(previewBg, "#292929", 0.85)
     padding: 5
     Layout.fillWidth: true
     colBackground: Appearance.colors.colLayer2
@@ -75,7 +75,7 @@ RippleButton {
                         wavy: true
                         animateWave: lightDarkButtonRoot.toggled
                         highlightColor: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3primary : lightDarkButtonRoot.previewFg
-                        trackColor: ColorUtils.mix(lightDarkButtonRoot.previewBg, lightDarkButtonRoot.previewFg, 0.5)
+                        trackColor: Colors.mix(lightDarkButtonRoot.previewBg, lightDarkButtonRoot.previewFg, 0.5)
                     }
                     RowLayout {
                         spacing: 2

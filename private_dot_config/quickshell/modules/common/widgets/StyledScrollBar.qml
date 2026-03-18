@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import qs.modules.common
-import qs.modules.common.functions
 
 ScrollBar {
     id: root

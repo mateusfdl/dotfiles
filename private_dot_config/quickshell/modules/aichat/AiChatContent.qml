@@ -180,14 +180,12 @@ Rectangle {
             }
         }
 
-        // Separator
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 1
             color: Appearance.m3colors.m3borderSecondary
         }
 
-        // Message list
         ListView {
             id: messageListView
             Layout.fillWidth: true
@@ -223,14 +221,12 @@ Rectangle {
             }
         }
 
-        // Separator
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 1
             color: Appearance.m3colors.m3borderSecondary
         }
 
-        // Input area
         RowLayout {
             Layout.fillWidth: true
             spacing: 12

@@ -42,7 +42,6 @@ ApiStrategy {
             "temperature": temperature,
         };
 
-        // Add tools if available
         if (tools && tools.length > 0) {
             baseData.tools = tools;
         }
@@ -89,7 +88,6 @@ ApiStrategy {
                         pendingToolCalls.push({ id: "", type: "function", function: { name: "", arguments: "" } });
                     }
 
-                    // Accumulate tool call data
                     if (tc.id) pendingToolCalls[idx].id = tc.id;
                     if (tc.type) pendingToolCalls[idx].type = tc.type;
                     if (tc.function?.name) pendingToolCalls[idx].function.name += tc.function.name;

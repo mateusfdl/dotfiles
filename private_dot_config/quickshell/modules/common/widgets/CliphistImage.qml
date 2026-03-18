@@ -7,9 +7,9 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Widgets
 import qs.modules.common
-import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 
 Rectangle {
     id: root
@@ -60,7 +60,7 @@ Rectangle {
     Process {
         id: decodeImageProcess
 
-        command: ["bash", "-c", `[ -f ${imageDecodeFilePath} ] || echo '${StringUtils.shellSingleQuoteEscape(root.entry)}' | cliphist decode > '${imageDecodeFilePath}'`]
+        command: ["bash", "-c", `[ -f ${imageDecodeFilePath} ] || echo '${Strings.shellSingleQuoteEscape(root.entry)}' | cliphist decode > '${imageDecodeFilePath}'`]
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
                 root.source = imageDecodeFilePath;

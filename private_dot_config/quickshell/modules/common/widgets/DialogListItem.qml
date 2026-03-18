@@ -1,7 +1,7 @@
 import qs.modules.common
-import qs.modules.common.functions
 import qs.modules.common.widgets
 import QtQuick
+import QsUtils
 
 RippleButton {
     id: root
@@ -18,7 +18,7 @@ RippleButton {
         animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
     }
 
-    colBackground: ColorUtils.transparentize(Appearance.colors.colLayer3)
+    colBackground: Colors.transparentize(Appearance.colors.colLayer3)
     colBackgroundHover: active ? colBackground : Appearance.colors.colLayer3Hover
     colRipple: Appearance.colors.colLayer3Active
     buttonRadius: 0

@@ -41,7 +41,7 @@ Item {
                          Pomodoro.state === Pomodoro.State.LongBreak)
                     return Qt.rgba(0.4, 0.8, 1, 0.9)  // Blue for break
                 else
-                    return Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.7)  // Theme text for idle
+                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
             }
 
             Behavior on color {
@@ -62,7 +62,7 @@ Item {
                          Pomodoro.state === Pomodoro.State.LongBreak)
                     return Qt.rgba(0.4, 0.8, 1, 0.9)
                 else
-                    return Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.7)
+                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
             }
             font.pixelSize: 14
             font.weight: Font.Medium

@@ -19,10 +19,6 @@ Singleton {
     }
 
     function applyColors(fileContent) {
-        // Appearance.m3colors properties are readonly and cannot be assigned dynamically.
-        // The theme is already correctly loaded via Appearance.qml's JsonAdapter.
-        // This function is a no-op but kept for compatibility.
-        // Theme switching works through Appearance.currentThemeMode which is set by the IPC handlers.
     }
 
     Timer {

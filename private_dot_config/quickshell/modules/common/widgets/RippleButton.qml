@@ -1,7 +1,7 @@
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 import Qt5Compat.GraphicalEffects
+import QsUtils
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -25,7 +25,7 @@ Button {
     property var altAction // When right clicking
     property var middleClickAction // When middle clicking
 
-    property color colBackground: ColorUtils.transparentize(Appearance?.colors.colLayer1Hover, 1) || "transparent"
+    property color colBackground: Colors.transparentize(Appearance?.colors.colLayer1Hover, 1) || "transparent"
     property color colBackgroundHover: Appearance?.colors.colLayer1Hover ?? "#E5DFED"
     property color colBackgroundToggled: Appearance?.colors.colPrimary ?? "#65558F"
     property color colBackgroundToggledHover: Appearance?.colors.colPrimaryHover ?? "#77699C"

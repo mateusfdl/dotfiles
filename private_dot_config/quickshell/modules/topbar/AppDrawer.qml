@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import qs
+import qs.modules.common
 import qs.modules.common.widgets
 
 Item {
@@ -16,6 +17,7 @@ Item {
         anchors.centerIn: parent
         icon: "󰣇"
         size: 28
+        color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
 
         MouseArea {
             anchors.fill: parent

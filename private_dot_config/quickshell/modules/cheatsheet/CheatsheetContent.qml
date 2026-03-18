@@ -3,12 +3,11 @@ pragma ComponentBehavior: Bound
 import qs.services
 import qs.modules.common
 import qs.modules.common.effects
-import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Colors
+import QsUtils
 
 Item {
     id: root
@@ -21,45 +20,44 @@ Item {
     readonly property real columnGap: 36
     readonly property string fontFamily: "IosevkaSS04 Nerd Font Mono"
 
-    // Symbol map for modifier/special keys
     readonly property var keySymbols: ({
-        "Super": "⌘",
-        "Ctrl": "⌃",
-        "Alt": "⌥",
-        "Shift": "⇧",
-        "Tab": "⇥",
-        "Return": "↵",
-        "Delete": "⌫",
-        "Space": "␣",
-        "Print": "PrtSc",
-        "Left": "←",
-        "Right": "→",
-        "Up": "↑",
-        "Down": "↓",
-        "Scroll Down": "⟱",
-        "Scroll Up": "⟰",
-        "Sleep": "⏾",
-        "Mute": "🔇",
-        "Mic Mute": "🎙",
-        "Vol+": "🔊",
-        "Vol-": "🔉",
-    })
+            "Super": "⌘",
+            "Ctrl": "⌃",
+            "Alt": "⌥",
+            "Shift": "⇧",
+            "Tab": "⇥",
+            "Return": "↵",
+            "Delete": "⌫",
+            "Space": "␣",
+            "Print": "PrtSc",
+            "Left": "←",
+            "Right": "→",
+            "Up": "↑",
+            "Down": "↓",
+            "Scroll Down": "⟱",
+            "Scroll Up": "⟰",
+            "Sleep": "⏾",
+            "Mute": "🔇",
+            "Mic Mute": "🎙",
+            "Vol+": "🔊",
+            "Vol-": "🔉"
+        })
 
     function keyToSymbol(key) {
         return keySymbols[key] !== undefined ? keySymbols[key] : key;
     }
 
-    // Format a full key combo as a single string: "⌘ ⇧ ←"
     function formatKeyCombo(mods, key) {
         const parts = [];
         if (mods) {
-            for (const m of mods) parts.push(keyToSymbol(m));
+            for (const m of mods)
+                parts.push(keyToSymbol(m));
         }
-        if (key) parts.push(keyToSymbol(key));
+        if (key)
+            parts.push(keyToSymbol(key));
         return parts.join(" ");
     }
 
-    // Shorten verbose section titles
     function shortenTitle(title) {
         const map = {
             "Move focus with mainMod + arrow keys": "Focus",
@@ -81,12 +79,11 @@ Item {
             "Window management": "Window mgmt",
             "Special workspace": "Special",
             "App launchers": "Launchers",
-            "Cursor zoom": "Zoom",
+            "Cursor zoom": "Zoom"
         };
         return map[title] || title;
     }
 
-    // Cached flat data
     property var _flatData: flattenBinds()
 
     readonly property int columnCount: Math.max(2, Math.floor((maxWidth + columnGap) / 380))
@@ -94,7 +91,6 @@ Item {
     implicitWidth: maxWidth
     implicitHeight: maxHeight
 
-    // Collapse consecutive numbered entries (e.g. Workspace 1..10) into one row
     function collapseSections(sections) {
         const result = [];
         for (const section of sections) {
@@ -116,12 +112,19 @@ Item {
                             collapsed.push({
                                 mods: runGroup.firstBind.mods,
                                 key: runGroup.numbers[0] + ".." + runGroup.numbers[runGroup.numbers.length - 1],
-                                description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1],
+                                description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1]
                             });
                         } else if (runGroup) {
-                            for (const b of runGroup.allBinds) collapsed.push(b);
+                            for (const b of runGroup.allBinds)
+                                collapsed.push(b);
                         }
-                        runGroup = { baseDesc: baseDesc, numbers: [num], firstBind: bind, lastBind: bind, allBinds: [bind] };
+                        runGroup = {
+                            baseDesc: baseDesc,
+                            numbers: [num],
+                            firstBind: bind,
+                            lastBind: bind,
+                            allBinds: [bind]
+                        };
                         continue;
                     }
                 } else {
@@ -130,31 +133,37 @@ Item {
                             collapsed.push({
                                 mods: runGroup.firstBind.mods,
                                 key: runGroup.numbers[0] + ".." + runGroup.numbers[runGroup.numbers.length - 1],
-                                description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1],
+                                description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1]
                             });
                         } else {
-                            for (const b of runGroup.allBinds) collapsed.push(b);
+                            for (const b of runGroup.allBinds)
+                                collapsed.push(b);
                         }
                         runGroup = null;
                     }
                     collapsed.push(bind);
                 }
-                if (runGroup) runGroup.allBinds.push(bind);
+                if (runGroup)
+                    runGroup.allBinds.push(bind);
             }
             if (runGroup) {
                 if (runGroup.numbers.length > 2) {
                     collapsed.push({
                         mods: runGroup.firstBind.mods,
                         key: runGroup.numbers[0] + ".." + runGroup.numbers[runGroup.numbers.length - 1],
-                        description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1],
+                        description: runGroup.baseDesc + " " + runGroup.numbers[0] + "-" + runGroup.numbers[runGroup.numbers.length - 1]
                     });
                 } else {
-                    for (const b of runGroup.allBinds) collapsed.push(b);
+                    for (const b of runGroup.allBinds)
+                        collapsed.push(b);
                 }
             }
 
             if (collapsed.length > 0) {
-                result.push({ title: section.title, binds: collapsed });
+                result.push({
+                    title: section.title,
+                    binds: collapsed
+                });
             }
         }
         return result;
@@ -164,9 +173,17 @@ Item {
         const allSections = collapseSections(HyprlandKeybinds.keybinds);
         const flat = [];
         for (const section of allSections) {
-            flat.push({ type: "section", title: shortenTitle(section.title) });
+            flat.push({
+                type: "section",
+                title: shortenTitle(section.title)
+            });
             for (const bind of section.binds) {
-                flat.push({ type: "bind", mods: bind.mods || [], key: bind.key || "", description: bind.description || "" });
+                flat.push({
+                    type: "bind",
+                    mods: bind.mods || [],
+                    key: bind.key || "",
+                    description: bind.description || ""
+                });
             }
         }
         return flat;
@@ -193,7 +210,6 @@ Item {
         }
         spacing: 0
 
-        // Header
         RowLayout {
             Layout.fillWidth: true
             Layout.bottomMargin: 10
@@ -216,22 +232,18 @@ Item {
                 renderType: Text.NativeRendering
             }
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
         }
 
-        // Separator — uses Colors (C++ plugin) to tint with accent
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(
-                Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7",
-                Appearance.m3colors?.m3borderSecondary ?? "#292e42",
-                0.3
-            )
+            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
             opacity: 0.5
         }
 
-        // Grid content with opacity mask for edge fading
         Flickable {
             id: flickable
             Layout.fillWidth: true
@@ -291,7 +303,6 @@ Item {
                                 width: col.width
                                 height: modelData.type === "section" ? root.sectionRowHeight : root.rowHeight
 
-                                // Section label
                                 Text {
                                     visible: rowItem.modelData.type === "section"
                                     text: rowItem.modelData.title ?? ""
@@ -305,12 +316,10 @@ Item {
                                     renderType: Text.NativeRendering
                                 }
 
-                                // Keybind row: ⌘ ⇧ ← → Description
                                 Item {
                                     visible: rowItem.modelData.type === "bind"
                                     anchors.fill: parent
 
-                                    // Key combo as plain text with symbols
                                     Text {
                                         id: keysText
                                         anchors.left: parent.left
@@ -322,7 +331,6 @@ Item {
                                         renderType: Text.NativeRendering
                                     }
 
-                                    // Description
                                     Text {
                                         anchors.left: keysText.right
                                         anchors.leftMargin: 12
@@ -343,7 +351,6 @@ Item {
             }
         }
 
-        // Mask source for the opacity fade on the flickable edges
         Item {
             id: flickableMask
 
@@ -351,18 +358,22 @@ Item {
             visible: false
             layer.enabled: true
 
-            // Top fade gradient
             Rectangle {
                 anchors.top: parent.top
                 width: parent.width
                 height: 20
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "white" }
+                    GradientStop {
+                        position: 0.0
+                        color: "transparent"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "white"
+                    }
                 }
             }
 
-            // Opaque center
             Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 20
@@ -372,14 +383,19 @@ Item {
                 color: "white"
             }
 
-            // Bottom fade gradient
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
                 height: 20
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "white" }
-                    GradientStop { position: 1.0; color: "transparent" }
+                    GradientStop {
+                        position: 0.0
+                        color: "white"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "transparent"
+                    }
                 }
             }
         }
