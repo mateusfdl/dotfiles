@@ -58,6 +58,7 @@
     "searchWidthCollapsed": 260,
     "searchWidth": 450,
     "hyprlandGapsOut": 5,
+    "barTopMargin": 8,
     "elevationMargin": 10,
     "fabShadowRadius": 5,
     "fabHoveredShadowRadius": 7
