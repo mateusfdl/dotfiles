@@ -43,5 +43,6 @@
     gh
     obsidian
     spotify
+    btop
   ];
 }
