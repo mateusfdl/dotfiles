@@ -20,8 +20,6 @@ StyledListView { // Scrollable window
         popup: root.popup
         anchors.left: parent?.left
         anchors.right: parent?.right
-        notificationGroup: popup ? 
-            Notifications.popupGroupsByAppName[modelData] :
-            Notifications.groupsByAppName[modelData]
+        notificationGroup: popup ? Notifications.popupGroupsByAppName[modelData] : Notifications.groupsByAppName[modelData]
     }
 }

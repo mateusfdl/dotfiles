@@ -1,3 +1,4 @@
+pragma Singleton
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -9,7 +10,6 @@ import qs
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
-pragma Singleton
 
 Scope {
     id: controlCenterScope
@@ -36,7 +36,6 @@ Scope {
             showPopup(x, y);
         }
     }
-
 
     Variants {
         model: Quickshell.screens
@@ -82,7 +81,7 @@ Scope {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: (mouse) => {
+                    onClicked: mouse => {
                         mouse.accepted = true;
                     }
                     z: -1
@@ -121,7 +120,6 @@ Scope {
                                     fill: 1
                                     color: Qt.rgba(0.1, 0.1, 0.1, 1)
                                 }
-
                             }
 
                             ColumnLayout {
@@ -150,9 +148,7 @@ Scope {
                                         font.pixelSize: 12
                                         color: Appearance.m3colors.m3secondaryText
                                     }
-
                                 }
-
                             }
 
                             RippleButton {
@@ -171,11 +167,8 @@ Scope {
                                     fill: 0
                                     color: Appearance.m3colors.m3selectionText
                                 }
-
                             }
-
                         }
-
                     }
 
                     Rectangle {
@@ -212,7 +205,6 @@ Scope {
                                         font.weight: Font.Medium
                                         color: Appearance.m3colors.m3secondaryText
                                     }
-
                                 }
 
                                 StyledText {
@@ -221,7 +213,6 @@ Scope {
                                     font.weight: Font.Bold
                                     color: Appearance.m3colors.m3primaryText
                                 }
-
                             }
 
                             RowLayout {
@@ -263,17 +254,11 @@ Scope {
                                                 font.weight: Font.Medium
                                                 color: Appearance.m3colors.m3surfaceText
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
 
                     Rectangle {
@@ -316,7 +301,6 @@ Scope {
                                     font.pixelSize: 11
                                     color: Appearance.m3colors.m3secondaryText
                                 }
-
                             }
 
                             RowLayout {
@@ -347,9 +331,7 @@ Scope {
                                                 height: albumArt.height
                                                 radius: 10
                                             }
-
                                         }
-
                                     }
 
                                     MaterialSymbol {
@@ -360,7 +342,6 @@ Scope {
                                         color: Appearance.m3colors.m3secondaryText
                                         visible: !MediaPlayer.hasActivePlayer || albumArt.status !== Image.Ready
                                     }
-
                                 }
 
                                 ColumnLayout {
@@ -391,9 +372,7 @@ Scope {
                                     Item {
                                         Layout.fillHeight: true
                                     }
-
                                 }
-
                             }
 
                             RowLayout {
@@ -420,7 +399,6 @@ Scope {
                                         fill: 1
                                         color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoPrevious) ? Appearance.m3colors.m3selectionText : Appearance.m3colors.m3secondaryText
                                     }
-
                                 }
 
                                 RippleButton {
@@ -437,7 +415,6 @@ Scope {
                                         fill: 1
                                         color: Appearance.m3colors.m3selectionText
                                     }
-
                                 }
 
                                 RippleButton {
@@ -454,17 +431,13 @@ Scope {
                                         fill: 1
                                         color: (MediaPlayer.hasActivePlayer && MediaPlayer.canGoNext) ? Appearance.m3colors.m3selectionText : Appearance.m3colors.m3secondaryText
                                     }
-
                                 }
 
                                 Item {
                                     Layout.fillWidth: true
                                 }
-
                             }
-
                         }
-
                     }
 
                     Process {
@@ -495,19 +468,23 @@ Scope {
                         rowSpacing: 12
 
                         Repeater {
-                            model: [{
-                                "icon": "wifi",
-                                "label": "Wi-Fi",
-                                "active": true
-                            }, {
-                                "icon": "bluetooth",
-                                "label": "Bluetooth",
-                                "active": false
-                            }, {
-                                "icon": Appearance.currentThemeMode === "dark" ? "nightlight" : "light_mode",
-                                "label": Appearance.currentThemeMode === "dark" ? "Dark" : "Light",
-                                "active": false
-                            }]
+                            model: [
+                                {
+                                    "icon": "wifi",
+                                    "label": "Wi-Fi",
+                                    "active": true
+                                },
+                                {
+                                    "icon": "bluetooth",
+                                    "label": "Bluetooth",
+                                    "active": false
+                                },
+                                {
+                                    "icon": Appearance.currentThemeMode === "dark" ? "nightlight" : "light_mode",
+                                    "label": Appearance.currentThemeMode === "dark" ? "Dark" : "Light",
+                                    "active": false
+                                }
+                            ]
 
                             Rectangle {
                                 Layout.fillWidth: true
@@ -549,7 +526,6 @@ Scope {
                                         font.weight: Font.Medium
                                         color: Appearance.m3colors.m3selectionText
                                     }
-
                                 }
 
                                 MouseArea {
@@ -567,11 +543,8 @@ Scope {
                                         }
                                     }
                                 }
-
                             }
-
                         }
-
                     }
 
                     RowLayout {
@@ -579,19 +552,23 @@ Scope {
                         spacing: 12
 
                         Repeater {
-                            model: [{
-                                "icon": "settings",
-                                "label": "Settings",
-                                "action": ""
-                            }, {
-                                "icon": "radio_button_checked",
-                                "label": "Record",
-                                "action": "record"
-                            }, {
-                                "icon": "wallpaper",
-                                "label": "Wallpaper",
-                                "action": ""
-                            }]
+                            model: [
+                                {
+                                    "icon": "settings",
+                                    "label": "Settings",
+                                    "action": ""
+                                },
+                                {
+                                    "icon": "radio_button_checked",
+                                    "label": "Record",
+                                    "action": "record"
+                                },
+                                {
+                                    "icon": "wallpaper",
+                                    "label": "Wallpaper",
+                                    "action": ""
+                                }
+                            ]
 
                             Rectangle {
                                 property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.m3colors.m3selectionBackground
@@ -652,7 +629,6 @@ Scope {
                                             }
                                         }
                                     }
-
                                 }
 
                                 MouseArea {
@@ -672,13 +648,9 @@ Scope {
                                         }
                                     }
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
 
                 Behavior on y {
@@ -686,7 +658,6 @@ Scope {
                         duration: 400
                         easing.type: Easing.OutCubic
                     }
-
                 }
 
                 layer.effect: DropShadow {
@@ -696,11 +667,7 @@ Scope {
                     verticalOffset: 8
                     horizontalOffset: 0
                 }
-
             }
-
         }
-
     }
-
 }

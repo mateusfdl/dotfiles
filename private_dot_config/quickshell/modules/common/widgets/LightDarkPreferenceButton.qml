@@ -9,15 +9,14 @@ import Quickshell
 RippleButton {
     id: lightDarkButtonRoot
     required property bool dark
-    property color previewBg: dark ? Colors.colorWithHueOf("#3f3838", Appearance.m3colors.m3primary) : 
-        Colors.colorWithHueOf("#F7F9FF", Appearance.m3colors.m3primary)
+    property color previewBg: dark ? Colors.colorWithHueOf("#3f3838", Appearance.m3colors.m3primary) : Colors.colorWithHueOf("#F7F9FF", Appearance.m3colors.m3primary)
     property color previewFg: dark ? Qt.lighter(previewBg, 2.2) : Colors.mix(previewBg, "#292929", 0.85)
     padding: 5
     Layout.fillWidth: true
     colBackground: Appearance.colors.colLayer2
     toggled: Appearance.m3colors.darkmode === dark
     onClicked: {
-        Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`])
+        Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
     }
     contentItem: Item {
         anchors.centerIn: parent

@@ -1,6 +1,6 @@
+pragma Singleton
 import "." as Topbar
 import QtQuick
-pragma Singleton
 
 QtObject {
     id: popupManager

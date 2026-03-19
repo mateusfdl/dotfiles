@@ -92,9 +92,6 @@ Rectangle {
                 height: image.height
                 radius: root.radius
             }
-
         }
-
     }
-
 }

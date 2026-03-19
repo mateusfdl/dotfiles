@@ -34,8 +34,7 @@ TextArea {
                 bottom: parent.bottom
             }
             height: 1
-            color: root.focus ? Appearance.m3colors.m3primary : 
-                root.hovered ? Appearance.m3colors.m3outline : Appearance.m3colors.m3outlineVariant
+            color: root.focus ? Appearance.m3colors.m3primary : root.hovered ? Appearance.m3colors.m3outline : Appearance.m3colors.m3outlineVariant
 
             Behavior on color {
                 animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)

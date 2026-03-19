@@ -33,9 +33,7 @@ Scope {
 
             WlrLayershell.namespace: "quickshell:pomodoro-break"
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: overlayScope.shouldShow
-                ? WlrKeyboardFocus.Exclusive
-                : WlrKeyboardFocus.None
+            WlrLayershell.keyboardFocus: overlayScope.shouldShow ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
             anchors {
                 top: true
@@ -51,10 +49,18 @@ Scope {
                 enabled: overlayScope.shouldShow
                 hoverEnabled: true
                 acceptedButtons: Qt.AllButtons
-                onClicked: (mouse) => { mouse.accepted = true; }
-                onPressed: (mouse) => { mouse.accepted = true; }
-                onReleased: (mouse) => { mouse.accepted = true; }
-                onWheel: (wheel) => { wheel.accepted = true; }
+                onClicked: mouse => {
+                    mouse.accepted = true;
+                }
+                onPressed: mouse => {
+                    mouse.accepted = true;
+                }
+                onReleased: mouse => {
+                    mouse.accepted = true;
+                }
+                onWheel: wheel => {
+                    wheel.accepted = true;
+                }
             }
 
             // Dark backdrop
@@ -64,7 +70,10 @@ Scope {
                 opacity: overlayScope.shouldShow ? 0.88 : 0
 
                 Behavior on opacity {
-                    NumberAnimation { duration: 600; easing.type: Easing.OutCubic }
+                    NumberAnimation {
+                        duration: 600
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
 
@@ -75,7 +84,10 @@ Scope {
                 opacity: overlayScope.shouldShow ? 1 : 0
 
                 Behavior on opacity {
-                    NumberAnimation { duration: 800; easing.type: Easing.OutCubic }
+                    NumberAnimation {
+                        duration: 800
+                        easing.type: Easing.OutCubic
+                    }
                 }
 
                 ColumnLayout {
@@ -85,8 +97,7 @@ Scope {
                     // Break type icon
                     MaterialSymbol {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Pomodoro.state === Pomodoro.State.LongBreak
-                            ? "self_improvement" : "coffee"
+                        text: Pomodoro.state === Pomodoro.State.LongBreak ? "self_improvement" : "coffee"
                         iconSize: 64
                         fill: 1
                         color: Qt.rgba(0.4, 0.8, 1, 0.9)
@@ -95,8 +106,7 @@ Scope {
                     // Break label
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Pomodoro.state === Pomodoro.State.LongBreak
-                            ? "Long Break" : "Short Break"
+                        text: Pomodoro.state === Pomodoro.State.LongBreak ? "Long Break" : "Short Break"
                         color: Qt.rgba(1, 1, 1, 0.9)
                         font.pixelSize: 28
                         font.family: Appearance.font.family.uiFont
@@ -104,7 +114,9 @@ Scope {
                     }
 
                     // Spacer
-                    Item { Layout.preferredHeight: 8 }
+                    Item {
+                        Layout.preferredHeight: 8
+                    }
 
                     // Circular progress ring + countdown
                     Item {
@@ -148,10 +160,7 @@ Scope {
                                 // Progress arc
                                 if (progress > 0) {
                                     ctx.beginPath();
-                                    ctx.arc(centerX, centerY, r,
-                                        -Math.PI / 2,
-                                        -Math.PI / 2 + (progress * 2 * Math.PI),
-                                        false);
+                                    ctx.arc(centerX, centerY, r, -Math.PI / 2, -Math.PI / 2 + (progress * 2 * Math.PI), false);
                                     ctx.lineWidth = 6;
                                     ctx.strokeStyle = Qt.rgba(0.4, 0.8, 1, 0.9);
                                     ctx.lineCap = "round";
@@ -187,12 +196,12 @@ Scope {
                                         width: 10
                                         height: 10
                                         radius: 5
-                                        color: index < Pomodoro.currentCycle
-                                            ? Qt.rgba(0.4, 0.8, 1, 0.9)
-                                            : Qt.rgba(1, 1, 1, 0.2)
+                                        color: index < Pomodoro.currentCycle ? Qt.rgba(0.4, 0.8, 1, 0.9) : Qt.rgba(1, 1, 1, 0.2)
 
                                         Behavior on color {
-                                            ColorAnimation { duration: 300 }
+                                            ColorAnimation {
+                                                duration: 300
+                                            }
                                         }
                                     }
                                 }
@@ -201,7 +210,9 @@ Scope {
                     }
 
                     // Spacer
-                    Item { Layout.preferredHeight: 8 }
+                    Item {
+                        Layout.preferredHeight: 8
+                    }
 
                     // Info text
                     Text {

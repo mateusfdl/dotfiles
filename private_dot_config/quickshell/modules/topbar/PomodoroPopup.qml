@@ -1,3 +1,4 @@
+pragma Singleton
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -8,7 +9,6 @@ import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 import QsUtils
-pragma Singleton
 
 Scope {
     id: pomodoroPopupScope
@@ -86,7 +86,7 @@ Scope {
                 // Prevent clicks from passing through
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: (mouse) => {
+                    onClicked: mouse => {
                         mouse.accepted = true;
                     }
                     z: -1
@@ -114,7 +114,9 @@ Scope {
                         color: Appearance.m3colors.m3secondaryText
 
                         Behavior on fill {
-                            NumberAnimation { duration: 200 }
+                            NumberAnimation {
+                                duration: 200
+                            }
                         }
                     }
                 }
@@ -177,12 +179,8 @@ Scope {
                             Layout.fillWidth: true
                             Layout.preferredHeight: activeTodoRow.implicitHeight + 16
                             radius: 8
-                            color: Pomodoro.currentTodo !== null
-                                ? Qt.rgba(1, 0.4, 0.4, 0.08)
-                                : "transparent"
-                            border.color: Pomodoro.currentTodo !== null
-                                ? Qt.rgba(1, 0.4, 0.4, 0.25)
-                                : Appearance.m3colors.m3borderSecondary
+                            color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.08) : "transparent"
+                            border.color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.25) : Appearance.m3colors.m3borderSecondary
                             border.width: 1
                             visible: Pomodoro.currentTodo !== null || (!Pomodoro.isRunning && !Pomodoro.isPaused)
 
@@ -196,21 +194,15 @@ Scope {
                                     text: Pomodoro.currentTodo !== null ? "task_alt" : "add_task"
                                     iconSize: 18
                                     fill: Pomodoro.currentTodo !== null ? 1 : 0
-                                    color: Pomodoro.currentTodo !== null
-                                        ? Qt.rgba(1, 0.4, 0.4, 0.9)
-                                        : Appearance.m3colors.m3secondaryText
+                                    color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.9) : Appearance.m3colors.m3secondaryText
                                 }
 
                                 StyledText {
                                     Layout.fillWidth: true
-                                    text: Pomodoro.currentTodo !== null
-                                        ? Pomodoro.currentTodo.description
-                                        : "Pick a task..."
+                                    text: Pomodoro.currentTodo !== null ? Pomodoro.currentTodo.description : "Pick a task..."
                                     font.pixelSize: 12
                                     font.weight: Pomodoro.currentTodo !== null ? Font.Medium : Font.Normal
-                                    color: Pomodoro.currentTodo !== null
-                                        ? Appearance.m3colors.m3primaryText
-                                        : Appearance.m3colors.m3secondaryText
+                                    color: Pomodoro.currentTodo !== null ? Appearance.m3colors.m3primaryText : Appearance.m3colors.m3secondaryText
                                     elide: Text.ElideRight
                                     maximumLineCount: 1
                                 }
@@ -283,9 +275,7 @@ Scope {
                                     width: todoListView.width
                                     height: todoDelegateRow.implicitHeight + 12
                                     radius: 6
-                                    color: todoDelegateMouseArea.containsMouse
-                                        ? Qt.rgba(1, 1, 1, 0.06)
-                                        : "transparent"
+                                    color: todoDelegateMouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.06) : "transparent"
 
                                     RowLayout {
                                         id: todoDelegateRow
@@ -352,20 +342,14 @@ Scope {
 
                                             // If no linked note, create one
                                             if (noteId === "") {
-                                                noteId = ObsidianTodo.ensureNoteFile(
-                                                    todo.description,
-                                                    todo.tags || []
-                                                );
-                                                if (noteId === "") return; // failed
+                                                noteId = ObsidianTodo.ensureNoteFile(todo.description, todo.tags || []);
+                                                if (noteId === "")
+                                                    return; // failed
                                                 // Refresh todos to get updated data
                                                 ObsidianTodo.fetchTodos();
                                             }
 
-                                            Pomodoro.pickupTodo(
-                                                todo.description,
-                                                noteId,
-                                                todo.tags || []
-                                            );
+                                            Pomodoro.pickupTodo(todo.description, noteId, todo.tags || []);
                                             pomodoroPopupScope.todoPickerExpanded = false;
                                         }
                                     }
@@ -419,9 +403,7 @@ Scope {
                                 ctx.beginPath();
                                 ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + (progress * 2 * Math.PI), false);
                                 ctx.lineWidth = 8;
-                                ctx.strokeStyle = Pomodoro.state === Pomodoro.State.Working
-                                    ? Qt.rgba(1, 0.4, 0.4, 0.9)
-                                    : Qt.rgba(0.4, 0.8, 1, 0.9);
+                                ctx.strokeStyle = Pomodoro.state === Pomodoro.State.Working ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(0.4, 0.8, 1, 0.9);
                                 ctx.lineCap = "round";
                                 ctx.stroke();
                             }
@@ -453,12 +435,12 @@ Scope {
                                         width: 8
                                         height: 8
                                         radius: 4
-                                        color: index < Pomodoro.currentCycle
-                                            ? Qt.rgba(1, 0.4, 0.4, 0.9)
-                                            : Qt.rgba(1, 1, 1, 0.2)
+                                        color: index < Pomodoro.currentCycle ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(1, 1, 1, 0.2)
 
                                         Behavior on color {
-                                            ColorAnimation { duration: 300 }
+                                            ColorAnimation {
+                                                duration: 300
+                                            }
                                         }
                                     }
                                 }
@@ -631,15 +613,15 @@ Scope {
                             color: Appearance.m3colors.m3secondaryText
                         }
 
-                        Item { Layout.fillWidth: true }
+                        Item {
+                            Layout.fillWidth: true
+                        }
 
                         MaterialSymbol {
                             text: Pomodoro.lockOnBreak ? "lock" : "lock_open"
                             iconSize: 14
                             fill: Pomodoro.lockOnBreak ? 1 : 0
-                            color: Pomodoro.lockOnBreak
-                                ? Qt.rgba(0.4, 0.8, 1, 0.9)
-                                : Appearance.m3colors.m3secondaryText
+                            color: Pomodoro.lockOnBreak ? Qt.rgba(0.4, 0.8, 1, 0.9) : Appearance.m3colors.m3secondaryText
                         }
                     }
 
@@ -774,9 +756,7 @@ Scope {
                             MaterialSymbol {
                                 text: "lock"
                                 iconSize: 18
-                                color: Pomodoro.lockOnBreak
-                                    ? Qt.rgba(0.4, 0.8, 1, 0.9)
-                                    : Qt.rgba(1, 1, 1, 0.4)
+                                color: Pomodoro.lockOnBreak ? Qt.rgba(0.4, 0.8, 1, 0.9) : Qt.rgba(1, 1, 1, 0.4)
                             }
 
                             StyledText {
@@ -793,7 +773,9 @@ Scope {
                         }
 
                         // Bottom padding
-                        Item { Layout.preferredHeight: 4 }
+                        Item {
+                            Layout.preferredHeight: 4
+                        }
                     }
                 }
 

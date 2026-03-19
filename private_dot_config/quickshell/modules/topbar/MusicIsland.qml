@@ -90,13 +90,14 @@ Item {
         Rectangle {
             anchors.fill: parent
             anchors.margins: -4
-            color: hoverArea.containsMouse
-                ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: hoverArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
             radius: 6
             z: -1
 
             Behavior on color {
-                ColorAnimation { duration: 150 }
+                ColorAnimation {
+                    duration: 150
+                }
             }
         }
 
@@ -117,5 +118,4 @@ Item {
             }
         }
     }
-
 }

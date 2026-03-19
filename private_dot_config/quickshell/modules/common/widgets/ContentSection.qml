@@ -30,6 +30,5 @@ ColumnLayout {
         id: sectionContent
         Layout.fillWidth: true
         spacing: 4
-
     }
 }

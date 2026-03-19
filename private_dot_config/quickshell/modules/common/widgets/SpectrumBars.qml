@@ -46,8 +46,7 @@ Item {
                 }
 
                 width: root.barWidth
-                height: Math.max(root.minBarHeight,
-                                 barValue * root.maxBarHeight)
+                height: Math.max(root.minBarHeight, barValue * root.maxBarHeight)
                 radius: root.barRadius
                 color: root.active && barValue > 0.05 ? root.barColorActive : root.barColor
                 anchors.bottom: parent.bottom

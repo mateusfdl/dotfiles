@@ -11,7 +11,7 @@ RippleButton {
     Layout.fillWidth: true
     implicitHeight: contentItem.implicitHeight + 8 * 2
     font.pixelSize: Appearance.font.pixelSize.textSmall
-    
+
     onClicked: checked = !checked
 
     contentItem: RowLayout {
@@ -39,4 +39,3 @@ RippleButton {
         }
     }
 }
-

@@ -19,7 +19,7 @@ Scope {
     Connections {
         target: mcModel
         function onRestored() {
-            GlobalStates.missionControlOpen = false
+            GlobalStates.missionControlOpen = false;
         }
     }
 
@@ -41,8 +41,12 @@ Scope {
             WlrLayershell.namespace: "quickshell:missioncontrol"
             WlrLayershell.layer: WlrLayer.Overlay
 
-            mask: Region { item: GlobalStates.missionControlOpen ? clickCatcher : null }
-            HyprlandWindow.visibleMask: Region { item: GlobalStates.missionControlOpen ? clickCatcher : null }
+            mask: Region {
+                item: GlobalStates.missionControlOpen ? clickCatcher : null
+            }
+            HyprlandWindow.visibleMask: Region {
+                item: GlobalStates.missionControlOpen ? clickCatcher : null
+            }
 
             anchors {
                 top: true
@@ -57,7 +61,8 @@ Scope {
                 property bool canBeActive: root.monitorIsFocused
                 active: false
                 onCleared: () => {
-                    if (!active) closeMissionControl()
+                    if (!active)
+                        closeMissionControl();
                 }
             }
 
@@ -66,8 +71,9 @@ Scope {
                 interval: Config.options.hacks.arbitraryRaceConditionDelay
                 repeat: false
                 onTriggered: {
-                    if (!grab.canBeActive) return
-                    grab.active = GlobalStates.missionControlOpen
+                    if (!grab.canBeActive)
+                        return;
+                    grab.active = GlobalStates.missionControlOpen;
                 }
             }
 
@@ -75,31 +81,24 @@ Scope {
                 target: GlobalStates
                 function onMissionControlOpenChanged() {
                     if (GlobalStates.missionControlOpen) {
-                        openMissionControl()
+                        openMissionControl();
                     }
                 }
             }
 
             function openMissionControl() {
-                mcModel.refresh(
-                    root.width,
-                    root.height,
-                    root.monitor.x,
-                    root.monitor.y,
-                    root.monitor.id,
-                    root.monitor.activeWorkspace?.id ?? -1,
-                    28
-                )
-                delayedGrabTimer.start()
-                exposeTimer.start()
+                mcModel.refresh(root.width, root.height, root.monitor.x, root.monitor.y, root.monitor.id, root.monitor.activeWorkspace?.id ?? -1, 28);
+                delayedGrabTimer.start();
+                exposeTimer.start();
             }
 
             function closeMissionControl() {
-                if (mcModel.animating) return
+                if (mcModel.animating)
+                    return;
                 if (mcModel.exposed) {
-                    mcModel.restore("")
+                    mcModel.restore("");
                 } else {
-                    GlobalStates.missionControlOpen = false
+                    GlobalStates.missionControlOpen = false;
                 }
             }
 
@@ -108,7 +107,7 @@ Scope {
                 interval: 50
                 repeat: false
                 onTriggered: {
-                    mcModel.expose()
+                    mcModel.expose();
                 }
             }
 
@@ -117,10 +116,10 @@ Scope {
                 id: clickCatcher
                 anchors.fill: parent
 
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape) {
-                        closeMissionControl()
-                        event.accepted = true
+                        closeMissionControl();
+                        event.accepted = true;
                     }
                 }
 
@@ -128,19 +127,19 @@ Scope {
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 
-                    onClicked: (event) => {
-                        if (mcModel.animating) return
-
-                        const addr = mcModel.windowAt(event.x, event.y)
+                    onClicked: event => {
+                        if (mcModel.animating)
+                            return;
+                        const addr = mcModel.windowAt(event.x, event.y);
 
                         if (event.button === Qt.LeftButton) {
                             // Restore all windows, then focus the clicked one
-                            mcModel.restore(addr)
+                            mcModel.restore(addr);
                         } else if (event.button === Qt.MiddleButton && addr !== "") {
                             // Close the clicked window
-                            Hyprland.dispatch(`closewindow address:${addr}`)
+                            Hyprland.dispatch(`closewindow address:${addr}`);
                             // Re-expose after a short delay
-                            refreshAfterCloseTimer.start()
+                            refreshAfterCloseTimer.start();
                         }
                     }
                 }
@@ -151,14 +150,8 @@ Scope {
                     repeat: false
                     onTriggered: {
                         // Re-fetch and re-expose with updated window list
-                        mcModel.refresh(
-                            root.width, root.height,
-                            root.monitor.x, root.monitor.y,
-                            root.monitor.id,
-                            root.monitor.activeWorkspace?.id ?? -1,
-                            28
-                        )
-                        exposeTimer.start()
+                        mcModel.refresh(root.width, root.height, root.monitor.x, root.monitor.y, root.monitor.id, root.monitor.activeWorkspace?.id ?? -1, 28);
+                        exposeTimer.start();
                     }
                 }
             }
@@ -171,29 +164,29 @@ Scope {
         function toggle() {
             if (GlobalStates.missionControlOpen) {
                 for (let i = 0; i < missionControlVariants.instances.length; i++) {
-                    const inst = missionControlVariants.instances[i]
+                    const inst = missionControlVariants.instances[i];
                     if (inst.monitorIsFocused) {
-                        inst.closeMissionControl()
-                        return
+                        inst.closeMissionControl();
+                        return;
                     }
                 }
-                GlobalStates.missionControlOpen = false
+                GlobalStates.missionControlOpen = false;
             } else {
-                GlobalStates.missionControlOpen = true
+                GlobalStates.missionControlOpen = true;
             }
         }
         function close() {
             for (let i = 0; i < missionControlVariants.instances.length; i++) {
-                const inst = missionControlVariants.instances[i]
+                const inst = missionControlVariants.instances[i];
                 if (inst.monitorIsFocused) {
-                    inst.closeMissionControl()
-                    return
+                    inst.closeMissionControl();
+                    return;
                 }
             }
-            GlobalStates.missionControlOpen = false
+            GlobalStates.missionControlOpen = false;
         }
         function open() {
-            GlobalStates.missionControlOpen = true
+            GlobalStates.missionControlOpen = true;
         }
     }
 
@@ -204,15 +197,15 @@ Scope {
         onPressed: {
             if (GlobalStates.missionControlOpen) {
                 for (let i = 0; i < missionControlVariants.instances.length; i++) {
-                    const inst = missionControlVariants.instances[i]
+                    const inst = missionControlVariants.instances[i];
                     if (inst.monitorIsFocused) {
-                        inst.closeMissionControl()
-                        return
+                        inst.closeMissionControl();
+                        return;
                     }
                 }
-                GlobalStates.missionControlOpen = false
+                GlobalStates.missionControlOpen = false;
             } else {
-                GlobalStates.missionControlOpen = true
+                GlobalStates.missionControlOpen = true;
             }
         }
     }

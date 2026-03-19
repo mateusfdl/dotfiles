@@ -33,8 +33,12 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             color: "transparent"
 
-            mask: Region { item: isActive ? launcherContent : null }
-            HyprlandWindow.visibleMask: Region { item: isActive ? launcherContent : null }
+            mask: Region {
+                item: isActive ? launcherContent : null
+            }
+            HyprlandWindow.visibleMask: Region {
+                item: isActive ? launcherContent : null
+            }
 
             anchors {
                 top: true
@@ -45,10 +49,11 @@ Scope {
 
             HyprlandFocusGrab {
                 id: grab
-                windows: [ root ]
+                windows: [root]
                 active: false
                 onCleared: () => {
-                    if (!active) GlobalStates.launcherOpen = false
+                    if (!active)
+                        GlobalStates.launcherOpen = false;
                 }
             }
 
@@ -56,7 +61,7 @@ Scope {
                 target: GlobalStates
                 function onLauncherOpenChanged() {
                     if (GlobalStates.launcherOpen) {
-                        delayedGrabTimer.start()
+                        delayedGrabTimer.start();
                     }
                 }
             }
@@ -66,8 +71,9 @@ Scope {
                 interval: Config.options.hacks.arbitraryRaceConditionDelay
                 repeat: false
                 onTriggered: {
-                    if (!root.isActive) return
-                    grab.active = GlobalStates.launcherOpen
+                    if (!root.isActive)
+                        return;
+                    grab.active = GlobalStates.launcherOpen;
                 }
             }
 
@@ -86,7 +92,7 @@ Scope {
                 implicitWidth: wrapper.implicitWidth
                 implicitHeight: wrapper.implicitHeight
 
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape) {
                         GlobalStates.launcherOpen = false;
                     }
@@ -107,13 +113,13 @@ Scope {
         target: "launcher"
 
         function toggle() {
-            GlobalStates.launcherOpen = !GlobalStates.launcherOpen
+            GlobalStates.launcherOpen = !GlobalStates.launcherOpen;
         }
         function close() {
-            GlobalStates.launcherOpen = false
+            GlobalStates.launcherOpen = false;
         }
         function open() {
-            GlobalStates.launcherOpen = true
+            GlobalStates.launcherOpen = true;
         }
     }
 
@@ -122,7 +128,7 @@ Scope {
         description: qsTr("Toggles launcher on press")
 
         onPressed: {
-            GlobalStates.launcherOpen = !GlobalStates.launcherOpen
+            GlobalStates.launcherOpen = !GlobalStates.launcherOpen;
         }
     }
 
@@ -131,7 +137,7 @@ Scope {
         description: qsTr("Closes launcher")
 
         onPressed: {
-            GlobalStates.launcherOpen = false
+            GlobalStates.launcherOpen = false;
         }
     }
 }

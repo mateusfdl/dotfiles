@@ -18,8 +18,8 @@ RadioButton {
 
     PointingHandInteraction {}
 
-    indicator: Item{}
-    
+    indicator: Item {}
+
     contentItem: RowLayout {
         id: contentItem
         Layout.fillWidth: true
@@ -53,7 +53,6 @@ RadioButton {
                 Behavior on height {
                     animation: Appearance?.animation.elementMove.numberAnimation.createObject(this)
                 }
-
             }
 
             // Hover

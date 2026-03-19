@@ -32,7 +32,8 @@ FolderListModel {
     }
 
     function navigateForward() {
-        if (currentFolderHistoryIndex >= folderHistory.length - 1) return;
+        if (currentFolderHistoryIndex >= folderHistory.length - 1)
+            return;
         currentFolderHistoryIndex++;
         lockNextNavigation();
         root.folder = folderHistory[currentFolderHistoryIndex];
@@ -47,7 +48,7 @@ FolderListModel {
     }
 
     Component.onCompleted: {
-        root.folderHistory = [root.folder]
-        root.currentFolderHistoryIndex = 0
+        root.folderHistory = [root.folder];
+        root.currentFolderHistoryIndex = 0;
     }
 }

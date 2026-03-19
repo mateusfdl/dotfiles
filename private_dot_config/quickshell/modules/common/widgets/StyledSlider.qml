@@ -12,7 +12,7 @@ import Quickshell.Widgets
  * It doesn't exactly match the spec because it does not make sense to have stuff on a computer that fucking huge.
  * Should be at 3/4 scale...
  */
- 
+
 Slider {
     id: root
 
@@ -37,11 +37,7 @@ Slider {
     property color dotColorHighlighted: Appearance.m3colors.m3onPrimary
     property real unsharpenRadius: Appearance.rounding.unsharpen
     property real trackWidth: configuration
-    property real trackRadius: trackWidth >= StyledSlider.Configuration.XL ? 21
-        : trackWidth >= StyledSlider.Configuration.L ? 12
-        : trackWidth >= StyledSlider.Configuration.M ? 9
-        : trackWidth >= StyledSlider.Configuration.S ? 6
-        : height / 2
+    property real trackRadius: trackWidth >= StyledSlider.Configuration.XL ? 21 : trackWidth >= StyledSlider.Configuration.L ? 12 : trackWidth >= StyledSlider.Configuration.M ? 9 : trackWidth >= StyledSlider.Configuration.S ? 6 : height / 2
     property real handleHeight: (configuration === StyledSlider.Configuration.Wavy) ? 24 : Math.max(33, trackWidth + 9)
     property real handleWidth: root.pressed ? handlePressedWidth : handleDefaultWidth
     property real handleMargins: 4
@@ -61,7 +57,8 @@ Slider {
     from: 0
     to: 1
 
-    Behavior on value { // This makes the adjusted value (like volume) shift smoothly
+    Behavior on value {
+        // This makes the adjusted value (like volume) shift smoothly
         SmoothedAnimation {
             velocity: Appearance.animation.elementMoveFast.velocity
         }
@@ -87,15 +84,15 @@ Slider {
 
     MouseArea {
         anchors.fill: parent
-        onPressed: (mouse) => mouse.accepted = false
-        cursorShape: root.pressed ? Qt.ClosedHandCursor : Qt.PointingHandCursor 
+        onPressed: mouse => mouse.accepted = false
+        cursorShape: root.pressed ? Qt.ClosedHandCursor : Qt.PointingHandCursor
     }
 
     background: Item {
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
         implicitHeight: trackWidth
-        
+
         // Fill left
         Loader {
             anchors {
@@ -132,16 +129,20 @@ Slider {
                 height: root.trackWidth
                 Connections {
                     target: root
-                    function onValueChanged() { wavyFill.requestPaint(); }
-                    function onHighlightColorChanged() { wavyFill.requestPaint(); }
+                    function onValueChanged() {
+                        wavyFill.requestPaint();
+                    }
+                    function onHighlightColorChanged() {
+                        wavyFill.requestPaint();
+                    }
                 }
                 FrameAnimation {
                     running: root.animateWave
                     onTriggered: {
-                        wavyFill.requestPaint()
+                        wavyFill.requestPaint();
                     }
                 }
-            }   
+            }
         }
 
         // Fill right

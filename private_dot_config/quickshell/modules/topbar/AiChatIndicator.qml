@@ -47,7 +47,7 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen
+            GlobalStates.aiChatOpen = !GlobalStates.aiChatOpen;
         }
     }
 }

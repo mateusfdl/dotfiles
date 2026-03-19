@@ -132,7 +132,9 @@ Item {
                 }
             }
 
-            Item { Layout.preferredHeight: 30 }
+            Item {
+                Layout.preferredHeight: 30
+            }
 
             // Greeting
             Text {
@@ -144,7 +146,9 @@ Item {
                 font.weight: Font.DemiBold
             }
 
-            Item { Layout.preferredHeight: 8 }
+            Item {
+                Layout.preferredHeight: 8
+            }
 
             // ===== USERNAME FIELD =====
             Rectangle {
@@ -203,7 +207,9 @@ Item {
                 }
             }
 
-            Item { Layout.preferredHeight: 4 }
+            Item {
+                Layout.preferredHeight: 4
+            }
 
             // ===== PASSWORD FIELD / PROGRESS BAR =====
             // Same pill shape. When loginSucceeded, the password content is hidden
@@ -220,7 +226,10 @@ Item {
                 radius: 24
                 clip: true
 
-                transform: Translate { id: shakeTransform; x: 0 }
+                transform: Translate {
+                    id: shakeTransform
+                    x: 0
+                }
 
                 SequentialAnimation {
                     id: shakeAnimation
@@ -365,11 +374,15 @@ Item {
                 opacity: root.context.showFailure ? 1 : 0
 
                 Behavior on opacity {
-                    NumberAnimation { duration: 200 }
+                    NumberAnimation {
+                        duration: 200
+                    }
                 }
             }
 
-            Item { Layout.preferredHeight: 12 }
+            Item {
+                Layout.preferredHeight: 12
+            }
 
             // greetd availability warning
             Text {

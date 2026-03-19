@@ -1,3 +1,4 @@
+pragma Singleton
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -9,7 +10,6 @@ import QsUtils
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
-pragma Singleton
 
 Scope {
     id: popupScope
@@ -80,7 +80,7 @@ Scope {
                 // Prevent clicks from passing through
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: (mouse) => mouse.accepted = true
+                    onClicked: mouse => mouse.accepted = true
                     z: -1
                 }
 
@@ -176,7 +176,9 @@ Scope {
                                 visible: (MediaPlayer.album || "") !== ""
                             }
 
-                            Item { Layout.fillHeight: true }
+                            Item {
+                                Layout.fillHeight: true
+                            }
                         }
                     }
 
@@ -221,7 +223,9 @@ Scope {
                                 color: Qt.rgba(1, 0.6, 0.8, 0.8)
 
                                 Behavior on width {
-                                    NumberAnimation { duration: 200 }
+                                    NumberAnimation {
+                                        duration: 200
+                                    }
                                 }
                             }
                         }
@@ -236,7 +240,9 @@ Scope {
                                 color: Qt.rgba(1, 1, 1, 0.4)
                             }
 
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
 
                             StyledText {
                                 text: MediaPlayer.lengthText
@@ -253,7 +259,9 @@ Scope {
                         Layout.preferredHeight: 52
                         spacing: 8
 
-                        Item { Layout.fillWidth: true }
+                        Item {
+                            Layout.fillWidth: true
+                        }
 
                         // Previous
                         RippleButton {
@@ -267,9 +275,7 @@ Scope {
                                 text: "skip_previous"
                                 iconSize: 26
                                 fill: 1
-                                color: MediaPlayer.canGoPrevious
-                                    ? Qt.rgba(1, 1, 1, 0.9)
-                                    : Qt.rgba(1, 1, 1, 0.25)
+                                color: MediaPlayer.canGoPrevious ? Qt.rgba(1, 1, 1, 0.9) : Qt.rgba(1, 1, 1, 0.25)
                             }
 
                             onClicked: MediaPlayer.previous()
@@ -304,15 +310,15 @@ Scope {
                                 text: "skip_next"
                                 iconSize: 26
                                 fill: 1
-                                color: MediaPlayer.canGoNext
-                                    ? Qt.rgba(1, 1, 1, 0.9)
-                                    : Qt.rgba(1, 1, 1, 0.25)
+                                color: MediaPlayer.canGoNext ? Qt.rgba(1, 1, 1, 0.9) : Qt.rgba(1, 1, 1, 0.25)
                             }
 
                             onClicked: MediaPlayer.next()
                         }
 
-                        Item { Layout.fillWidth: true }
+                        Item {
+                            Layout.fillWidth: true
+                        }
                     }
                 }
 

@@ -1,3 +1,4 @@
+pragma Singleton
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -8,7 +9,6 @@ import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
-pragma Singleton
 
 Scope {
     id: volumePopupScope
@@ -72,7 +72,6 @@ Scope {
                 var device = stdout.trim();
                 if (device)
                     volumePopupScope.outputDeviceName = device;
-
             }
         }
     }
@@ -129,7 +128,7 @@ Scope {
                 MouseArea {
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-                    onClicked: (mouse) => {
+                    onClicked: mouse => {
                         mouse.accepted = true;
                     }
                     z: -1
@@ -275,11 +274,7 @@ Scope {
                     verticalOffset: 6
                     horizontalOffset: 0
                 }
-
             }
-
         }
-
     }
-
 }

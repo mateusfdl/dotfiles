@@ -27,29 +27,29 @@ Item {
 
         anchors.fill: parent
         antialiasing: true
-        
+
         onPaint: {
             var ctx = getContext("2d");
             var r = root.size;
 
             ctx.beginPath();
             switch (root.corner) {
-                case cornerEnum.topLeft:
-                    ctx.arc(r, r, r, Math.PI, 3 * Math.PI / 2);
-                    ctx.lineTo(0, 0);
-                    break;
-                case cornerEnum.topRight:
-                    ctx.arc(0, r, r, 3 * Math.PI / 2, 2 * Math.PI);
-                    ctx.lineTo(r, 0);
-                    break;
-                case cornerEnum.bottomLeft:
-                    ctx.arc(r, 0, r, Math.PI / 2, Math.PI);
-                    ctx.lineTo(0, r);
-                    break;
-                case cornerEnum.bottomRight:
-                    ctx.arc(0, 0, r, 0, Math.PI / 2);
-                    ctx.lineTo(r, r);
-                    break;
+            case cornerEnum.topLeft:
+                ctx.arc(r, r, r, Math.PI, 3 * Math.PI / 2);
+                ctx.lineTo(0, 0);
+                break;
+            case cornerEnum.topRight:
+                ctx.arc(0, r, r, 3 * Math.PI / 2, 2 * Math.PI);
+                ctx.lineTo(r, 0);
+                break;
+            case cornerEnum.bottomLeft:
+                ctx.arc(r, 0, r, Math.PI / 2, Math.PI);
+                ctx.lineTo(0, r);
+                break;
+            case cornerEnum.bottomRight:
+                ctx.arc(0, 0, r, 0, Math.PI / 2);
+                ctx.lineTo(r, r);
+                break;
             }
             ctx.closePath();
             ctx.fillStyle = root.color;
@@ -60,5 +60,4 @@ Item {
     Behavior on size {
         animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
     }
-
 }

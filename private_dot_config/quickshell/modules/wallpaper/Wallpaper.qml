@@ -50,7 +50,8 @@ Scope {
             windows: [wallpaperWindow]
             active: false
             onCleared: () => {
-                if (!active) GlobalStates.wallpaperSelectorOpen = false
+                if (!active)
+                    GlobalStates.wallpaperSelectorOpen = false;
             }
         }
 
@@ -58,7 +59,7 @@ Scope {
             target: GlobalStates
             function onWallpaperSelectorOpenChanged() {
                 if (GlobalStates.wallpaperSelectorOpen) {
-                    delayedGrabTimer.start()
+                    delayedGrabTimer.start();
                 }
             }
         }
@@ -91,7 +92,7 @@ Scope {
             implicitWidth: wrapper.implicitWidth
             implicitHeight: wrapper.implicitHeight
 
-            Keys.onPressed: (event) => {
+            Keys.onPressed: event => {
                 if (event.key === Qt.Key_Escape) {
                     GlobalStates.wallpaperSelectorOpen = false;
                 } else if (event.key === Qt.Key_Left) {
@@ -164,7 +165,6 @@ Scope {
                     }
                 }
             }
-
         }
 
         Rectangle {
@@ -186,22 +186,20 @@ Scope {
                 color: Appearance.m3colors.m3primaryText
                 font.pixelSize: 12
             }
-
         }
-
     }
 
     IpcHandler {
         target: "wallpaper-selector"
 
         function toggle() {
-            GlobalStates.wallpaperSelectorOpen = !GlobalStates.wallpaperSelectorOpen
+            GlobalStates.wallpaperSelectorOpen = !GlobalStates.wallpaperSelectorOpen;
         }
         function close() {
-            GlobalStates.wallpaperSelectorOpen = false
+            GlobalStates.wallpaperSelectorOpen = false;
         }
         function open() {
-            GlobalStates.wallpaperSelectorOpen = true
+            GlobalStates.wallpaperSelectorOpen = true;
         }
     }
 
@@ -210,7 +208,7 @@ Scope {
         description: qsTr("Toggles wallpaper selector on press")
 
         onPressed: {
-            GlobalStates.wallpaperSelectorOpen = !GlobalStates.wallpaperSelectorOpen
+            GlobalStates.wallpaperSelectorOpen = !GlobalStates.wallpaperSelectorOpen;
         }
     }
 
@@ -219,7 +217,7 @@ Scope {
         description: qsTr("Closes wallpaper selector")
 
         onPressed: {
-            GlobalStates.wallpaperSelectorOpen = false
+            GlobalStates.wallpaperSelectorOpen = false;
         }
     }
 }

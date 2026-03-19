@@ -32,11 +32,11 @@ Item {
                 radius: Appearance.rounding.small
 
                 property int workspaceId: {
-                  return index + 1
+                    return index + 1;
                 }
                 property bool isActive: {
-                    var activeWs = Hyprland.focusedMonitor?.activeWorkspace?.id
-                    return activeWs === workspaceId
+                    var activeWs = Hyprland.focusedMonitor?.activeWorkspace?.id;
+                    return activeWs === workspaceId;
                 }
 
                 Rectangle {
@@ -49,15 +49,21 @@ Item {
                     border.color: root.indicatorColor
 
                     Behavior on width {
-                        NumberAnimation { duration: Appearance.animation.elementMoveFast.duration }
+                        NumberAnimation {
+                            duration: Appearance.animation.elementMoveFast.duration
+                        }
                     }
 
                     Behavior on color {
-                        ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
+                        ColorAnimation {
+                            duration: Appearance.animation.elementMoveFast.duration
+                        }
                     }
 
                     Behavior on border.color {
-                        ColorAnimation { duration: Appearance.animation.elementMoveFast.duration }
+                        ColorAnimation {
+                            duration: Appearance.animation.elementMoveFast.duration
+                        }
                     }
                 }
 
@@ -68,7 +74,7 @@ Item {
                     cursorShape: Qt.PointingHandCursor
 
                     onClicked: {
-                        Hyprland.dispatch("workspace " + parent.workspaceId)
+                        Hyprland.dispatch("workspace " + parent.workspaceId);
                     }
                 }
             }

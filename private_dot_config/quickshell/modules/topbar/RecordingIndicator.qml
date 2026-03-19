@@ -32,7 +32,6 @@ Item {
             duration: 800
             easing.type: Easing.InOutSine
         }
-
     }
 
     Rectangle {
@@ -60,7 +59,6 @@ Item {
                 duration: 300
                 easing.type: Easing.OutCubic
             }
-
         }
 
         Behavior on opacity {
@@ -68,9 +66,6 @@ Item {
                 duration: 300
                 easing.type: Easing.OutCubic
             }
-
         }
-
     }
-
 }

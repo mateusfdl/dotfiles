@@ -113,7 +113,9 @@ Item {
                 }
             }
 
-            Item { Layout.preferredHeight: 50 }
+            Item {
+                Layout.preferredHeight: 50
+            }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
@@ -124,7 +126,9 @@ Item {
                 font.weight: Font.Normal
             }
 
-            Item { Layout.preferredHeight: 8 }
+            Item {
+                Layout.preferredHeight: 8
+            }
 
             Rectangle {
                 id: passwordContainer
@@ -137,7 +141,10 @@ Item {
                 border.width: 1
                 radius: 24
 
-                transform: Translate { id: shakeTransform; x: 0 }
+                transform: Translate {
+                    id: shakeTransform
+                    x: 0
+                }
 
                 SequentialAnimation {
                     id: shakeAnimation
@@ -256,11 +263,15 @@ Item {
                 opacity: root.context.showFailure ? 1 : 0
 
                 Behavior on opacity {
-                    NumberAnimation { duration: 200 }
+                    NumberAnimation {
+                        duration: 200
+                    }
                 }
             }
 
-            Item { Layout.preferredHeight: 20 }
+            Item {
+                Layout.preferredHeight: 20
+            }
 
             // Hint text
             Text {

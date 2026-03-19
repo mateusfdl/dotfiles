@@ -1,7 +1,7 @@
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-pragma Singleton
 
 Singleton {
     id: root
@@ -37,11 +37,10 @@ Singleton {
         command: ["whoami"]
 
         stdout: SplitParser {
-            onRead: (data) => {
+            onRead: data => {
                 root.username = data.trim();
             }
         }
-
     }
 
     FileView {
@@ -56,11 +55,9 @@ Singleton {
         command: ["uptime", "-p"]
 
         stdout: SplitParser {
-            onRead: (data) => {
+            onRead: data => {
                 root.uptime = data.replace(/up/, "").trim();
             }
         }
-
     }
-
 }

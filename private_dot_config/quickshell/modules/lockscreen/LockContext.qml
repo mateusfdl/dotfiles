@@ -16,14 +16,17 @@ Scope {
     property bool showFailure: false
 
     // Signals
-    signal unlocked()
-    signal failed()
+    signal unlocked
+    signal failed
 
     // Try to authenticate with the entered password
     function tryUnlock() {
-        if (currentText.length === 0) return;
-        if (unlockInProgress) return;
-        if (unlockSucceeded) return;
+        if (currentText.length === 0)
+            return;
+        if (unlockInProgress)
+            return;
+        if (unlockSucceeded)
+            return;
 
         unlockInProgress = true;
         showFailure = false;
@@ -52,7 +55,7 @@ Scope {
             }
         }
 
-        onCompleted: (success) => {
+        onCompleted: success => {
             // Note: success parameter is inverted in PamContext (false = success)
             if (!success) {
                 root.unlockSucceeded = true;

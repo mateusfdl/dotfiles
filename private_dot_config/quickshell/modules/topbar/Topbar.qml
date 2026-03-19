@@ -64,9 +64,7 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                             Layout.maximumWidth: 400
                         }
-
                     }
-
                 }
 
                 Item {
@@ -76,7 +74,6 @@ Scope {
                     Topbar.Workspaces {
                         anchors.centerIn: parent
                     }
-
                 }
 
                 Item {
@@ -135,15 +132,9 @@ Scope {
                             implicitWidth: 20
                             implicitHeight: 1
                         }
-
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }

@@ -32,15 +32,12 @@ Rectangle { // App icon
         anchors.fill: parent
         sourceComponent: MaterialSymbol {
             text: {
-                const defaultIcon = NotificationUtils.findSuitableMaterialSymbol("")
-                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.summary)
-                return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ?
-                    "release_alert" : guessedIcon
+                const defaultIcon = NotificationUtils.findSuitableMaterialSymbol("");
+                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.summary);
+                return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ? "release_alert" : guessedIcon;
             }
             anchors.fill: parent
-            color: (root.urgency == NotificationUrgency.Critical) ? 
-                Colors.mix(Appearance.m3colors.m3onSecondary, Appearance.m3colors.m3onSecondaryContainer, 0.1) :
-                Appearance.m3colors.m3onSecondaryContainer
+            color: (root.urgency == NotificationUrgency.Critical) ? Colors.mix(Appearance.m3colors.m3onSecondary, Appearance.m3colors.m3onSecondaryContainer, 0.1) : Appearance.m3colors.m3onSecondaryContainer
             iconSize: root.materialIconSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter

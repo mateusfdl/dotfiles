@@ -38,37 +38,33 @@ Rectangle {
 
     function navigateLeft() {
         if (currentIndex > 0) {
-            currentIndex--
-            galleryView.currentIndex = currentIndex
-            updateCurrentWallpaper()
+            currentIndex--;
+            galleryView.currentIndex = currentIndex;
+            updateCurrentWallpaper();
         }
     }
 
     function navigateRight() {
         if (currentIndex < folderModel.count - 1) {
-            currentIndex++
-            galleryView.currentIndex = currentIndex
-            updateCurrentWallpaper()
+            currentIndex++;
+            galleryView.currentIndex = currentIndex;
+            updateCurrentWallpaper();
         }
     }
 
     function applyCurrentWallpaper() {
         if (currentWallpaper.length > 0) {
-            applyWallpaper(currentWallpaper)
+            applyWallpaper(currentWallpaper);
         }
     }
 
     // Wallpaper extensions to filter
-    readonly property list<string> extensions: [
-        "*.jpg", "*.jpeg", "*.png", "*.webp", "*.avif", "*.bmp"
-    ]
+    readonly property list<string> extensions: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.avif", "*.bmp"]
 
     FolderListModel {
         id: folderModel
         folder: Qt.resolvedUrl(wallpaperPath)
-        nameFilters: searchField.text.length > 0
-            ? extensions.map(ext => "*" + searchField.text + ext)
-            : extensions
+        nameFilters: searchField.text.length > 0 ? extensions.map(ext => "*" + searchField.text + ext) : extensions
         showDirs: false
         showDotAndDotDot: false
         showOnlyReadable: true
@@ -76,37 +72,29 @@ Rectangle {
 
         onCountChanged: {
             if (count > 0 && currentIndex >= count) {
-                currentIndex = count - 1
+                currentIndex = count - 1;
             }
             if (count > 0 && currentIndex < 0) {
-                currentIndex = 0
+                currentIndex = 0;
             }
-            updateCurrentWallpaper()
+            updateCurrentWallpaper();
         }
     }
 
     function updateCurrentWallpaper() {
         if (folderModel.count > 0 && currentIndex >= 0 && currentIndex < folderModel.count) {
-            currentWallpaper = folderModel.get(currentIndex, "filePath")
+            currentWallpaper = folderModel.get(currentIndex, "filePath");
         }
     }
 
     function applyWallpaper(wallpaperPath) {
-          wallpaperToApply = wallpaperPath
-          wallpaperProcess.running = true
+        wallpaperToApply = wallpaperPath;
+        wallpaperProcess.running = true;
     }
 
     Process {
         id: wallpaperProcess
-        command: [
-            "sh", "-c",
-            "swww img '" + root.wallpaperToApply + "'"
-            + " --transition-bezier .43,1.19,1,.4"
-            + " --transition-fps 144"
-            + " --transition-type grow"
-            + " --transition-pos 0.925,0.977"
-            + " --transition-duration 1"
-        ]
+        command: ["sh", "-c", "swww img '" + root.wallpaperToApply + "'" + " --transition-bezier .43,1.19,1,.4" + " --transition-fps 144" + " --transition-type grow" + " --transition-pos 0.925,0.977" + " --transition-duration 1"]
     }
 
     ColumnLayout {
@@ -221,15 +209,15 @@ Rectangle {
                             Layout.alignment: Qt.AlignHCenter
                             Layout.maximumWidth: 560
                             text: delegateItem.fileName
-                            color: delegateItem.isCurrent
-                                ? Appearance.m3colors.m3primaryText
-                                : Appearance.m3colors.m3secondaryText
+                            color: delegateItem.isCurrent ? Appearance.m3colors.m3primaryText : Appearance.m3colors.m3secondaryText
                             font.pixelSize: 13
                             horizontalAlignment: Text.AlignHCenter
                             elide: Text.ElideMiddle
 
                             Behavior on color {
-                                ColorAnimation { duration: 300 }
+                                ColorAnimation {
+                                    duration: 300
+                                }
                             }
                         }
                     }
@@ -237,15 +225,15 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            root.currentIndex = delegateItem.index
-                            root.updateCurrentWallpaper()
+                            root.currentIndex = delegateItem.index;
+                            root.updateCurrentWallpaper();
                         }
                     }
                 }
 
                 onCurrentIndexChanged: {
-                    root.currentIndex = currentIndex
-                    root.updateCurrentWallpaper()
+                    root.currentIndex = currentIndex;
+                    root.updateCurrentWallpaper();
                 }
             }
         }
@@ -256,12 +244,12 @@ Rectangle {
             color: Appearance.colors.colLayer2
             radius: 8
             border.width: 1
-            border.color: searchField.activeFocus
-                ? Appearance.m3colors.m3accentPrimary
-                : Appearance.m3colors.m3borderSecondary
+            border.color: searchField.activeFocus ? Appearance.m3colors.m3accentPrimary : Appearance.m3colors.m3borderSecondary
 
             Behavior on border.color {
-                ColorAnimation { duration: 200 }
+                ColorAnimation {
+                    duration: 200
+                }
             }
 
             RowLayout {
@@ -297,9 +285,9 @@ Rectangle {
 
                     selectByMouse: true
 
-                    Keys.onPressed: (event) => {
+                    Keys.onPressed: event => {
                         if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
-                            event.accepted = false
+                            event.accepted = false;
                         }
                     }
                 }
@@ -314,17 +302,16 @@ Rectangle {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            searchField.text = ""
-                            searchField.focus = true
+                            searchField.text = "";
+                            searchField.focus = true;
                         }
                     }
                 }
             }
         }
-
     }
 
     Component.onCompleted: {
-        updateCurrentWallpaper()
+        updateCurrentWallpaper();
     }
 }

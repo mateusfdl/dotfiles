@@ -16,7 +16,7 @@ MouseArea {
     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
     implicitWidth: Config.options.bar.tray.itemSize
     implicitHeight: Config.options.bar.tray.itemSize
-    onPressed: (event) => {
+    onPressed: event => {
         switch (event.button) {
         case Qt.LeftButton:
             item.activate();
@@ -36,7 +36,7 @@ MouseArea {
         }
         event.accepted = true;
     }
-    onWheel: (wheel) => {
+    onWheel: wheel => {
         item.scroll(wheel.angleDelta.y, "vertical");
     }
 
@@ -51,9 +51,7 @@ MouseArea {
             ColorAnimation {
                 duration: Appearance.animation.elementMoveFast.duration
             }
-
         }
-
     }
 
     IconImage {
@@ -77,9 +75,7 @@ MouseArea {
             NumberAnimation {
                 duration: Appearance.animation.elementMoveFast.duration
             }
-
         }
-
     }
 
     Loader {
@@ -89,7 +85,6 @@ MouseArea {
             menu.active = true;
             if (menu.item)
                 menu.item.openAt(iconRightX, popupY);
-
         }
 
         active: false
@@ -101,7 +96,5 @@ MouseArea {
                 menu.active = false;
             }
         }
-
     }
-
 }

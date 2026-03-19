@@ -41,9 +41,7 @@ Item {
             ColorAnimation {
                 duration: 200
             }
-
         }
-
     }
 
     Rectangle {
@@ -57,9 +55,7 @@ Item {
             ColorAnimation {
                 duration: 200
             }
-
         }
-
     }
 
     MouseArea {
@@ -77,5 +73,4 @@ Item {
             Topbar.VolumePopup.togglePopup(popupX, popupY);
         }
     }
-
 }

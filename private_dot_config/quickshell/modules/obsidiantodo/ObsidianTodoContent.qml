@@ -11,7 +11,7 @@ import QsUtils
 FocusScope {
     id: root
 
-    signal closeRequested()
+    signal closeRequested
 
     property bool isOpen: false
     readonly property string fontFamily: "IosevkaSS04 Nerd Font Mono"
@@ -34,20 +34,24 @@ FocusScope {
     }
 
     function addTag(tag: string) {
-        if (tag.length === 0) return;
-        if (root.selectedTags.indexOf(tag) !== -1) return;
+        if (tag.length === 0)
+            return;
+        if (root.selectedTags.indexOf(tag) !== -1)
+            return;
         root.selectedTags = root.selectedTags.concat([tag]);
         tagInput.text = "";
     }
 
     function removeLastTag() {
-        if (root.selectedTags.length === 0) return;
+        if (root.selectedTags.length === 0)
+            return;
         root.selectedTags = root.selectedTags.slice(0, root.selectedTags.length - 1);
     }
 
     function resolveAndAddTag() {
         const query = tagInput.text.trim();
-        if (query.length === 0) return;
+        if (query.length === 0)
+            return;
         const fuzzy = FuzzySort.go(query, root.preparedTags, {
             key: "name",
             limit: 1
@@ -92,7 +96,7 @@ FocusScope {
         }
     }
 
-    Keys.onPressed: (event) => {
+    Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
             root.closeRequested();
             event.accepted = true;
@@ -158,17 +162,15 @@ FocusScope {
                 renderType: Text.NativeRendering
             }
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
         }
 
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(
-                Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7",
-                Appearance.m3colors?.m3borderSecondary ?? "#292e42",
-                0.3
-            )
+            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
             opacity: 0.5
         }
 
@@ -235,9 +237,7 @@ FocusScope {
                         width: chipText.implicitWidth + 28
                         height: 34
                         radius: 17
-                        color: Colors.transparentize(
-                            Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.8
-                        )
+                        color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.8)
 
                         Text {
                             id: chipText
@@ -253,9 +253,7 @@ FocusScope {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                root.selectedTags = root.selectedTags.filter(
-                                    (t, i) => i !== tagChip.index
-                                );
+                                root.selectedTags = root.selectedTags.filter((t, i) => i !== tagChip.index);
                             }
                         }
                     }
@@ -295,7 +293,5 @@ FocusScope {
                 }
             }
         }
-
-
     }
 }

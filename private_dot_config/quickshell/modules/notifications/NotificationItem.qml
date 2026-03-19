@@ -43,20 +43,17 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-        onClicked: (mouse) => {
+        onClicked: mouse => {
             if (mouse.button === Qt.MiddleButton)
                 root.dismissNotification();
-
         }
         onEntered: {
             if (notificationObject.timer)
                 notificationObject.timer.stop();
-
         }
         onExited: {
             if (notificationObject.timer)
                 notificationObject.timer.start();
-
         }
     }
 
@@ -94,7 +91,6 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 smooth: true
             }
-
         }
 
         ColumnLayout {
@@ -139,9 +135,7 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: root.dismissNotification()
                     }
-
                 }
-
             }
 
             StyledText {
@@ -169,7 +163,7 @@ Rectangle {
                 elide: Text.ElideRight
                 textFormat: Text.StyledText
                 visible: notificationObject.body !== ""
-                onLinkActivated: (link) => {
+                onLinkActivated: link => {
                     Qt.openUrlExternally(link);
                     root.dismissNotification();
                 }
@@ -213,15 +207,10 @@ Rectangle {
                                 Notifications.attemptInvokeAction(notificationObject.notificationId, modelData.identifier);
                             }
                         }
-
                     }
-
                 }
-
             }
-
         }
-
     }
 
     NumberAnimation on x {
@@ -246,5 +235,4 @@ Rectangle {
             Notifications.discardNotification(notificationObject.notificationId);
         }
     }
-
 }

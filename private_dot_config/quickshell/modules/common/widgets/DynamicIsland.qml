@@ -48,35 +48,40 @@ Item {
     property alias expandedContent: expandedLoader.sourceComponent
     property alias largeContent: largeLoader.sourceComponent
     property bool interactive: true
-    readonly property var _sizes: [{
-        "w": collapsedWidth,
-        "h": collapsedHeight,
-        "m": collapsedMargin,
-        "r": collapsedRadius
-    }, {
-        "w": compactWidth,
-        "h": compactHeight,
-        "m": compactMargin,
-        "r": compactRadius
-    }, {
-        "w": expandedWidth,
-        "h": expandedHeight,
-        "m": expandedMargin,
-        "r": expandedRadius
-    }, {
-        "w": largeWidth,
-        "h": largeHeight,
-        "m": largeMargin,
-        "r": largeRadius
-    }]
+    readonly property var _sizes: [
+        {
+            "w": collapsedWidth,
+            "h": collapsedHeight,
+            "m": collapsedMargin,
+            "r": collapsedRadius
+        },
+        {
+            "w": compactWidth,
+            "h": compactHeight,
+            "m": compactMargin,
+            "r": compactRadius
+        },
+        {
+            "w": expandedWidth,
+            "h": expandedHeight,
+            "m": expandedMargin,
+            "r": expandedRadius
+        },
+        {
+            "w": largeWidth,
+            "h": largeHeight,
+            "m": largeMargin,
+            "r": largeRadius
+        }
+    ]
     readonly property var _current: _sizes[currentState] || _sizes[0]
     readonly property real targetWidth: _current.w
     readonly property real targetHeight: _current.h
     readonly property real targetMargin: _current.m
     readonly property real targetRadius: _current.r < 0 ? targetHeight / 2 : _current.r
 
-    signal clicked()
-    signal longPressed()
+    signal clicked
+    signal longPressed
     signal stateChanged(int newState)
 
     function collapse() {
@@ -142,7 +147,6 @@ Item {
                     saturation: root.blurSaturation
                     brightness: root.blurBrightness
                 }
-
             }
 
             Rectangle {
@@ -191,9 +195,7 @@ Item {
                     height: container.height
                     radius: container.radius
                 }
-
             }
-
         }
 
         Rectangle {
@@ -213,23 +215,16 @@ Item {
         }
 
         Behavior on width {
-            IslandAnimation {
-            }
-
+            IslandAnimation {}
         }
 
         Behavior on height {
-            IslandAnimation {
-            }
-
+            IslandAnimation {}
         }
 
         Behavior on radius {
-            IslandAnimation {
-            }
-
+            IslandAnimation {}
         }
-
     }
 
     component IslandAnimation: NumberAnimation {
@@ -255,9 +250,6 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.animationCurves.standardDecel
             }
-
         }
-
     }
-
 }

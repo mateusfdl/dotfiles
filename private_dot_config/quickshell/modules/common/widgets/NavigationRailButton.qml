@@ -39,9 +39,9 @@ TabButton {
             left: parent.left
             right: undefined
         }
-        
+
         implicitWidth: root.visualWidth
-        implicitHeight: root.expanded ? itemIconBackground.implicitHeight : itemIconBackground.implicitHeight + itemText.implicitHeight 
+        implicitHeight: root.expanded ? itemIconBackground.implicitHeight : itemIconBackground.implicitHeight + itemText.implicitHeight
 
         Rectangle {
             id: itemBackground
@@ -50,11 +50,7 @@ TabButton {
             anchors.bottom: itemIconBackground.bottom
             implicitWidth: root.visualWidth
             radius: Appearance.rounding.full
-            color: toggled ? 
-                root.showToggledHighlight ?
-                    (root.down ? Appearance.colors.colSecondaryContainerActive : root.hovered ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer)
-                    : Colors.transparentize(Appearance.colors.colSecondaryContainer) :
-                (root.down ? Appearance.colors.colLayer1Active : root.hovered ? Appearance.colors.colLayer1Hover : Colors.transparentize(Appearance.colors.colLayer1Hover, 1))
+            color: toggled ? root.showToggledHighlight ? (root.down ? Appearance.colors.colSecondaryContainerActive : root.hovered ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer) : Colors.transparentize(Appearance.colors.colSecondaryContainer) : (root.down ? Appearance.colors.colLayer1Active : root.hovered ? Appearance.colors.colLayer1Hover : Colors.transparentize(Appearance.colors.colLayer1Hover, 1))
 
             states: State {
                 name: "expanded"
@@ -146,5 +142,4 @@ TabButton {
             color: Appearance.colors.colOnLayer1
         }
     }
-
 }

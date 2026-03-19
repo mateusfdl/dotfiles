@@ -28,7 +28,9 @@ Item {
         active: root.hasSearchText
         visible: active
         anchors.fill: parent
-        sourceComponent: AppListSimple { search: root.search }
+        sourceComponent: AppListSimple {
+            search: root.search
+        }
     }
 
     Loader {

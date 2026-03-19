@@ -17,7 +17,7 @@ Scope {
     property real menuY: 0
     property real iconRightX: 0
 
-    signal menuClosed()
+    signal menuClosed
     signal menuOpened(var qsWindow)
 
     function openAt(iconRightX, popupY) {
@@ -30,11 +30,11 @@ Scope {
 
     function close() {
         menuVisible = false;
-        while (stackView.depth > 1)stackView.pop()
+        while (stackView.depth > 1)
+            stackView.pop();
         sysTrayMenuScope.menuClosed();
         if (Topbar.PopupManager.activeSysTrayMenu === sysTrayMenuScope)
             Topbar.PopupManager.activeSysTrayMenu = null;
-
     }
 
     PanelWindow {
@@ -78,7 +78,7 @@ Scope {
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.BackButton | Qt.RightButton
-                onPressed: (event) => {
+                onPressed: event => {
                     if ((event.button === Qt.BackButton || event.button === Qt.RightButton) && stackView.depth > 1)
                         stackView.pop();
                     else
@@ -98,22 +98,17 @@ Scope {
                     margins: 8
                 }
 
-                pushEnter: NoAnim {
-                }
+                pushEnter: NoAnim {}
 
-                pushExit: NoAnim {
-                }
+                pushExit: NoAnim {}
 
-                popEnter: NoAnim {
-                }
+                popEnter: NoAnim {}
 
-                popExit: NoAnim {
-                }
+                popExit: NoAnim {}
 
                 initialItem: SubMenu {
                     handle: sysTrayMenuScope.trayItemMenuHandle
                 }
-
             }
 
             Behavior on y {
@@ -121,7 +116,6 @@ Scope {
                     duration: 400
                     easing.type: Easing.OutCubic
                 }
-
             }
 
             layer.effect: DropShadow {
@@ -131,24 +125,19 @@ Scope {
                 verticalOffset: 8
                 horizontalOffset: 0
             }
-
         }
-
     }
 
     Component {
         id: subMenuComponent
 
-        SubMenu {
-        }
-
+        SubMenu {}
     }
 
     component NoAnim: Transition {
         NumberAnimation {
             duration: 0
         }
-
     }
 
     component SubMenu: ColumnLayout {
@@ -210,11 +199,8 @@ Scope {
                         font.pixelSize: Appearance.font.pixelSize.textSmall
                         color: Appearance.m3colors.m3primaryText
                     }
-
                 }
-
             }
-
         }
 
         Repeater {
@@ -224,7 +210,6 @@ Scope {
                 for (let i = 0; i < menuOpener.children.values.length; i++) {
                     if (menuOpener.children.values[i].icon.length > 0)
                         return true;
-
                 }
                 return false;
             }
@@ -232,7 +217,6 @@ Scope {
                 for (let i = 0; i < menuOpener.children.values.length; i++) {
                     if (menuOpener.children.values[i].buttonType !== QsMenuButtonType.None)
                         return true;
-
                 }
                 return false;
             }
@@ -247,14 +231,13 @@ Scope {
                 menuEntry: modelData
                 buttonRadius: 12
                 onDismiss: sysTrayMenuScope.close()
-                onOpenSubmenu: (handle) => {
+                onOpenSubmenu: handle => {
                     stackView.push(subMenuComponent.createObject(null, {
                         "handle": handle,
                         "isSubMenu": true
                     }));
                 }
             }
-
         }
 
         Behavior on opacity {
@@ -262,9 +245,6 @@ Scope {
                 duration: Appearance.animation.elementMoveFast.duration
                 easing.type: Easing.OutCubic
             }
-
         }
-
     }
-
 }

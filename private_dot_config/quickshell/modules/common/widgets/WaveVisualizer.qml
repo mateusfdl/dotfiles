@@ -14,7 +14,7 @@ Canvas { // Visualizer
     property color color: Appearance.m3colors.m3primary
 
     onPointsChanged: () => {
-        root.requestPaint()
+        root.requestPaint();
     }
 
     anchors.fill: parent
@@ -27,7 +27,8 @@ Canvas { // Visualizer
         var h = height;
         var w = width;
         var n = points.length;
-        if (n < 2) return;
+        if (n < 2)
+            return;
 
         // Smoothing: simple moving average (optional)
         var smoothWindow = root.smoothing; // adjust for more/less smoothing
@@ -41,7 +42,8 @@ Canvas { // Visualizer
             }
             root.smoothPoints.push(sum / count);
         }
-        if (!root.live) root.smoothPoints.fill(0); // If not playing, show no points
+        if (!root.live)
+            root.smoothPoints.fill(0); // If not playing, show no points
 
         ctx.beginPath();
         ctx.moveTo(0, h);
@@ -53,17 +55,13 @@ Canvas { // Visualizer
         ctx.lineTo(w, h);
         ctx.closePath();
 
-        ctx.fillStyle = Qt.rgba(
-            root.color.r,
-            root.color.g,
-            root.color.b,
-            0.15
-        );
+        ctx.fillStyle = Qt.rgba(root.color.r, root.color.g, root.color.b, 0.15);
         ctx.fill();
     }
 
     layer.enabled: true
-    layer.effect: MultiEffect { // Blur a bit to obscure away the points
+    layer.effect: MultiEffect {
+        // Blur a bit to obscure away the points
         source: root
         saturation: 0.2
         blurEnabled: true

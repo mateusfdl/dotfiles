@@ -29,7 +29,6 @@ Item {
                 clockText.text = Qt.formatDateTime(new Date(), root.format);
             }
         }
-
     }
 
     Rectangle {
@@ -43,9 +42,6 @@ Item {
             ColorAnimation {
                 duration: Appearance.animation.elementMoveFast.duration
             }
-
         }
-
     }
-
 }

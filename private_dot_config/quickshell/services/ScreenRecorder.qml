@@ -1,8 +1,8 @@
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.modules.common
-pragma Singleton
 
 Singleton {
     id: root
@@ -49,12 +49,11 @@ Singleton {
         command: ["sh", "-c", "test -f /tmp/screen_recording.pid && kill -0 $(cat /tmp/screen_recording.pid) 2>/dev/null && echo recording || echo stopped"]
 
         stdout: SplitParser {
-            onRead: (data) => {
+            onRead: data => {
                 const output = data.trim();
                 root.isRecording = (output === "recording");
             }
         }
-
     }
 
     Timer {
@@ -67,5 +66,4 @@ Singleton {
             checkStatus();
         }
     }
-
 }

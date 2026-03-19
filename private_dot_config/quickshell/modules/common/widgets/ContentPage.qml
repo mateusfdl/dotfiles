@@ -14,7 +14,7 @@ StyledFlickable {
     clip: true
     contentHeight: contentColumn.implicitHeight + root.bottomContentPadding // Add some padding at the bottom
     implicitWidth: contentColumn.implicitWidth
-    
+
     ColumnLayout {
         id: contentColumn
         width: root.forceWidth ? root.baseWidth : Math.max(root.baseWidth, implicitWidth)
@@ -25,5 +25,4 @@ StyledFlickable {
         }
         spacing: 30
     }
-
 }

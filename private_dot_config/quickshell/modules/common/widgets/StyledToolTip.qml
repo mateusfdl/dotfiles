@@ -10,11 +10,11 @@ ToolTip {
     property bool extraVisibleCondition: true
     property bool alternativeVisibleCondition: false
     property bool internalVisibleCondition: {
-        const ans = (extraVisibleCondition && (parent.hovered === undefined || parent?.hovered)) || alternativeVisibleCondition
-        return ans
+        const ans = (extraVisibleCondition && (parent.hovered === undefined || parent?.hovered)) || alternativeVisibleCondition;
+        return ans;
     }
     verticalPadding: 5
-    horizontalPadding: 10    
+    horizontalPadding: 10
     opacity: internalVisibleCondition ? 1 : 0
     visible: opacity > 0
 
@@ -23,7 +23,7 @@ ToolTip {
     }
 
     background: null
-    
+
     contentItem: Item {
         id: contentItemBackground
         implicitWidth: tooltipTextObject.width + 2 * root.horizontalPadding
@@ -55,6 +55,6 @@ ToolTip {
                 color: Appearance?.m3colors.colOnTooltip ?? "#FFFFFF"
                 wrapMode: Text.Wrap
             }
-        }   
+        }
     }
 }

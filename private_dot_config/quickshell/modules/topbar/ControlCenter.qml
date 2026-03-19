@@ -49,11 +49,11 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            var pos = mapToItem(null, 0, 0)
-            var iconRightX = pos.x + root.width
-            var popupX = iconRightX - 420  // Popup width is 420
-            var popupY = 2
-            Topbar.ControlCenterPopup.togglePopup(popupX, popupY)
+            var pos = mapToItem(null, 0, 0);
+            var iconRightX = pos.x + root.width;
+            var popupX = iconRightX - 420;  // Popup width is 420
+            var popupY = 2;
+            Topbar.ControlCenterPopup.togglePopup(popupX, popupY);
         }
     }
 }

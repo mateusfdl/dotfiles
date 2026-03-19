@@ -45,7 +45,6 @@ Item {
             duration: root.animationDuration
             easing.type: root.easingType
         }
-
     }
 
     Rectangle {

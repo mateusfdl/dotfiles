@@ -26,17 +26,11 @@ Item {
     property real scale: Config.options.overview.scale
     property color activeBorderColor: Appearance.m3colors.m3accentSecondary
 
-    property real workspaceImplicitWidth: Math.max(100, (monitorData?.transform % 2 === 1) ? 
-        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
-        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale))
-    property real workspaceImplicitHeight: Math.max(60, (monitorData?.transform % 2 === 1) ? 
-        ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
-        ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale))
+    property real workspaceImplicitWidth: Math.max(100, (monitorData?.transform % 2 === 1) ? ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) : ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale))
+    property real workspaceImplicitHeight: Math.max(60, (monitorData?.transform % 2 === 1) ? ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) : ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale))
 
     property real workspaceNumberMargin: 80
-    property real workspaceNumberSize: (Config.options.overview.workspaceNumberSize > 0) 
-        ? Config.options.overview.workspaceNumberSize 
-        : Math.min(workspaceImplicitHeight, workspaceImplicitWidth) * monitor.scale
+    property real workspaceNumberSize: (Config.options.overview.workspaceNumberSize > 0) ? Config.options.overview.workspaceNumberSize : Math.min(workspaceImplicitHeight, workspaceImplicitWidth) * monitor.scale
     property int workspaceZ: 0
     property int windowZ: 1
     property int windowDraggingZ: 99999
@@ -53,7 +47,8 @@ Item {
 
     // Refresh wallpaper path from swww when overview becomes visible
     onVisibleChanged: {
-        if (visible) Appearance.refreshWallpaper();
+        if (visible)
+            Appearance.refreshWallpaper();
     }
 
     // Shared wallpaper image - loaded once and reused, only when visible
@@ -83,7 +78,6 @@ Item {
         radius: 16
         color: Appearance.colors.colBackground
 
-
         RowLayout { // Workspaces - horizontal flow of open workspaces only
             id: workspaceColumnLayout
 
@@ -91,7 +85,8 @@ Item {
             anchors.centerIn: parent
             spacing: workspaceSpacing
 
-            Repeater { // Workspace repeater - only open workspaces for this monitor
+            Repeater {
+                // Workspace repeater - only open workspaces for this monitor
                 model: monitorWorkspaceIds.slice().sort((a, b) => a - b)
                 Rectangle { // Workspace
                     id: workspace
@@ -138,10 +133,8 @@ Item {
                                 property real aspectRatio: sharedWallpaper.implicitWidth / Math.max(1, sharedWallpaper.implicitHeight)
                                 property real containerRatio: wallpaperContainer.width / Math.max(1, wallpaperContainer.height)
 
-                                xScale: aspectRatio > containerRatio ?
-                                    wallpaperContainer.height * aspectRatio / wallpaperContainer.width : 1
-                                yScale: aspectRatio > containerRatio ?
-                                    1 : wallpaperContainer.width / (wallpaperContainer.height * aspectRatio)
+                                xScale: aspectRatio > containerRatio ? wallpaperContainer.height * aspectRatio / wallpaperContainer.width : 1
+                                yScale: aspectRatio > containerRatio ? 1 : wallpaperContainer.width / (wallpaperContainer.height * aspectRatio)
 
                                 origin.x: wallpaperContainer.width / 2
                                 origin.y: wallpaperContainer.height / 2
@@ -162,7 +155,9 @@ Item {
                             opacity: hoveredWhileDragging ? 0.4 : 0.2
 
                             Behavior on opacity {
-                                NumberAnimation { duration: 150 }
+                                NumberAnimation {
+                                    duration: 150
+                                }
                             }
                         }
                     }
@@ -177,7 +172,9 @@ Item {
                         z: 10
 
                         Behavior on border.width {
-                            NumberAnimation { duration: 100 }
+                            NumberAnimation {
+                                duration: 100
+                            }
                         }
                     }
 
@@ -210,8 +207,8 @@ Item {
                         z: 20
                         onClicked: {
                             if (root.draggingTargetWorkspace === -1) {
-                                GlobalStates.overviewOpen = false
-                                Hyprland.dispatch(`workspace ${workspaceName}`)
+                                GlobalStates.overviewOpen = false;
+                                Hyprland.dispatch(`workspace ${workspaceName}`);
                             }
                         }
                     }
@@ -220,13 +217,15 @@ Item {
                         anchors.fill: parent
                         z: 20
                         onEntered: {
-                            root.draggingTargetWorkspace = workspaceValue
-                            if (root.draggingFromWorkspace == root.draggingTargetWorkspace) return;
-                            hoveredWhileDragging = true
+                            root.draggingTargetWorkspace = workspaceValue;
+                            if (root.draggingFromWorkspace == root.draggingTargetWorkspace)
+                                return;
+                            hoveredWhileDragging = true;
                         }
                         onExited: {
-                            hoveredWhileDragging = false
-                            if (root.draggingTargetWorkspace == workspaceValue) root.draggingTargetWorkspace = -1
+                            hoveredWhileDragging = false;
+                            if (root.draggingTargetWorkspace == workspaceValue)
+                                root.draggingTargetWorkspace = -1;
                         }
                     }
                 }
@@ -239,12 +238,13 @@ Item {
             implicitWidth: workspaceColumnLayout.implicitWidth
             implicitHeight: workspaceColumnLayout.implicitHeight
 
-            Repeater { // Window repeater
+            Repeater {
+                // Window repeater
                 model: ScriptModel {
-                    values: windowAddresses.filter((address) => {
-                        var win = windowByAddress[address]
+                    values: windowAddresses.filter(address => {
+                        var win = windowByAddress[address];
                         // Only show windows in workspaces belonging to this monitor
-                        return monitorWorkspaceIds.includes(win?.workspace?.id)
+                        return monitorWorkspaceIds.includes(win?.workspace?.id);
                     })
                 }
                 delegate: OverviewWindow {
@@ -270,8 +270,8 @@ Item {
                         repeat: false
                         running: false
                         onTriggered: {
-                            window.x = Math.max((windowData?.at[0] - monitorData?.reserved[0] - monitorData?.x) * root.scale, 0) + xOffset
-                            window.y = Math.max((windowData?.at[1] - monitorData?.reserved[1] - monitorData?.y) * root.scale, 0) + yOffset
+                            window.x = Math.max((windowData?.at[0] - monitorData?.reserved[0] - monitorData?.x) * root.scale, 0) + xOffset;
+                            window.y = Math.max((windowData?.at[1] - monitorData?.reserved[1] - monitorData?.y) * root.scale, 0) + yOffset;
                         }
                     }
 
@@ -287,35 +287,35 @@ Item {
                         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                         drag.target: parent
                         onPressed: {
-                            root.draggingFromWorkspace = windowData?.workspace.id
-                            window.pressed = true
-                            window.Drag.active = true
-                            window.Drag.source = window
+                            root.draggingFromWorkspace = windowData?.workspace.id;
+                            window.pressed = true;
+                            window.Drag.active = true;
+                            window.Drag.source = window;
                         }
                         onReleased: {
-                            const targetWorkspace = root.draggingTargetWorkspace
-                            window.pressed = false
-                            window.Drag.active = false
-                            root.draggingFromWorkspace = -1
+                            const targetWorkspace = root.draggingTargetWorkspace;
+                            window.pressed = false;
+                            window.Drag.active = false;
+                            root.draggingFromWorkspace = -1;
                             if (targetWorkspace !== -1 && targetWorkspace !== windowData?.workspace.id) {
-                                Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`)
-                                updateWindowPosition.restart()
-                            }
-                            else {
-                                window.x = window.initX
-                                window.y = window.initY
+                                Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`);
+                                updateWindowPosition.restart();
+                            } else {
+                                window.x = window.initX;
+                                window.y = window.initY;
                             }
                         }
-                        onClicked: (event) => {
-                            if (!windowData) return;
+                        onClicked: event => {
+                            if (!windowData)
+                                return;
 
                             if (event.button === Qt.LeftButton) {
-                                GlobalStates.overviewOpen = false
-                                Hyprland.dispatch(`focuswindow address:${windowData.address}`)
-                                event.accepted = true
+                                GlobalStates.overviewOpen = false;
+                                Hyprland.dispatch(`focuswindow address:${windowData.address}`);
+                                event.accepted = true;
                             } else if (event.button === Qt.MiddleButton) {
-                                Hyprland.dispatch(`closewindow address:${windowData.address}`)
-                                event.accepted = true
+                                Hyprland.dispatch(`closewindow address:${windowData.address}`);
+                                event.accepted = true;
                             }
                         }
 

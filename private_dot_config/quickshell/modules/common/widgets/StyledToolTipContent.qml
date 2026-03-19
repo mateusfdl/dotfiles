@@ -47,6 +47,5 @@ Item {
             color: Appearance?.colors.colOnTooltip ?? "#FFFFFF"
             wrapMode: Text.Wrap
         }
-    }   
+    }
 }
-

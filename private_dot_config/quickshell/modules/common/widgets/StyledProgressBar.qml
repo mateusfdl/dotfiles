@@ -4,7 +4,6 @@ import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Controls
 
-
 /**
  * Material 3 progress bar. See https://m3.material.io/components/progress-indicators/overview
  */
@@ -28,7 +27,7 @@ ProgressBar {
     Behavior on value {
         animation: Appearance?.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
-    
+
     background: Item {
         implicitHeight: valueBarHeight
         implicitWidth: valueBarWidth
@@ -55,13 +54,17 @@ ProgressBar {
                 fullLength: root.width
                 Connections {
                     target: root
-                    function onValueChanged() { wavyFill.requestPaint(); }
-                    function onHighlightColorChanged() { wavyFill.requestPaint(); }
+                    function onValueChanged() {
+                        wavyFill.requestPaint();
+                    }
+                    function onHighlightColorChanged() {
+                        wavyFill.requestPaint();
+                    }
                 }
                 FrameAnimation {
                     running: root.animateWave
                     onTriggered: {
-                        wavyFill.requestPaint()
+                        wavyFill.requestPaint();
                     }
                 }
             }
@@ -77,16 +80,18 @@ ProgressBar {
                 color: root.highlightColor
             }
         }
-        
-        Rectangle { // Right remaining part fill
+
+        Rectangle {
+            // Right remaining part fill
             anchors.right: parent.right
             width: (1 - root.visualPosition) * parent.width - valueBarGap
             height: parent.height
             radius: height / 2
             color: root.trackColor
         }
-        
-        Rectangle { // Stop point
+
+        Rectangle {
+            // Stop point
             anchors.right: parent.right
             width: valueBarGap
             height: valueBarGap

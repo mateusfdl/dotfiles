@@ -12,19 +12,19 @@ Scope {
         property string mode: Appearance.currentThemeMode
 
         function toggle() {
-            const newMode = Appearance.currentThemeMode === "dark" ? "light" : "dark"
-            Appearance.currentThemeMode = newMode
-            console.log("[IPC] Theme mode toggled to:", newMode)
+            const newMode = Appearance.currentThemeMode === "dark" ? "light" : "dark";
+            Appearance.currentThemeMode = newMode;
+            console.log("[IPC] Theme mode toggled to:", newMode);
         }
 
         function setDark() {
-            Appearance.currentThemeMode = "dark"
-            console.log("[IPC] Theme mode set to: dark")
+            Appearance.currentThemeMode = "dark";
+            console.log("[IPC] Theme mode set to: dark");
         }
 
         function setLight() {
-            Appearance.currentThemeMode = "light"
-            console.log("[IPC] Theme mode set to: light")
+            Appearance.currentThemeMode = "light";
+            console.log("[IPC] Theme mode set to: light");
         }
     }
 }

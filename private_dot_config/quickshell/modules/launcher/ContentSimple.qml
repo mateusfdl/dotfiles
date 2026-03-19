@@ -160,11 +160,13 @@ Item {
                 color: Appearance.m3colors.m3primaryText
                 font.pixelSize: 22
 
-                Keys.onReturnPressed: (event) => {
-                    if (!list.currentList) return;
+                Keys.onReturnPressed: event => {
+                    if (!list.currentList)
+                        return;
 
                     const listView = list.currentList;
-                    if (listView.count === 0) return;
+                    if (listView.count === 0)
+                        return;
 
                     const currentItem = listView.currentItem;
                     if (currentItem) {
@@ -179,14 +181,14 @@ Item {
 
                 Keys.onUpPressed: {
                     if (list.currentList) {
-                        list.currentList.decrementCurrentIndex()
-                        list.currentList.forceActiveFocus()
+                        list.currentList.decrementCurrentIndex();
+                        list.currentList.forceActiveFocus();
                     }
                 }
                 Keys.onDownPressed: {
                     if (list.currentList) {
-                        list.currentList.incrementCurrentIndex()
-                        list.currentList.forceActiveFocus()
+                        list.currentList.incrementCurrentIndex();
+                        list.currentList.forceActiveFocus();
                     }
                 }
                 Keys.onEscapePressed: {

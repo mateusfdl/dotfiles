@@ -12,9 +12,9 @@ Rectangle {
     default property alias data: contentColumn.data
     property real backgroundHeight: 600
     property real backgroundAnimationMovementDistance: 60
-    
-    signal dismiss()
-    Keys.onPressed: (event) => {
+
+    signal dismiss
+    Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
             root.dismiss();
             event.accepted = true;
@@ -28,13 +28,14 @@ Rectangle {
     visible: dialogBackground.implicitHeight > 0
 
     onShowChanged: {
-        dialogBackgroundHeightAnimation.easing.bezierCurve = (show ? Appearance.animationCurves.emphasizedDecel : Appearance.animationCurves.emphasizedAccel)
-        dialogBackground.implicitHeight = show ? backgroundHeight : 0
+        dialogBackgroundHeightAnimation.easing.bezierCurve = (show ? Appearance.animationCurves.emphasizedDecel : Appearance.animationCurves.emphasizedAccel);
+        dialogBackground.implicitHeight = show ? backgroundHeight : 0;
     }
 
     radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
 
-    MouseArea { // Clicking outside the dialog should dismiss
+    MouseArea {
+        // Clicking outside the dialog should dismiss
         anchors.fill: parent
         acceptedButtons: Qt.AllButtons
         hoverEnabled: true
@@ -46,7 +47,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         radius: Appearance.rounding.large
         color: Appearance.m3colors.m3surfaceContainerHigh // Use opaque version of layer3
-        
+
         property real targetY: root.height / 2 - root.backgroundHeight / 2
         y: root.show ? targetY : (targetY - root.backgroundAnimationMovementDistance)
         implicitWidth: 350
@@ -67,7 +68,8 @@ Rectangle {
             }
         }
 
-        MouseArea { // So clicking inside the dialog won't dismiss
+        MouseArea {
+            // So clicking inside the dialog won't dismiss
             anchors.fill: parent
             acceptedButtons: Qt.AllButtons
             hoverEnabled: true
@@ -84,7 +86,6 @@ Rectangle {
             Behavior on opacity {
                 animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
             }
-
         }
     }
 }

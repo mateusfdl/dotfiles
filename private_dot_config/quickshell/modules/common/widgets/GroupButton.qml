@@ -6,7 +6,7 @@ import QsUtils
 import QtQuick.Layouts
 
 /**
- * Material 3 button with expressive bounciness. 
+ * Material 3 button with expressive bounciness.
  * See https://m3.material.io/components/button-groups/overview
  */
 Button {
@@ -42,18 +42,12 @@ Button {
     property real radius: root.down ? root.buttonRadiusPressed : root.buttonRadius
     property real leftRadius: root.down ? root.buttonRadiusPressed : root.buttonRadius
     property real rightRadius: root.down ? root.buttonRadiusPressed : root.buttonRadius
-    property color color: root.enabled ? (root.toggled ? 
-        (root.down ? colBackgroundToggledActive : 
-            root.hovered ? colBackgroundToggledHover : 
-            colBackgroundToggled) :
-        (root.down ? colBackgroundActive : 
-            root.hovered ? colBackgroundHover : 
-            colBackground)) : colBackground
+    property color color: root.enabled ? (root.toggled ? (root.down ? colBackgroundToggledActive : root.hovered ? colBackgroundToggledHover : colBackgroundToggled) : (root.down ? colBackgroundActive : root.hovered ? colBackgroundHover : colBackground)) : colBackground
 
     onDownChanged: {
         if (root.down) {
             if (root.parent.clickIndex !== undefined) {
-                root.parent.clickIndex = parent.children.indexOf(root)
+                root.parent.clickIndex = parent.children.indexOf(root);
             }
         }
     }
@@ -77,38 +71,43 @@ Button {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-        onPressed: (event) => { 
-            if(event.button === Qt.RightButton) {
-                if (root.altAction) root.altAction();
+        onPressed: event => {
+            if (event.button === Qt.RightButton) {
+                if (root.altAction)
+                    root.altAction();
                 return;
             }
-            if(event.button === Qt.MiddleButton) {
-                if (root.middleClickAction) root.middleClickAction();
+            if (event.button === Qt.MiddleButton) {
+                if (root.middleClickAction)
+                    root.middleClickAction();
                 return;
             }
-            root.down = true
-            if (root.downAction) root.downAction();
+            root.down = true;
+            if (root.downAction)
+                root.downAction();
         }
-        onReleased: (event) => {
-            root.down = false
-            if (event.button != Qt.LeftButton) return;
-            if (root.releaseAction) root.releaseAction();
+        onReleased: event => {
+            root.down = false;
+            if (event.button != Qt.LeftButton)
+                return;
+            if (root.releaseAction)
+                root.releaseAction();
         }
-        onClicked: (event) => {
-            if (event.button != Qt.LeftButton) return;
-            root.click()
+        onClicked: event => {
+            if (event.button != Qt.LeftButton)
+                return;
+            root.click();
         }
-        onCanceled: (event) => {
-            root.down = false
+        onCanceled: event => {
+            root.down = false;
         }
 
         onPressAndHold: () => {
-            altAction(); 
-            root.down = false; 
+            altAction();
+            root.down = false;
             root.clicked = false;
-        };
+        }
     }
-
 
     background: Rectangle {
         id: buttonBackground

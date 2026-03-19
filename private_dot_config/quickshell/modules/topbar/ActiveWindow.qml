@@ -23,9 +23,9 @@ Item {
             id: collector
             onStreamFinished: {
                 try {
-                    root.activeWindow = JSON.parse(collector.text)
+                    root.activeWindow = JSON.parse(collector.text);
                 } catch (e) {
-                    root.activeWindow = null
+                    root.activeWindow = null;
                 }
             }
         }
@@ -41,12 +41,12 @@ Item {
     Connections {
         target: Hyprland
         function onRawEvent(event) {
-            activeWindowProcess.running = true
+            activeWindowProcess.running = true;
         }
     }
 
     Component.onCompleted: {
-        activeWindowProcess.running = true
+        activeWindowProcess.running = true;
     }
 
     Text {
@@ -54,22 +54,24 @@ Item {
         anchors.fill: parent
 
         text: {
-            var className = root.activeWindow?.class ?? ""
-            if (!className) return ""
+            var className = root.activeWindow?.class ?? "";
+            if (!className)
+                return "";
 
             var rewrites = {
                 "Mozilla Firefox": "Firefox",
                 "Visual Studio Code": "VS Code",
                 "brave-browser": "Brave"
-            }
+            };
 
             if (rewrites[className]) {
-                return rewrites[className]
+                return rewrites[className];
             }
 
-            var firstWord = className.split(/[\s-_]/)[0]
-            if (!firstWord) return className
-            return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase()
+            var firstWord = className.split(/[\s-_]/)[0];
+            if (!firstWord)
+                return className;
+            return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
         }
 
         color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText

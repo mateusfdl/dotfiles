@@ -23,10 +23,8 @@ Item {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                GlobalStates.launcherOpen = !GlobalStates.launcherOpen
+                GlobalStates.launcherOpen = !GlobalStates.launcherOpen;
             }
         }
-
     }
-
 }

@@ -18,7 +18,7 @@ RippleButton {
     readonly property bool hasIcon: menuEntry.icon.length > 0
     readonly property bool hasSpecialInteraction: menuEntry.buttonType !== QsMenuButtonType.None
 
-    signal dismiss()
+    signal dismiss
     signal openSubmenu(handle: QsMenuHandle)
 
     colBackground: menuEntry.isSeparator ? Appearance.m3colors.m3borderSecondary : Colors.transparentize(Appearance.colors.colLayer1)
@@ -47,7 +47,7 @@ RippleButton {
         root.dismiss();
     }
 
-    altAction: (event) => {
+    altAction: event => {
         event.accepted = false;
     }
 

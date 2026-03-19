@@ -1,3 +1,4 @@
+pragma Singleton
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -8,7 +9,6 @@ import Quickshell.Services.Mpris
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
-pragma Singleton
 
 Scope {
     id: nowPlayingPopupScope
@@ -18,20 +18,20 @@ Scope {
     property real popupY: 0
 
     function showPopup(x, y) {
-        popupX = x
-        popupY = y
-        popupVisible = true
+        popupX = x;
+        popupY = y;
+        popupVisible = true;
     }
 
     function hidePopup() {
-        popupVisible = false
+        popupVisible = false;
     }
 
     function togglePopup(x, y) {
         if (popupVisible)
-            hidePopup()
+            hidePopup();
         else
-            showPopup(x, y)
+            showPopup(x, y);
     }
 
     Variants {
@@ -59,7 +59,7 @@ Scope {
                 z: 0
                 enabled: nowPlayingPopupScope.popupVisible
                 onClicked: {
-                    nowPlayingPopupScope.hidePopup()
+                    nowPlayingPopupScope.hidePopup();
                 }
             }
 
@@ -81,8 +81,8 @@ Scope {
                 // Prevent clicks from passing through
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: (mouse) => {
-                        mouse.accepted = true
+                    onClicked: mouse => {
+                        mouse.accepted = true;
                     }
                     z: -1
                 }
@@ -280,9 +280,7 @@ Scope {
                                 text: "skip_previous"
                                 iconSize: 28
                                 fill: 1
-                                color: MediaPlayer.canGoPrevious ?
-                                    Qt.rgba(1, 1, 1, 0.95) :
-                                    Qt.rgba(1, 1, 1, 0.3)
+                                color: MediaPlayer.canGoPrevious ? Qt.rgba(1, 1, 1, 0.95) : Qt.rgba(1, 1, 1, 0.3)
                             }
 
                             onClicked: MediaPlayer.previous()
@@ -317,9 +315,7 @@ Scope {
                                 text: "skip_next"
                                 iconSize: 28
                                 fill: 1
-                                color: MediaPlayer.canGoNext ?
-                                    Qt.rgba(1, 1, 1, 0.95) :
-                                    Qt.rgba(1, 1, 1, 0.3)
+                                color: MediaPlayer.canGoNext ? Qt.rgba(1, 1, 1, 0.95) : Qt.rgba(1, 1, 1, 0.3)
                             }
 
                             onClicked: MediaPlayer.next()

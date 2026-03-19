@@ -9,7 +9,7 @@ import qs.services
 
 Rectangle {
     id: root
-    signal closeRequested()
+    signal closeRequested
     property string commandPrefix: "/"
 
     implicitWidth: 680
@@ -87,7 +87,8 @@ Rectangle {
 
     function handleInput(inputText) {
         const trimmedText = inputText.trim();
-        if (trimmedText.length === 0) return;
+        if (trimmedText.length === 0)
+            return;
 
         if (trimmedText.startsWith(commandPrefix)) {
             const commandParts = trimmedText.slice(commandPrefix.length).split(/\s+/);
@@ -136,7 +137,9 @@ Rectangle {
                 color: Appearance.m3colors.m3primaryText
             }
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
 
             Rectangle {
                 implicitWidth: modelLabel.implicitWidth + 16
@@ -174,7 +177,7 @@ Rectangle {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        root.closeRequested()
+                        root.closeRequested();
                     }
                 }
             }
@@ -241,7 +244,9 @@ Rectangle {
                 border.color: inputField.activeFocus ? Appearance.colors.colPrimary : "transparent"
 
                 Behavior on border.color {
-                    ColorAnimation { duration: 150 }
+                    ColorAnimation {
+                        duration: 150
+                    }
                 }
 
                 TextField {

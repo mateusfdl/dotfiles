@@ -12,7 +12,7 @@ MouseArea { // Right side | scroll to change volume
 
     signal scrollUp(delta: int)
     signal scrollDown(delta: int)
-    signal movedAway()
+    signal movedAway
 
     property bool hovered: false
     property real lastScrollX: 0

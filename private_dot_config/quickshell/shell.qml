@@ -34,95 +34,71 @@ ShellRoot {
         MaterialThemeLoader.reapplyTheme();
     }
 
-    ThemeIpc {
-    }
+    ThemeIpc {}
 
     Loader {
         active: enableTopbar
 
-        sourceComponent: Topbar {
-        }
-
+        sourceComponent: Topbar {}
     }
 
     Loader {
         active: enableOverview
 
-        sourceComponent: Overview {
-        }
-
+        sourceComponent: Overview {}
     }
 
     Loader {
         active: enableWindowSwitcher
 
-        sourceComponent: WindowSwitcher {
-        }
-
+        sourceComponent: WindowSwitcher {}
     }
 
     Loader {
         active: enableLauncher
 
-        sourceComponent: Launcher {
-        }
-
+        sourceComponent: Launcher {}
     }
 
     Loader {
         active: enableWallpaper
 
-        sourceComponent: Wallpaper {
-        }
-
+        sourceComponent: Wallpaper {}
     }
 
     Loader {
         active: enableNotifications
 
-        sourceComponent: NotificationPopup {
-        }
-
+        sourceComponent: NotificationPopup {}
     }
 
     Loader {
         active: enableAiChat
 
-        sourceComponent: AiChat {
-        }
-
+        sourceComponent: AiChat {}
     }
 
     Loader {
         active: enableCheatsheet
 
-        sourceComponent: Cheatsheet {
-        }
-
+        sourceComponent: Cheatsheet {}
     }
 
     Loader {
         active: enableObsidianTodo
 
-        sourceComponent: ObsidianTodoWindow {
-        }
-
+        sourceComponent: ObsidianTodoWindow {}
     }
 
     Loader {
         active: enableLockScreen
 
-        sourceComponent: LockScreen {
-        }
-
+        sourceComponent: LockScreen {}
     }
 
     Loader {
         active: enableTopbar
 
-        sourceComponent: PomodoroBreakOverlay {
-        }
-
+        sourceComponent: PomodoroBreakOverlay {}
     }
-
 }

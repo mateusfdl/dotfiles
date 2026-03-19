@@ -35,13 +35,12 @@ Item {
             duration: root.animationDuration
             easing.type: root.easingType
         }
-
     }
 
     Loader {
         active: root.fill
         anchors.fill: parent
-        
+
         sourceComponent: Rectangle {
             radius: 9999
             color: root.colSecondary
@@ -84,5 +83,4 @@ Item {
             }
         }
     }
-
 }

@@ -22,8 +22,8 @@ Scope {
     property bool greetdAvailable: Greetd.available
 
     // Signals
-    signal authenticated()  // Auth succeeded, UI should show loading screen
-    signal failed()
+    signal authenticated  // Auth succeeded, UI should show loading screen
+    signal failed
 
     // Timer for simulating auth delay in demo mode
     Timer {
@@ -39,9 +39,12 @@ Scope {
 
     // Start the login flow: create a greetd session for the user
     function tryLogin() {
-        if (currentText.length === 0) return;
-        if (loginInProgress) return;
-        if (loginSucceeded) return;
+        if (currentText.length === 0)
+            return;
+        if (loginInProgress)
+            return;
+        if (loginSucceeded)
+            return;
 
         loginInProgress = true;
         showFailure = false;
@@ -100,7 +103,7 @@ Scope {
                 // greetd wants the password - send it
                 Greetd.respond(root.currentText);
             }
-            // If no response required, it's just an informational message
+        // If no response required, it's just an informational message
         }
 
         // Authentication succeeded - session is ready to launch

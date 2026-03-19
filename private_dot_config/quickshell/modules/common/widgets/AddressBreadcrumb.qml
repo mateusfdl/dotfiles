@@ -8,10 +8,11 @@ ListView {
     id: root
     required property var directory
     property var breadcrumbDirectory: ""
-    Component.onCompleted: breadcrumbDirectory = directory;
+    Component.onCompleted: breadcrumbDirectory = directory
     onDirectoryChanged: {
-        if (breadcrumbDirectory.startsWith(directory)) return;
-        breadcrumbDirectory = directory
+        if (breadcrumbDirectory.startsWith(directory))
+            return;
+        breadcrumbDirectory = directory;
     }
 
     signal navigateToDirectory(string path)
@@ -27,14 +28,15 @@ ListView {
         required property int index
         buttonText: index === 0 ? "/" : modelData
         toggled: {
-            if (directory.trim() === "/") return index === 0;
-            return index === directory.split("/").length - 1
+            if (directory.trim() === "/")
+                return index === 0;
+            return index === directory.split("/").length - 1;
         }
         leftmost: index === 0
         rightmost: index === breadcrumbDirectory.split("/").length - 1
 
         onClicked: {
-            root.navigateToDirectory(breadcrumbDirectory.split("/").slice(0, index + 1).join("/"))
+            root.navigateToDirectory(breadcrumbDirectory.split("/").slice(0, index + 1).join("/"));
         }
     }
 }

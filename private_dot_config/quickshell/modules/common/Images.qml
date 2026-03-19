@@ -11,19 +11,19 @@ Singleton {
     }
 
     readonly property var thumbnailSizes: ({
-        "normal": 128,
-        "large": 256,
-        "x-large": 512,
-        "xx-large": 1024
-    })
+            "normal": 128,
+            "large": 256,
+            "x-large": 512,
+            "xx-large": 1024
+        })
     function thumbnailSizeNameForDimensions(width: int, height: int): string {
         const sizeNames = Object.keys(thumbnailSizes);
-        for(let i = 0; i < sizeNames.length; i++) {
+        for (let i = 0; i < sizeNames.length; i++) {
             const sizeName = sizeNames[i];
             const maxSize = thumbnailSizes[sizeName];
-            if (width <= maxSize && height <= maxSize) return sizeName;
+            if (width <= maxSize && height <= maxSize)
+                return sizeName;
         }
         return "xx-large";
     }
 }
-

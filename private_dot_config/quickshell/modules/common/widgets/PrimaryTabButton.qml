@@ -32,21 +32,24 @@ TabButton {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onPressed: (event) => { 
-            const {x,y} = event
+        onPressed: event => {
+            const {
+                x,
+                y
+            } = event;
             const stateY = buttonBackground.y;
             rippleAnim.x = x;
             rippleAnim.y = y - stateY;
 
-            const dist = (ox,oy) => ox*ox + oy*oy
-            const stateEndY = stateY + buttonBackground.height
-            rippleAnim.radius = Math.sqrt(Math.max(dist(0, stateY), dist(0, stateEndY), dist(width, stateY), dist(width, stateEndY)))
+            const dist = (ox, oy) => ox * ox + oy * oy;
+            const stateEndY = stateY + buttonBackground.height;
+            rippleAnim.radius = Math.sqrt(Math.max(dist(0, stateY), dist(0, stateEndY), dist(width, stateY), dist(width, stateEndY)));
 
             rippleFadeAnim.complete();
             rippleAnim.restart();
         }
-        onReleased: (event) => {
-            button.click() // Because the MouseArea already consumed the event
+        onReleased: event => {
+            button.click(); // Because the MouseArea already consumed the event
             rippleFadeAnim.restart();
         }
     }
@@ -104,7 +107,7 @@ TabButton {
                 radius: buttonBackground.radius
             }
         }
-        
+
         Behavior on color {
             animation: Appearance?.animation.elementMoveFast.colorAnimation.createObject(this)
         }
@@ -126,9 +129,18 @@ TabButton {
             RadialGradient {
                 anchors.fill: parent
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: button.colRipple }
-                    GradientStop { position: 0.3; color: button.colRipple }
-                    GradientStop { position: 0.5 ; color: Qt.rgba(button.colRipple.r, button.colRipple.g, button.colRipple.b, 0) }
+                    GradientStop {
+                        position: 0.0
+                        color: button.colRipple
+                    }
+                    GradientStop {
+                        position: 0.3
+                        color: button.colRipple
+                    }
+                    GradientStop {
+                        position: 0.5
+                        color: Qt.rgba(button.colRipple.r, button.colRipple.g, button.colRipple.b, 0)
+                    }
                 }
             }
 
@@ -138,7 +150,7 @@ TabButton {
             }
         }
     }
-    
+
     contentItem: Item {
         anchors.centerIn: buttonBackground
         ColumnLayout {

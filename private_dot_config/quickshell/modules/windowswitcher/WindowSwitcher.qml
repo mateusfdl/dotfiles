@@ -33,78 +33,83 @@ Scope {
             id: activeWindowCollector
             onStreamFinished: {
                 try {
-                    const activeWindow = JSON.parse(activeWindowCollector.text)
-                    snapshotFocusedAddress = activeWindow.address || ""
+                    const activeWindow = JSON.parse(activeWindowCollector.text);
+                    snapshotFocusedAddress = activeWindow.address || "";
                 } catch (e) {
-                    console.error("Failed to parse active window:", e)
-                    snapshotFocusedAddress = ""
+                    console.error("Failed to parse active window:", e);
+                    snapshotFocusedAddress = "";
                 } finally {
-                    windowSwitcherScope.continueUpdateWindowList()
+                    windowSwitcherScope.continueUpdateWindowList();
                 }
             }
         }
     }
 
     function updateWindowList() {
-        getActiveWindowProcess.running = true
+        getActiveWindowProcess.running = true;
     }
 
     function updateHistory(address) {
-        if (!address || address === lastActivatedAddress) return
-
-        windowHistory = windowHistory.filter(addr => addr !== address)
-        windowHistory = [address].concat(windowHistory)
+        if (!address || address === lastActivatedAddress)
+            return;
+        windowHistory = windowHistory.filter(addr => addr !== address);
+        windowHistory = [address].concat(windowHistory);
 
         if (windowHistory.length > maxHistorySize) {
-            windowHistory = windowHistory.slice(0, maxHistorySize)
+            windowHistory = windowHistory.slice(0, maxHistorySize);
         }
     }
 
     function sortWindowsByHistory(windows) {
         return windows.sort((a, b) => {
-            const indexA = windowHistory.indexOf(a.address)
-            const indexB = windowHistory.indexOf(b.address)
+            const indexA = windowHistory.indexOf(a.address);
+            const indexB = windowHistory.indexOf(b.address);
 
-            if (indexA !== -1 && indexB !== -1) return indexA - indexB
-            if (indexA !== -1) return -1
-            if (indexB !== -1) return 1
-            return 0
-        })
+            if (indexA !== -1 && indexB !== -1)
+                return indexA - indexB;
+            if (indexA !== -1)
+                return -1;
+            if (indexB !== -1)
+                return 1;
+            return 0;
+        });
     }
 
     function continueUpdateWindowList() {
-        updateHistory(snapshotFocusedAddress)
+        updateHistory(snapshotFocusedAddress);
 
-        const windows = HyprlandData.windowList.filter(win => !win.hidden && win.mapped)
-        const sortedWindows = sortWindowsByHistory(windows)
+        const windows = HyprlandData.windowList.filter(win => !win.hidden && win.mapped);
+        const sortedWindows = sortWindowsByHistory(windows);
 
-        filteredWindows = sortedWindows
-        windowAddresses = sortedWindows.map(w => w.address)
-        currentIndex = filteredWindows.length > 1 ? 1 : 0
+        filteredWindows = sortedWindows;
+        windowAddresses = sortedWindows.map(w => w.address);
+        currentIndex = filteredWindows.length > 1 ? 1 : 0;
     }
 
     function next() {
-        if (filteredWindows.length === 0) return
-        currentIndex = (currentIndex + 1) % filteredWindows.length
+        if (filteredWindows.length === 0)
+            return;
+        currentIndex = (currentIndex + 1) % filteredWindows.length;
     }
 
     function previous() {
-        if (filteredWindows.length === 0) return
-        currentIndex = (currentIndex - 1 + filteredWindows.length) % filteredWindows.length
+        if (filteredWindows.length === 0)
+            return;
+        currentIndex = (currentIndex - 1 + filteredWindows.length) % filteredWindows.length;
     }
 
     function activateSelected() {
         if (windowAddresses.length === 0 || currentIndex >= windowAddresses.length) {
-            GlobalStates.windowSwitcherOpen = false
-            return
+            GlobalStates.windowSwitcherOpen = false;
+            return;
         }
 
-        const selectedAddress = windowAddresses[currentIndex]
-        lastActivatedAddress = selectedAddress
+        const selectedAddress = windowAddresses[currentIndex];
+        lastActivatedAddress = selectedAddress;
 
-        GlobalStates.windowSwitcherOpen = false
-        Hyprland.dispatch(`focuswindow address:${selectedAddress}`)
-        Hyprland.dispatch(`bringactivetotop`)
+        GlobalStates.windowSwitcherOpen = false;
+        Hyprland.dispatch(`focuswindow address:${selectedAddress}`);
+        Hyprland.dispatch(`bringactivetotop`);
     }
 
     Variants {
@@ -125,8 +130,12 @@ Scope {
             WlrLayershell.namespace: "quickshell:windowswitcher"
             WlrLayershell.layer: WlrLayer.Overlay
 
-            mask: Region { item: GlobalStates.windowSwitcherOpen ? switcherLayout : null }
-            HyprlandWindow.visibleMask: Region { item: GlobalStates.windowSwitcherOpen ? switcherLayout : null }
+            mask: Region {
+                item: GlobalStates.windowSwitcherOpen ? switcherLayout : null
+            }
+            HyprlandWindow.visibleMask: Region {
+                item: GlobalStates.windowSwitcherOpen ? switcherLayout : null
+            }
 
             anchors {
                 top: true
@@ -143,7 +152,8 @@ Scope {
                 readonly property bool canBeActive: root.monitorIsFocused
 
                 onCleared: {
-                    if (!active) GlobalStates.windowSwitcherOpen = false
+                    if (!active)
+                        GlobalStates.windowSwitcherOpen = false;
                 }
             }
 
@@ -154,7 +164,7 @@ Scope {
 
                 onTriggered: {
                     if (grab.canBeActive) {
-                        grab.active = GlobalStates.windowSwitcherOpen
+                        grab.active = GlobalStates.windowSwitcherOpen;
                     }
                 }
             }
@@ -164,8 +174,8 @@ Scope {
 
                 function onWindowSwitcherOpenChanged() {
                     if (GlobalStates.windowSwitcherOpen) {
-                        windowSwitcherScope.updateWindowList()
-                        delayedGrabTimer.start()
+                        windowSwitcherScope.updateWindowList();
+                        delayedGrabTimer.start();
                     }
                 }
             }
@@ -179,10 +189,10 @@ Scope {
                     verticalCenter: parent.verticalCenter
                 }
 
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape) {
-                        GlobalStates.windowSwitcherOpen = false
-                        event.accepted = true
+                        GlobalStates.windowSwitcherOpen = false;
+                        event.accepted = true;
                     }
                 }
 
@@ -238,10 +248,7 @@ Scope {
                             required property int index
 
                             readonly property bool isSelected: index === windowSwitcherScope.currentIndex
-                            readonly property string iconPath: Quickshell.iconPath(
-                                AppSearch.guessIcon(modelData?.class),
-                                "image-missing"
-                            )
+                            readonly property string iconPath: Quickshell.iconPath(AppSearch.guessIcon(modelData?.class), "image-missing")
 
                             readonly property int itemSize: 100
                             readonly property int iconContainerSize: 80
@@ -266,15 +273,21 @@ Scope {
                                 height: iconContainerSize
                                 radius: Appearance.rounding.large
 
-                                color: isSelected
-                                    ? Appearance.m3colors.m3selectionBackground
-                                    : Appearance.m3colors.m3layerBackground1
+                                color: isSelected ? Appearance.m3colors.m3selectionBackground : Appearance.m3colors.m3layerBackground1
 
                                 border.color: isSelected ? Appearance.m3colors.m3accentPrimary : "transparent"
                                 border.width: isSelected ? borderWidth : 0
 
-                                Behavior on color { ColorAnimation { duration: 200 } }
-                                Behavior on border.color { ColorAnimation { duration: 200 } }
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: 200
+                                    }
+                                }
+                                Behavior on border.color {
+                                    ColorAnimation {
+                                        duration: 200
+                                    }
+                                }
 
                                 Image {
                                     anchors.centerIn: parent
@@ -300,12 +313,12 @@ Scope {
                                 hoverEnabled: true
 
                                 onClicked: {
-                                    windowSwitcherScope.currentIndex = index
-                                    windowSwitcherScope.activateSelected()
+                                    windowSwitcherScope.currentIndex = index;
+                                    windowSwitcherScope.activateSelected();
                                 }
 
                                 onEntered: {
-                                    windowSwitcherScope.currentIndex = index
+                                    windowSwitcherScope.currentIndex = index;
                                 }
                             }
                         }
@@ -321,9 +334,9 @@ Scope {
 
         onPressed: {
             if (!GlobalStates.windowSwitcherOpen) {
-                GlobalStates.windowSwitcherOpen = true
+                GlobalStates.windowSwitcherOpen = true;
             } else {
-                windowSwitcherScope.next()
+                windowSwitcherScope.next();
             }
         }
     }
@@ -334,7 +347,7 @@ Scope {
 
         onPressed: {
             if (GlobalStates.windowSwitcherOpen) {
-                windowSwitcherScope.previous()
+                windowSwitcherScope.previous();
             }
         }
     }
@@ -345,7 +358,7 @@ Scope {
 
         onReleased: {
             if (GlobalStates.windowSwitcherOpen) {
-                windowSwitcherScope.activateSelected()
+                windowSwitcherScope.activateSelected();
             }
         }
     }

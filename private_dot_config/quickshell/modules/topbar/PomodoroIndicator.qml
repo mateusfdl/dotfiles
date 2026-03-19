@@ -23,25 +23,25 @@ Item {
 
             text: {
                 if (Pomodoro.state === Pomodoro.State.Working)
-                    return "timer"
-                else if (Pomodoro.state === Pomodoro.State.ShortBreak ||
-                         Pomodoro.state === Pomodoro.State.LongBreak)
-                    return "coffee"
+                    return "timer";
+                else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
+                    return "coffee";
                 else if (Pomodoro.isPaused)
-                    return "pause_circle"
+                    return "pause_circle";
                 else
-                    return "timer"
+                    return "timer";
             }
             iconSize: 20
             fill: Pomodoro.isRunning ? 1 : 0
             color: {
                 if (Pomodoro.state === Pomodoro.State.Working)
-                    return Qt.rgba(1, 0.4, 0.4, 0.9)  // Red for work
-                else if (Pomodoro.state === Pomodoro.State.ShortBreak ||
-                         Pomodoro.state === Pomodoro.State.LongBreak)
-                    return Qt.rgba(0.4, 0.8, 1, 0.9)  // Blue for break
+                    return Qt.rgba(1, 0.4, 0.4, 0.9);
+                    // Red for work
+                else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
+                    return Qt.rgba(0.4, 0.8, 1, 0.9);
+                    // Blue for break
                 else
-                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
+                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText;
             }
 
             Behavior on color {
@@ -57,12 +57,11 @@ Item {
             text: Pomodoro.displayTime
             color: {
                 if (Pomodoro.state === Pomodoro.State.Working)
-                    return Qt.rgba(1, 0.4, 0.4, 0.9)
-                else if (Pomodoro.state === Pomodoro.State.ShortBreak ||
-                         Pomodoro.state === Pomodoro.State.LongBreak)
-                    return Qt.rgba(0.4, 0.8, 1, 0.9)
+                    return Qt.rgba(1, 0.4, 0.4, 0.9);
+                else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
+                    return Qt.rgba(0.4, 0.8, 1, 0.9);
                 else
-                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
+                    return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText;
             }
             font.pixelSize: 14
             font.weight: Font.Medium
@@ -118,9 +117,7 @@ Item {
                     width: 4
                     height: 4
                     radius: 2
-                    color: index < Pomodoro.currentCycle ?
-                        Qt.rgba(1, 0.4, 0.4, 0.9) :
-                        Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.3)
+                    color: index < Pomodoro.currentCycle ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.3)
 
                     Behavior on color {
                         ColorAnimation {
@@ -154,11 +151,11 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            var pos = mapToItem(null, 0, 0)
-            var iconRightX = pos.x + root.width
-            var popupX = iconRightX - 350  // Popup width is 350
-            var popupY = 2  // Right below the topbar, matching control center
-            Topbar.PomodoroPopup.togglePopup(popupX, popupY)
+            var pos = mapToItem(null, 0, 0);
+            var iconRightX = pos.x + root.width;
+            var popupX = iconRightX - 350;  // Popup width is 350
+            var popupY = 2;  // Right below the topbar, matching control center
+            Topbar.PomodoroPopup.togglePopup(popupX, popupY);
         }
     }
 }

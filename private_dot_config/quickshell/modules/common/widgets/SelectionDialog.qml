@@ -15,8 +15,8 @@ Item {
     property int selectedId: choiceListView.currentIndex
     property var defaultChoice
 
-    signal canceled();
-    signal selected(var result);
+    signal canceled
+    signal selected(var result)
 
     Rectangle { // Scrim
         id: scrimOverlay
@@ -38,7 +38,7 @@ Item {
         anchors.fill: parent
         anchors.margins: dialogMargin
         implicitHeight: dialogColumnLayout.implicitHeight
-        
+
         ColumnLayout {
             id: dialogColumnLayout
             anchors.fill: parent
@@ -118,10 +118,7 @@ Item {
                 }
                 DialogButton {
                     buttonText: Translation.tr("OK")
-                    onClicked: root.selected(
-                        root.selectedId === -1 ? null :
-                        root.items[root.selectedId]
-                    )
+                    onClicked: root.selected(root.selectedId === -1 ? null : root.items[root.selectedId])
                 }
             }
         }

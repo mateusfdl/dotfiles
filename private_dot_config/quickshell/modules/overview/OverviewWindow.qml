@@ -39,7 +39,8 @@ Rectangle { // Window
 
     // Find the matching Toplevel for window preview using ToplevelManager
     property var toplevel: {
-        if (!windowData) return null;
+        if (!windowData)
+            return null;
         const windowClass = windowData.class?.toLowerCase() ?? "";
         const windowTitle = windowData.title ?? "";
 
@@ -77,22 +78,39 @@ Rectangle { // Window
     transformOrigin: Item.Center
 
     Behavior on scale {
-        NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.OutCubic
+        }
     }
     Behavior on border.width {
-        NumberAnimation { duration: 100 }
+        NumberAnimation {
+            duration: 100
+        }
     }
     Behavior on x {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
     }
     Behavior on y {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
     }
     Behavior on width {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
     }
     Behavior on height {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
     }
 
     // Window preview using ScreencopyView
@@ -112,7 +130,9 @@ Rectangle { // Window
         opacity: windowPreview.visible ? (root.hovered || root.pressed ? 0.25 : 0) : 1
 
         Behavior on opacity {
-            NumberAnimation { duration: 150 }
+            NumberAnimation {
+                duration: 150
+            }
         }
     }
 
@@ -131,7 +151,9 @@ Rectangle { // Window
             implicitSize: Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
 
             Behavior on implicitSize {
-                NumberAnimation { duration: 150 }
+                NumberAnimation {
+                    duration: 150
+                }
             }
         }
 

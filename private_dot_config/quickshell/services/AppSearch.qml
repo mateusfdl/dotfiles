@@ -11,15 +11,15 @@ Singleton {
     property bool sloppySearch: Config.options?.search.sloppy ?? false
     property real scoreThreshold: 0.2
     property var substitutions: ({
-        "code-url-handler": "visual-studio-code",
-        "Code": "visual-studio-code",
-        "gnome-tweaks": "org.gnome.tweaks",
-        "pavucontrol-qt": "pavucontrol",
-        "wps": "wps-office2019-kprometheus",
-        "wpsoffice": "wps-office2019-kprometheus",
-        "footclient": "foot",
-        "zen": "zen-browser",
-    })
+            "code-url-handler": "visual-studio-code",
+            "Code": "visual-studio-code",
+            "gnome-tweaks": "org.gnome.tweaks",
+            "pavucontrol-qt": "pavucontrol",
+            "wps": "wps-office2019-kprometheus",
+            "wpsoffice": "wps-office2019-kprometheus",
+            "footclient": "foot",
+            "zen": "zen-browser"
+        })
     property var regexSubstitutions: [
         {
             "regex": /^steam_app_(\\d+)$/,
@@ -55,30 +55,30 @@ Singleton {
         }
     ]
 
-    readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values)
-        .sort((a, b) => a.name.localeCompare(b.name))
+    readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values).sort((a, b) => a.name.localeCompare(b.name))
 
     readonly property var preppedNames: list.map(a => ({
-        name: FuzzySort.prepare(`${a.name} `),
-        entry: a
-    }))
+                name: FuzzySort.prepare(`${a.name} `),
+                entry: a
+            }))
 
     function search(query: string): var {
-        return fuzzyQuery(query)
+        return fuzzyQuery(query);
     }
 
     function launch(entry): void {
-        if (!entry) return;
+        if (!entry)
+            return;
 
         // Handle quickshell internal apps
         if (entry.action) {
             switch (entry.action) {
-                case "wallpaperSelector":
-                    GlobalStates.wallpaperSelectorOpen = true;
-                    break;
-                case "overview":
-                    GlobalStates.overviewOpen = true;
-                    break;
+            case "wallpaperSelector":
+                GlobalStates.wallpaperSelectorOpen = true;
+                break;
+            case "overview":
+                GlobalStates.overviewOpen = true;
+                break;
             }
             return;
         }
@@ -100,11 +100,9 @@ Singleton {
         let desktopResults = [];
         if (root.sloppySearch) {
             desktopResults = list.map(obj => ({
-                entry: obj,
-                score: Levendist.computeScore(obj.name.toLowerCase(), searchLower)
-            })).filter(item => item.score > root.scoreThreshold)
-                .sort((a, b) => b.score - a.score)
-                .map(item => item.entry);
+                        entry: obj,
+                        score: Levendist.computeScore(obj.name.toLowerCase(), searchLower)
+                    })).filter(item => item.score > root.scoreThreshold).sort((a, b) => b.score - a.score).map(item => item.entry);
         } else {
             desktopResults = FuzzySort.go(search, preppedNames, {
                 all: true,
@@ -113,47 +111,46 @@ Singleton {
         }
 
         // Search in quickshell apps
-        const quickshellResults = quickshellApps.filter(app =>
-            app.name.toLowerCase().includes(searchLower) ||
-            (app.comment && app.comment.toLowerCase().includes(searchLower))
-        );
+        const quickshellResults = quickshellApps.filter(app => app.name.toLowerCase().includes(searchLower) || (app.comment && app.comment.toLowerCase().includes(searchLower)));
 
         // Merge results, putting quickshell apps first
         return [...quickshellResults, ...desktopResults];
     }
 
     function iconExists(iconName) {
-        return (Quickshell.iconPath(iconName, true).length > 0) 
-            && !iconName.includes("image-missing");
+        return (Quickshell.iconPath(iconName, true).length > 0) && !iconName.includes("image-missing");
     }
 
     function guessIcon(str) {
-        if (!str || str.length == 0) return "image-missing";
+        if (!str || str.length == 0)
+            return "image-missing";
 
         if (substitutions[str])
             return substitutions[str];
 
         for (let i = 0; i < regexSubstitutions.length; i++) {
             const substitution = regexSubstitutions[i];
-            const replacedName = str.replace(
-                substitution.regex,
-                substitution.replace,
-            );
-            if (replacedName != str) return replacedName;
+            const replacedName = str.replace(substitution.regex, substitution.replace);
+            if (replacedName != str)
+                return replacedName;
         }
 
-        if (iconExists(str)) return str;
+        if (iconExists(str))
+            return str;
 
         let guessStr = str;
         guessStr = str.split('.').slice(-1)[0].toLowerCase();
-        if (iconExists(guessStr)) return guessStr;
+        if (iconExists(guessStr))
+            return guessStr;
         guessStr = str.toLowerCase().replace(/\s+/g, "-");
-        if (iconExists(guessStr)) return guessStr;
+        if (iconExists(guessStr))
+            return guessStr;
         const searchResults = root.fuzzyQuery(str);
         if (searchResults.length > 0) {
             const firstEntry = searchResults[0];
-            guessStr = firstEntry.icon
-            if (iconExists(guessStr)) return guessStr;
+            guessStr = firstEntry.icon;
+            if (iconExists(guessStr))
+                return guessStr;
         }
 
         return str;

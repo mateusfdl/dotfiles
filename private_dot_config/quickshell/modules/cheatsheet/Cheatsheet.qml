@@ -72,14 +72,14 @@ Scope {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: (mouse) => {
+                    onClicked: mouse => {
                         mouse.accepted = true;
                     }
                     z: -1
                 }
 
                 focus: GlobalStates.cheatsheetOpen
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {
                         GlobalStates.cheatsheetOpen = false;
                         event.accepted = true;
@@ -108,20 +108,30 @@ Scope {
     IpcHandler {
         target: "cheatsheet"
 
-        function toggle() { GlobalStates.cheatsheetOpen = !GlobalStates.cheatsheetOpen }
-        function close()  { GlobalStates.cheatsheetOpen = false }
-        function open()   { GlobalStates.cheatsheetOpen = true }
+        function toggle() {
+            GlobalStates.cheatsheetOpen = !GlobalStates.cheatsheetOpen;
+        }
+        function close() {
+            GlobalStates.cheatsheetOpen = false;
+        }
+        function open() {
+            GlobalStates.cheatsheetOpen = true;
+        }
     }
 
     GlobalShortcut {
         name: "cheatsheetToggle"
         description: qsTr("Toggles keybind cheatsheet")
-        onPressed: { GlobalStates.cheatsheetOpen = !GlobalStates.cheatsheetOpen }
+        onPressed: {
+            GlobalStates.cheatsheetOpen = !GlobalStates.cheatsheetOpen;
+        }
     }
 
     GlobalShortcut {
         name: "cheatsheetClose"
         description: qsTr("Closes keybind cheatsheet")
-        onPressed: { GlobalStates.cheatsheetOpen = false }
+        onPressed: {
+            GlobalStates.cheatsheetOpen = false;
+        }
     }
 }

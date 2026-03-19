@@ -10,7 +10,6 @@ import qs.services
 Scope {
     id: notificationPopup
 
-
     Variants {
         model: Quickshell.screens
 

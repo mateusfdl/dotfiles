@@ -22,5 +22,4 @@ RippleButton {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }
     }
-
 }

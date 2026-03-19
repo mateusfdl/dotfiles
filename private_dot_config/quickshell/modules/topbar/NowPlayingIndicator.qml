@@ -21,9 +21,8 @@ Item {
         text: "music_note"  // macOS-style music note icon
         iconSize: 22
         fill: MediaPlayer.isPlaying ? 1 : 0
-        color: MediaPlayer.isPlaying ?
-            Qt.rgba(1, 0.6, 0.8, 0.9) :  // Pink/red when playing
-            Qt.rgba(1, 1, 1, 0.7)         // White when paused
+        color: MediaPlayer.isPlaying ? Qt.rgba(1, 0.6, 0.8, 0.9) :  // Pink/red when playing
+        Qt.rgba(1, 1, 1, 0.7)         // White when paused
 
         Behavior on fill {
             NumberAnimation {
@@ -61,11 +60,11 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            var pos = mapToItem(null, 0, 0)
-            var iconRightX = pos.x + root.width
-            var popupX = iconRightX - 400  // Popup width is ~400
-            var popupY = 60  // Below the bar
-            Topbar.NowPlayingPopup.togglePopup(popupX, popupY)
+            var pos = mapToItem(null, 0, 0);
+            var iconRightX = pos.x + root.width;
+            var popupX = iconRightX - 400;  // Popup width is ~400
+            var popupY = 60;  // Below the bar
+            Topbar.NowPlayingPopup.togglePopup(popupX, popupY);
         }
     }
 }

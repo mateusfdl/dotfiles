@@ -84,7 +84,9 @@ Scope {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: (mouse) => { mouse.accepted = true; }
+                        onClicked: mouse => {
+                            mouse.accepted = true;
+                        }
                         z: -1
                     }
 
@@ -121,20 +123,30 @@ Scope {
     IpcHandler {
         target: "obsidiantodo"
 
-        function toggle() { GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen }
-        function close()  { GlobalStates.obsidianTodoOpen = false }
-        function open()   { GlobalStates.obsidianTodoOpen = true }
+        function toggle() {
+            GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen;
+        }
+        function close() {
+            GlobalStates.obsidianTodoOpen = false;
+        }
+        function open() {
+            GlobalStates.obsidianTodoOpen = true;
+        }
     }
 
     GlobalShortcut {
         name: "obsidianTodoToggle"
         description: qsTr("Toggles Obsidian TODO popup")
-        onPressed: { GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen }
+        onPressed: {
+            GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen;
+        }
     }
 
     GlobalShortcut {
         name: "obsidianTodoClose"
         description: qsTr("Closes Obsidian TODO popup")
-        onPressed: { GlobalStates.obsidianTodoOpen = false }
+        onPressed: {
+            GlobalStates.obsidianTodoOpen = false;
+        }
     }
 }

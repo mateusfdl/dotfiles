@@ -24,16 +24,16 @@ ColumnLayout {
         Layout.fillWidth: true
         currentIndex: root.externalTrackedTab
         onCurrentIndexChanged: {
-            root.onCurrentIndexChanged(currentIndex)
+            root.onCurrentIndexChanged(currentIndex);
         }
 
         background: Item {
             WheelHandler {
-                onWheel: (event) => {
+                onWheel: event => {
                     if (event.angleDelta.y < 0)
-                        tabBar.currentIndex = Math.min(tabBar.currentIndex + 1, root.tabButtonList.length - 1)
+                        tabBar.currentIndex = Math.min(tabBar.currentIndex + 1, root.tabButtonList.length - 1);
                     else if (event.angleDelta.y > 0)
-                        tabBar.currentIndex = Math.max(tabBar.currentIndex - 1, 0)
+                        tabBar.currentIndex = Math.max(tabBar.currentIndex - 1, 0);
                 }
                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             }
@@ -57,14 +57,14 @@ ColumnLayout {
         Connections {
             target: root
             function onExternalTrackedTabChanged() {
-                root.enableIndicatorAnimation = true
+                root.enableIndicatorAnimation = true;
             }
         }
 
         Rectangle {
             id: indicator
             property int tabCount: root.tabButtonList.length
-            property real fullTabSize: root.width / tabCount;
+            property real fullTabSize: root.width / tabCount
             property real targetWidth: tabBar.contentItem?.children[0]?.children[tabBar.currentIndex]?.tabContentWidth ?? 0
 
             implicitWidth: targetWidth

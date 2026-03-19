@@ -18,25 +18,29 @@ Item {
     property bool isThinking: (messageData?.thinking ?? false) && !(messageData?.done ?? true)
 
     readonly property var highlightColors: ({
-        keyword: Appearance.m3colors.m3accentSecondary,
-        string: "#9ece6a",
-        comment: Appearance.m3colors.m3secondaryText,
-        number: Appearance.m3colors.m3accentPrimary,
-        function: Appearance.m3colors.m3borderPrimary,
-        builtin: "#2ac3de",
-        variable: "#ff9e64",
-        operator: Appearance.m3colors.m3accentSecondary,
-        punctuation: Appearance.m3colors.m3primaryText,
-        text: Appearance.m3colors.m3primaryText,
-        codeBackground: Appearance.colors.colLayer1,
-        codeBorder: Appearance.m3colors.m3borderSecondary,
-        inlineCodeBackground: Appearance.m3colors.m3layerBackground3,
-        linkColor: Appearance.m3colors.m3accentPrimary
-    })
+            keyword: Appearance.m3colors.m3accentSecondary,
+            string: "#9ece6a",
+            comment: Appearance.m3colors.m3secondaryText,
+            number: Appearance.m3colors.m3accentPrimary,
+            function: Appearance.m3colors.m3borderPrimary,
+            builtin: "#2ac3de",
+            variable: "#ff9e64",
+            operator: Appearance.m3colors.m3accentSecondary,
+            punctuation: Appearance.m3colors.m3primaryText,
+            text: Appearance.m3colors.m3primaryText,
+            codeBackground: Appearance.colors.colLayer1,
+            codeBorder: Appearance.m3colors.m3borderSecondary,
+            inlineCodeBackground: Appearance.m3colors.m3layerBackground3,
+            linkColor: Appearance.m3colors.m3accentPrimary
+        })
 
     readonly property var processedContent: {
         const content = messageData?.content ?? "";
-        if (!content) return { html: "", missingColors: [] };
+        if (!content)
+            return {
+                html: "",
+                missingColors: []
+            };
         return MarkdownHighlight.markdownToHtml(content, highlightColors);
     }
 
@@ -65,9 +69,7 @@ Item {
             Layout.maximumWidth: parent.width
             Layout.preferredHeight: contentColumn.implicitHeight + 20
             radius: 16
-            color: isUser ? Appearance.colors.colPrimary
-                 : isInterface ? Appearance.colors.colLayer2
-                 : Appearance.colors.colLayer2
+            color: isUser ? Appearance.colors.colPrimary : isInterface ? Appearance.colors.colLayer2 : Appearance.colors.colLayer2
 
             ColumnLayout {
                 id: contentColumn
@@ -123,9 +125,19 @@ Item {
 
                                 SequentialAnimation on opacity {
                                     loops: Animation.Infinite
-                                    NumberAnimation { to: 0.3; duration: 300; easing.type: Easing.InOutQuad }
-                                    NumberAnimation { to: 1.0; duration: 300; easing.type: Easing.InOutQuad }
-                                    PauseAnimation { duration: index * 150 }
+                                    NumberAnimation {
+                                        to: 0.3
+                                        duration: 300
+                                        easing.type: Easing.InOutQuad
+                                    }
+                                    NumberAnimation {
+                                        to: 1.0
+                                        duration: 300
+                                        easing.type: Easing.InOutQuad
+                                    }
+                                    PauseAnimation {
+                                        duration: index * 150
+                                    }
                                 }
                             }
                         }
@@ -160,9 +172,7 @@ Item {
                     text: isUser ? (messageData?.content ?? "") : processedContent.html
                     font.family: Appearance.font.family.uiFont
                     font.pixelSize: 15
-                    color: isUser ? Appearance.m3colors.m3accentPrimaryText
-                         : isInterface ? Appearance.m3colors.m3secondaryText
-                         : Appearance.m3colors.m3primaryText
+                    color: isUser ? Appearance.m3colors.m3accentPrimaryText : isInterface ? Appearance.m3colors.m3secondaryText : Appearance.m3colors.m3primaryText
                     wrapMode: Text.Wrap
                     readOnly: true
                     selectByMouse: true

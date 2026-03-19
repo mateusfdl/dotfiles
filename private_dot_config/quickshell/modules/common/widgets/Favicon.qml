@@ -26,12 +26,12 @@ FavIconImage {
         running: false
         command: ["bash", "-c", `[ -f ${faviconFilePath} ] || curl -s '${root.faviconUrl}' -o '${faviconFilePath}' -L -H 'User-Agent: ${downloadUserAgent}'`]
         onExited: (exitCode, exitStatus) => {
-            root.urlToLoad = root.faviconFilePath
+            root.urlToLoad = root.faviconFilePath;
         }
     }
 
     Component.onCompleted: {
-        faviconDownloadProcess.running = true
+        faviconDownloadProcess.running = true;
     }
 
     source: Qt.resolvedUrl(root.urlToLoad)
@@ -46,4 +46,3 @@ FavIconImage {
         }
     }
 }
-

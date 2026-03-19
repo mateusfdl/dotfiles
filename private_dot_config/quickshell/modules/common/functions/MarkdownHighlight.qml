@@ -145,17 +145,37 @@ Singleton {
         };
 
         return {
-            sh, bash: sh, zsh: sh, shell: sh,
-            javascript, js: javascript, typescript: javascript, ts: javascript,
-            python, py: python,
-            rust, rs: rust,
-            go, golang: go,
-            json, yaml, yml: yaml,
+            sh,
+            bash: sh,
+            zsh: sh,
+            shell: sh,
+            javascript,
+            js: javascript,
+            typescript: javascript,
+            ts: javascript,
+            python,
+            py: python,
+            rust,
+            rs: rust,
+            go,
+            golang: go,
+            json,
+            yaml,
+            yml: yaml,
             css,
-            html, xml: html,
+            html,
+            xml: html,
             sql,
-            c, cpp: c, "c++": c, h: c, hpp: c,
-            java, lua, nix, qml, zig
+            c,
+            cpp: c,
+            "c++": c,
+            h: c,
+            hpp: c,
+            java,
+            lua,
+            nix,
+            qml,
+            zig
         };
     }
 
@@ -163,13 +183,9 @@ Singleton {
      * Escapes HTML special characters.
      */
     function escapeHtml(str) {
-        if (typeof str !== 'string') return str;
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+        if (typeof str !== 'string')
+            return str;
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     /**
@@ -177,11 +193,7 @@ Singleton {
      * @returns {string[]} Array of missing color names
      */
     function validateColors(colors) {
-        const required = [
-            'keyword', 'string', 'comment', 'number', 'function',
-            'builtin', 'variable', 'operator', 'text',
-            'codeBackground', 'codeBorder', 'inlineCodeBackground', 'linkColor'
-        ];
+        const required = ['keyword', 'string', 'comment', 'number', 'function', 'builtin', 'variable', 'operator', 'text', 'codeBackground', 'codeBorder', 'inlineCodeBackground', 'linkColor'];
         const missing = [];
         for (const key of required) {
             if (!colors || !colors[key]) {
@@ -203,7 +215,8 @@ Singleton {
         const replacements = [];
 
         const processPattern = (pattern, type) => {
-            if (!pattern) return;
+            if (!pattern)
+                return;
             let match;
             const regex = new RegExp(pattern.source, pattern.flags);
             while ((match = regex.exec(code)) !== null) {
@@ -262,7 +275,11 @@ Singleton {
      * @returns {object} { html: string, missingColors: string[] }
      */
     function markdownToHtml(markdown, colors) {
-        if (!markdown) return { html: '', missingColors: [] };
+        if (!markdown)
+            return {
+                html: '',
+                missingColors: []
+            };
 
         const missingColors = validateColors(colors);
         const c = colors || {};
@@ -276,13 +293,7 @@ Singleton {
             const highlighted = highlightCode(code.trim(), lang || 'text', c);
             const langLabel = lang ? `<font color="${c.comment}" size="2">${escapeHtml(lang)}</font><br/>` : '';
             // Use table with bgcolor for Qt RichText compatibility
-            codeBlocks.push(
-                `<br/><table width="100%" cellpadding="10" cellspacing="0" bgcolor="${c.codeBackground}">` +
-                `<tr><td>` +
-                langLabel +
-                `<pre style="margin: 0; white-space: pre-wrap;"><font color="${c.text}" face="monospace">${highlighted}</font></pre>` +
-                `</td></tr></table><br/>`
-            );
+            codeBlocks.push(`<br/><table width="100%" cellpadding="10" cellspacing="0" bgcolor="${c.codeBackground}">` + `<tr><td>` + langLabel + `<pre style="margin: 0; white-space: pre-wrap;"><font color="${c.text}" face="monospace">${highlighted}</font></pre>` + `</td></tr></table><br/>`);
             return placeholder;
         });
 
@@ -334,6 +345,9 @@ Singleton {
             html = html.replace(`\x00CODEBLOCK${i}\x00`, block);
         });
 
-        return { html, missingColors };
+        return {
+            html,
+            missingColors
+        };
     }
 }

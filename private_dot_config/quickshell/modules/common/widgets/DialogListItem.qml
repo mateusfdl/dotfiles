@@ -11,7 +11,7 @@ RippleButton {
     verticalPadding: 12
 
     clip: true
-    pointingHandCursor: !active    
+    pointingHandCursor: !active
     implicitWidth: contentItem.implicitWidth + horizontalPadding * 2
     implicitHeight: contentItem.implicitHeight + verticalPadding * 2
     Behavior on implicitHeight {

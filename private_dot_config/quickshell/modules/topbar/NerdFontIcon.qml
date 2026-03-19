@@ -19,7 +19,5 @@ Text {
         ColorAnimation {
             duration: 200
         }
-
     }
-
 }

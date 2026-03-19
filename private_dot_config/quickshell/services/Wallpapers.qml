@@ -1,3 +1,5 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
 import qs.modules.common
 import qs.modules.common.models
 import QsUtils
@@ -5,8 +7,6 @@ import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
-pragma Singleton
-pragma ComponentBehavior: Bound
 
 /**
  * Provides a list of wallpapers and an "apply" action that calls the existing
@@ -20,38 +20,30 @@ Singleton {
     property alias directory: folderModel.folder
     readonly property string effectiveDirectory: Files.trimFileProtocol(folderModel.folder.toString())
     property url defaultFolder: Qt.resolvedUrl(`${Directories.pictures}/Wallpapers`)
-    property alias folderModel: folderModel 
+    property alias folderModel: folderModel
     property string searchQuery: ""
-    readonly property list<string> extensions: [ 
-        "jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"
-    ]
-    property list<string> wallpapers: [] 
+    readonly property list<string> extensions: ["jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"]
+    property list<string> wallpapers: []
     readonly property bool thumbnailGenerationRunning: thumbgenProc.running
     property real thumbnailGenerationProgress: 0
 
-    signal changed()
+    signal changed
     signal thumbnailGenerated(directory: string)
     signal thumbnailGeneratedFile(filePath: string)
 
     Process {
         id: applyProc
     }
-    
+
     function openFallbackPicker(darkMode = Appearance.m3colors.darkmode) {
-        applyProc.exec([
-            Directories.wallpaperSwitchScriptPath,
-            "--mode", (darkMode ? "dark" : "light")
-        ])
+        applyProc.exec([Directories.wallpaperSwitchScriptPath, "--mode", (darkMode ? "dark" : "light")]);
     }
 
     function apply(path, darkMode = Appearance.m3colors.darkmode) {
-        if (!path || path.length === 0) return
-        applyProc.exec([
-            Directories.wallpaperSwitchScriptPath,
-            "--image", path,
-            "--mode", (darkMode ? "dark" : "light")
-        ])
-        root.changed()
+        if (!path || path.length === 0)
+            return;
+        applyProc.exec([Directories.wallpaperSwitchScriptPath, "--image", path, "--mode", (darkMode ? "dark" : "light")]);
+        root.changed();
     }
 
     Process {
@@ -59,9 +51,9 @@ Singleton {
         property string filePath: ""
         property bool darkMode: Appearance.m3colors.darkmode
         function select(filePath, darkMode = Appearance.m3colors.darkmode) {
-            selectProc.filePath = filePath
-            selectProc.darkMode = darkMode
-            selectProc.exec(["test", "-d", Files.trimFileProtocol(filePath)])
+            selectProc.filePath = filePath;
+            selectProc.darkMode = darkMode;
+            selectProc.exec(["test", "-d", Files.trimFileProtocol(filePath)]);
         }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
@@ -77,7 +69,8 @@ Singleton {
     }
 
     function randomFromCurrentFolder(darkMode = Appearance.m3colors.darkmode) {
-        if (folderModel.count === 0) return;
+        if (folderModel.count === 0)
+            return;
         const randomIndex = Math.floor(Math.random() * folderModel.count);
         const filePath = folderModel.get(randomIndex, "filePath");
         root.select(filePath, darkMode);
@@ -87,35 +80,32 @@ Singleton {
         id: validateDirProc
         property string nicePath: ""
         function setDirectoryIfValid(path) {
-            validateDirProc.nicePath = Files.trimFileProtocol(path).replace(/\/+$/, "")
-            if (/^\/*$/.test(validateDirProc.nicePath)) validateDirProc.nicePath = "/";
-            validateDirProc.exec([
-                "bash", "-c",
-                `if [ -d "${validateDirProc.nicePath}" ]; then echo dir; elif [ -f "${validateDirProc.nicePath}" ]; then echo file; else echo invalid; fi`
-            ])
+            validateDirProc.nicePath = Files.trimFileProtocol(path).replace(/\/+$/, "");
+            if (/^\/*$/.test(validateDirProc.nicePath))
+                validateDirProc.nicePath = "/";
+            validateDirProc.exec(["bash", "-c", `if [ -d "${validateDirProc.nicePath}" ]; then echo dir; elif [ -f "${validateDirProc.nicePath}" ]; then echo file; else echo invalid; fi`]);
         }
         stdout: StdioCollector {
             onStreamFinished: {
-                    root.directory = Qt.resolvedUrl(validateDirProc.nicePath)
-                const result = text.trim()
-                if (result === "dir") {
-                } else if (result === "file") {
-                    root.directory = Qt.resolvedUrl(Files.parentDirectory(validateDirProc.nicePath))
-                }  
+                root.directory = Qt.resolvedUrl(validateDirProc.nicePath);
+                const result = text.trim();
+                if (result === "dir") {} else if (result === "file") {
+                    root.directory = Qt.resolvedUrl(Files.parentDirectory(validateDirProc.nicePath));
+                }
             }
         }
     }
     function setDirectory(path) {
-        validateDirProc.setDirectoryIfValid(path)
+        validateDirProc.setDirectoryIfValid(path);
     }
     function navigateUp() {
-        folderModel.navigateUp()
+        folderModel.navigateUp();
     }
     function navigateBack() {
-        folderModel.navigateBack()
+        folderModel.navigateBack();
     }
     function navigateForward() {
-        folderModel.navigateForward()
+        folderModel.navigateForward();
     }
 
     FolderListModelWithHistory {
@@ -129,45 +119,44 @@ Singleton {
         sortField: FolderListModel.Time
         sortReversed: false
         onCountChanged: {
-            root.wallpapers = []
+            root.wallpapers = [];
             for (let i = 0; i < folderModel.count; i++) {
-                const path = folderModel.get(i, "filePath") || Files.trimFileProtocol(folderModel.get(i, "fileURL"))
-                if (path && path.length) root.wallpapers.push(path)
+                const path = folderModel.get(i, "filePath") || Files.trimFileProtocol(folderModel.get(i, "fileURL"));
+                if (path && path.length)
+                    root.wallpapers.push(path);
             }
         }
     }
 
     function generateThumbnail(size: string) {
-        if (!["normal", "large", "x-large", "xx-large"].includes(size)) throw new Error("Invalid thumbnail size");
-        thumbgenProc.directory = root.directory
-        thumbgenProc.running = false
-        thumbgenProc.command = [
-            "bash", "-c",
-            `${thumbgenScriptPath} --size ${size} --machine_progress -d ${Files.trimFileProtocol(root.directory)} || ${generateThumbnailsMagickScriptPath} --size ${size} -d ${root.directory}`,
-        ]
-        root.thumbnailGenerationProgress = 0
-        thumbgenProc.running = true
+        if (!["normal", "large", "x-large", "xx-large"].includes(size))
+            throw new Error("Invalid thumbnail size");
+        thumbgenProc.directory = root.directory;
+        thumbgenProc.running = false;
+        thumbgenProc.command = ["bash", "-c", `${thumbgenScriptPath} --size ${size} --machine_progress -d ${Files.trimFileProtocol(root.directory)} || ${generateThumbnailsMagickScriptPath} --size ${size} -d ${root.directory}`,];
+        root.thumbnailGenerationProgress = 0;
+        thumbgenProc.running = true;
     }
     Process {
         id: thumbgenProc
         property string directory
         stdout: SplitParser {
             onRead: data => {
-                let match = data.match(/PROGRESS (\d+)\/(\d+)/)
+                let match = data.match(/PROGRESS (\d+)\/(\d+)/);
                 if (match) {
-                    const completed = parseInt(match[1])
-                    const total = parseInt(match[2])
-                    root.thumbnailGenerationProgress = completed / total
+                    const completed = parseInt(match[1]);
+                    const total = parseInt(match[2]);
+                    root.thumbnailGenerationProgress = completed / total;
                 }
-                match = data.match(/FILE (.+)/)
+                match = data.match(/FILE (.+)/);
                 if (match) {
-                    const filePath = match[1]
-                    root.thumbnailGeneratedFile(filePath)
+                    const filePath = match[1];
+                    root.thumbnailGeneratedFile(filePath);
                 }
             }
         }
         onExited: (exitCode, exitStatus) => {
-            root.thumbnailGenerated(thumbgenProc.directory)
+            root.thumbnailGenerated(thumbgenProc.directory);
         }
     }
 }
