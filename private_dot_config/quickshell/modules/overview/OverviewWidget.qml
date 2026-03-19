@@ -22,6 +22,7 @@ Item {
     property var windowByAddress: HyprlandData.windowByAddress
     property var windowAddresses: HyprlandData.addresses
     property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor.id)
+    property var monitorWorkspaceIds: HyprlandData.workspaces.filter(ws => ws.monitorID === root.monitor.id).map(ws => ws.id)
     property real scale: Config.options.overview.scale
     property color activeBorderColor: Appearance.m3colors.m3accentSecondary
 
@@ -90,19 +91,20 @@ Item {
             anchors.centerIn: parent
             spacing: workspaceSpacing
 
-            Repeater { // Workspace repeater - only open workspaces
-                model: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+            Repeater { // Workspace repeater - only open workspaces for this monitor
+                model: monitorWorkspaceIds.slice().sort((a, b) => a - b)
                 Rectangle { // Workspace
                     id: workspace
                     required property var modelData
                     property int workspaceValue: modelData
+                    property string workspaceName: HyprlandData.workspaceById[workspaceValue]?.name ?? String(workspaceValue)
                     property color defaultWorkspaceColor: Appearance.colors.colLayer1
                     property color hoveredWorkspaceColor: Colors.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
                     property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                     property bool hoveredWhileDragging: false
                     readonly property int padding: Config.options.overview.windowPadding
                     property int workspaceIndex: {
-                        const sorted = HyprlandData.workspaceIds.slice().sort((a, b) => a - b);
+                        const sorted = monitorWorkspaceIds.slice().sort((a, b) => a - b);
                         return sorted.indexOf(workspaceValue);
                     }
 
@@ -194,7 +196,7 @@ Item {
                         StyledText {
                             id: workspaceLabel
                             anchors.centerIn: parent
-                            text: workspaceValue
+                            text: workspaceName
                             font.pixelSize: 11
                             font.weight: Font.Medium
                             color: Appearance.colors.colOnLayer1
@@ -209,7 +211,7 @@ Item {
                         onClicked: {
                             if (root.draggingTargetWorkspace === -1) {
                                 GlobalStates.overviewOpen = false
-                                Hyprland.dispatch(`workspace ${workspaceValue}`)
+                                Hyprland.dispatch(`workspace ${workspaceName}`)
                             }
                         }
                     }
@@ -241,8 +243,8 @@ Item {
                 model: ScriptModel {
                     values: windowAddresses.filter((address) => {
                         var win = windowByAddress[address]
-                        // Only show windows in open workspaces
-                        return HyprlandData.workspaceIds.includes(win?.workspace?.id)
+                        // Only show windows in workspaces belonging to this monitor
+                        return monitorWorkspaceIds.includes(win?.workspace?.id)
                     })
                 }
                 delegate: OverviewWindow {
@@ -257,7 +259,7 @@ Item {
                     restrictToWorkspace: Drag.active || atInitPosition
 
                     // Calculate workspace index in sorted list for horizontal positioning
-                    property var sortedWorkspaces: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+                    property var sortedWorkspaces: monitorWorkspaceIds.slice().sort((a, b) => a - b)
                     property int workspaceIndex: sortedWorkspaces.indexOf(windowData?.workspace?.id)
                     xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceIndex
                     yOffset: 0
@@ -328,7 +330,7 @@ Item {
 
             Rectangle { // Focused workspace indicator
                 id: focusedWorkspaceIndicator
-                property var sortedWorkspaces: HyprlandData.workspaceIds.slice().sort((a, b) => a - b)
+                property var sortedWorkspaces: monitorWorkspaceIds.slice().sort((a, b) => a - b)
                 property int activeWorkspaceIndex: sortedWorkspaces.indexOf(monitor.activeWorkspace?.id ?? -1)
                 x: (root.workspaceImplicitWidth + workspaceSpacing) * activeWorkspaceIndex
                 y: 0

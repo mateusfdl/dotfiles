@@ -22,6 +22,13 @@ Scope {
             required property var modelData
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor.id)
+            property var monitorWorkspaceIds: HyprlandData.workspaces.filter(ws => ws.monitorID === monitor.id).map(ws => ws.id)
+
+            function workspaceNameForId(wsId) {
+                const ws = HyprlandData.workspaceById[wsId];
+                return ws ? ws.name : String(wsId);
+            }
+
             screen: modelData
             visible: GlobalStates.overviewOpen
 
@@ -94,17 +101,17 @@ Scope {
                         event.accepted = true;
                     } else if (event.key === Qt.Key_W || event.key === Qt.Key_L || event.key === Qt.Key_Right) {
                         var nextId = HyprlandWorkspace.navigateForward(
-                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
-                        if (nextId >= 0) Hyprland.dispatch(`workspace ${nextId}`);
+                            root.monitorWorkspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                        if (nextId >= 0) Hyprland.dispatch(`workspace ${root.workspaceNameForId(nextId)}`);
                         event.accepted = true;
                     } else if (event.key === Qt.Key_B || event.key === Qt.Key_H || event.key === Qt.Key_Left) {
                         var prevId = HyprlandWorkspace.navigateBackward(
-                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
-                        if (prevId >= 0) Hyprland.dispatch(`workspace ${prevId}`);
+                            root.monitorWorkspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                        if (prevId >= 0) Hyprland.dispatch(`workspace ${root.workspaceNameForId(prevId)}`);
                         event.accepted = true;
                     } else if (event.key === Qt.Key_N) {
                         var newId = HyprlandWorkspace.insertWorkspaceAfter(
-                            HyprlandData.workspaceIds, root.monitor.activeWorkspace?.id ?? -1);
+                            root.monitorWorkspaceIds, root.monitor.activeWorkspace?.id ?? -1);
                         if (newId >= 0) Hyprland.dispatch(`workspace ${newId}`);
                         event.accepted = true;
                     }
