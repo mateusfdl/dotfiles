@@ -16,6 +16,7 @@
     kdePackages.qt6ct
     kitty
     libsForQt5.qt5ct
+    mpv
     nautilus
     networkmanagerapplet
     nwg-displays
@@ -33,6 +34,7 @@
     unzip
     vim
     wget
+    wf-recorder
     wl-clipboard
     wireguard-tools
   ];
