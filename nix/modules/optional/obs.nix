@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    obs-studio
+    (wrapOBS {
+      plugins = with obs-studio-plugins; [
+        obs-shaderfilter
+      ];
+    })
   ];
 }
