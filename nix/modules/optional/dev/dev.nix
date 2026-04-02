@@ -24,5 +24,6 @@
     libsoup_3.dev
     mise
     jq
+    entr
   ];
 }
