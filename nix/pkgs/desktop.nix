@@ -17,7 +17,6 @@
     kitty
     libsForQt5.qt5ct
     mpv
-    nautilus
     networkmanagerapplet
     nwg-displays
     papirus-icon-theme

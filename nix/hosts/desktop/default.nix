@@ -20,6 +20,7 @@
     ../../modules/optional/sshfs.nix
     ../../modules/optional/steam.nix
     ../../modules/optional/vscode.nix
+    ../../modules/optional/soundcloud.nix
     ../../modules/optional/dev
   ];
 
