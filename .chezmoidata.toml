@@ -9,6 +9,9 @@ family = "IosevkaSS04 Nerd Font Mono"
 [notes.vault]
 path = ""
 
+[pi]
+path = ""
+
 [git]
 name = "Matheus Lima"
 email = ""
