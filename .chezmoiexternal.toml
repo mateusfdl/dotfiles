@@ -6,4 +6,4 @@
 [".config/nvim"]
     type = "git-repo"
     url = "https://github.com/mateusfdl/nvim.git"
-    refreshPeriod = "168h"
+    refreshPeriod = "1h"
