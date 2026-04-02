@@ -13,6 +13,7 @@
     ../../modules/optional/nvidia.nix
     ../../modules/optional/nix-ld.nix
     ../../modules/optional/obs.nix
+    ../../modules/optional/pop.nix
     ../../pkgs/desktop.nix
     ../../modules/optional/portals.nix
     ../../modules/optional/sshfs.nix
