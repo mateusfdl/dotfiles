@@ -37,16 +37,16 @@ let
       nspr
       nss
       pango
-      xorg.libX11
-      xorg.libXScrnSaver
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXrandr
-      xorg.libXtst
-      xorg.libxcb
-      xorg.libxshmfence
+      libx11
+      libxscrnsaver
+      libxcomposite
+      libxdamage
+      libxext
+      libxfixes
+      libxrandr
+      libxtst
+      libxcb
+      libxshmfence
     ];
 
     dontWrapGApps = true;
@@ -78,16 +78,16 @@ let
       pkgs.systemdLibs
       pkgs.vulkan-loader
       pkgs.wayland
-      pkgs.xorg.libX11
-      pkgs.xorg.libXScrnSaver
-      pkgs.xorg.libXcomposite
-      pkgs.xorg.libXdamage
-      pkgs.xorg.libXext
-      pkgs.xorg.libXfixes
-      pkgs.xorg.libXrandr
-      pkgs.xorg.libXtst
-      pkgs.xorg.libxcb
-      pkgs.xorg.libxshmfence
+      pkgs.libx11
+      pkgs.libxscrnsaver
+      pkgs.libxcomposite
+      pkgs.libxdamage
+      pkgs.libxext
+      pkgs.libxfixes
+      pkgs.libxrandr
+      pkgs.libxtst
+      pkgs.libxcb
+      pkgs.libxshmfence
     ];
 
     unpackPhase = ''
