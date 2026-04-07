@@ -38,46 +38,28 @@ ItemDelegate {
     }
 
     contentItem: Row {
-        spacing: 18
-        padding: 16
-        leftPadding: 20
-        rightPadding: 20
+        spacing: 10
+        leftPadding: 12
+        rightPadding: 12
 
         IconImage {
             id: appIcon
-
             anchors.verticalCenter: parent.verticalCenter
-
             source: Quickshell.iconPath(root.modelData.icon, "image-missing")
-            width: 56
-            height: 56
+            width: 22
+            height: 22
         }
 
-        Column {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width - appIcon.width - parent.spacing - parent.leftPadding - parent.rightPadding
-            spacing: 6
-
-            StyledText {
-                text: root.modelData.name
-                color: Appearance.m3colors.m3primaryText
-                font.pixelSize: 19
-                font.family: "-apple-system"
-                font.weight: Font.Medium
-                elide: Text.ElideRight
-                width: parent.width
-            }
-
-            StyledText {
-                text: root.modelData.comment ? root.modelData.comment : ""
-                color: Appearance.m3colors.m3surfaceText
-                font.pixelSize: 15
-                font.family: "-apple-system"
-                font.weight: Font.Normal
-                elide: Text.ElideRight
-                width: parent.width
-                visible: text !== ""
-            }
+            text: root.modelData.name
+            color: Appearance.m3colors.m3primaryText
+            font.family: Appearance.font.family.uiFont
+            font.pixelSize: Appearance.font.pixelSize.textBase
+            font.weight: Font.Normal
+            elide: Text.ElideRight
+            maximumLineCount: 1
         }
     }
 }

@@ -13,69 +13,56 @@ ListView {
     required property real maxHeight
     required property int padding
 
+    property var selectedApp: null
+
     model: AppSearch.quickshellApps
 
-    spacing: 6
+    spacing: 2
     orientation: Qt.Vertical
     implicitHeight: Math.min(maxHeight, (Config.options.launcher.sizes.itemHeight + spacing) * count - (count > 0 ? spacing : 0))
 
     clip: true
     currentIndex: 0
-    interactive: height < maxHeight
+    interactive: contentHeight > height
     focus: true
     keyNavigationWraps: false
 
+    onCurrentItemChanged: {
+        if (currentItem && currentItem.modelData)
+            selectedApp = currentItem.modelData;
+    }
+
+    Component.onCompleted: {
+        if (count > 0 && currentItem && currentItem.modelData)
+            selectedApp = currentItem.modelData;
+    }
+
     Keys.onReturnPressed: {
-        if (currentItem && typeof currentItem.launchAndClose === "function") {
+        if (currentItem && typeof currentItem.launchAndClose === "function")
             currentItem.launchAndClose();
-        }
     }
     Keys.onEnterPressed: {
-        if (currentItem && typeof currentItem.launchAndClose === "function") {
+        if (currentItem && typeof currentItem.launchAndClose === "function")
             currentItem.launchAndClose();
-        }
     }
 
     highlightFollowsCurrentItem: false
     highlight: Rectangle {
-        radius: 14
-        color: Appearance.m3colors.m3secondaryText
+        radius: 8
+        color: Qt.rgba(1, 1, 1, 0.08)
 
         y: root.currentItem ? root.currentItem.y : 0
-        x: 8
-        implicitWidth: root.width - 16
+        x: 4
+        implicitWidth: root.width - 8
         implicitHeight: root.currentItem ? root.currentItem.implicitHeight : 0
 
         Behavior on y {
             NumberAnimation {
-                duration: 180
+                duration: 150
                 easing.type: Easing.OutCubic
             }
         }
     }
 
     delegate: AppItemSimple {}
-
-    add: Transition {
-        NumberAnimation {
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            property: "y"
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    displaced: Transition {
-        NumberAnimation {
-            property: "y"
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
 }

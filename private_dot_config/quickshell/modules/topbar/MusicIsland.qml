@@ -17,7 +17,7 @@ Item {
     visible: MediaPlayer.isPlaying
 
     implicitWidth: visible ? collapsedContent.implicitWidth : 0
-    implicitHeight: parent ? parent.height : Appearance.sizes.barHeight
+    implicitHeight: contentRow.implicitHeight
 
     Behavior on implicitWidth {
         NumberAnimation {
@@ -49,13 +49,14 @@ Item {
 
         anchors.verticalCenter: parent.verticalCenter
         implicitWidth: contentRow.implicitWidth
-        implicitHeight: parent.height
+        implicitHeight: contentRow.implicitHeight
 
-        RowLayout {
+        Item {
             id: contentRow
 
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 6
+            implicitWidth: barsRow.width + 10 + titleText.implicitWidth
+            implicitHeight: barsRow.height
 
             SpectrumBars {
                 id: barsRow
@@ -66,23 +67,29 @@ Item {
                 barSpacing: 2
                 barRadius: 1.5
                 minBarHeight: 3
-                maxBarHeight: root.implicitHeight - 8
+                maxBarHeight: 18
                 barColor: Qt.rgba(1, 1, 1, 0.25)
                 barColorActive: Qt.rgba(1, 0.6, 0.8, 0.85)
                 active: MediaPlayer.isPlaying
                 values: AudioSpectrum.bars
                 animationDuration: 100
 
-                Layout.alignment: Qt.AlignVCenter
-                Layout.preferredWidth: 6 * 3 + 5 * 2  // barCount * barWidth + (barCount-1) * barSpacing
-                Layout.preferredHeight: root.implicitHeight - 8
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                width: 6 * 3 + 5 * 2  // barCount * barWidth + (barCount-1) * barSpacing
+                height: 18
             }
 
             StyledText {
+                id: titleText
+
                 text: MediaPlayer.title || ""
                 font.pixelSize: 13
                 color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
-                Layout.alignment: Qt.AlignVCenter
+
+                anchors.left: barsRow.right
+                anchors.leftMargin: 10
+                anchors.bottom: parent.bottom
             }
         }
 

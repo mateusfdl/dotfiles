@@ -68,7 +68,7 @@ Singleton {
 
     property var models: {
         "openrouter/auto": aiModelComponent.createObject(root, {
-            "name": "Z",
+            "name": "Doofy",
             "icon": "dialog-information-symbolic",
             "description": "OpenRouter Auto-routes to the best model",
             "endpoint": "https://openrouter.ai/api/v1/chat/completions",

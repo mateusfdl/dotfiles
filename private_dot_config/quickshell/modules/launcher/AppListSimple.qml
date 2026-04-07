@@ -11,11 +11,14 @@ ListView {
 
     required property TextField search
 
-    model: AppSearch.search(search.text).slice(0, 6)
+    readonly property int maxShown: Config.options.launcher.maxShown ?? 7
+    property var selectedApp: null
 
-    spacing: 6
+    model: AppSearch.search(search.text).slice(0, maxShown)
+
+    spacing: 2
     orientation: Qt.Vertical
-    implicitHeight: Math.max(0, (Config.options.launcher.sizes.itemHeight + spacing) * Math.min(6, count) - (count > 0 ? spacing : 0))
+    implicitHeight: Math.max(0, (Config.options.launcher.sizes.itemHeight + spacing) * Math.min(maxShown, count) - (count > 0 ? spacing : 0))
 
     clip: true
     currentIndex: 0
@@ -23,57 +26,42 @@ ListView {
     focus: true
     keyNavigationWraps: false
 
+    onCurrentItemChanged: {
+        if (currentItem && currentItem.modelData)
+            selectedApp = currentItem.modelData;
+    }
+
+    onCountChanged: {
+        if (count > 0 && currentIndex >= 0 && currentItem && currentItem.modelData)
+            selectedApp = currentItem.modelData;
+    }
+
     Keys.onReturnPressed: {
-        if (currentItem && typeof currentItem.launchAndClose === "function") {
+        if (currentItem && typeof currentItem.launchAndClose === "function")
             currentItem.launchAndClose();
-        }
     }
     Keys.onEnterPressed: {
-        if (currentItem && typeof currentItem.launchAndClose === "function") {
+        if (currentItem && typeof currentItem.launchAndClose === "function")
             currentItem.launchAndClose();
-        }
     }
 
     highlightFollowsCurrentItem: false
     highlight: Rectangle {
-        radius: 14
-        color: Appearance.m3colors.m3secondaryText
+        radius: 8
+        color: Qt.rgba(1, 1, 1, 0.08)
 
         y: root.currentItem ? root.currentItem.y : 0
-        x: 8
-        implicitWidth: root.width - 16
+        x: 4
+        implicitWidth: root.width - 8
         implicitHeight: root.currentItem ? root.currentItem.implicitHeight : 0
 
         Behavior on y {
             NumberAnimation {
-                duration: 180
+                duration: 150
                 easing.type: Easing.OutCubic
             }
         }
     }
 
     delegate: AppItemSimple {}
-
-    add: Transition {
-        NumberAnimation {
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            property: "y"
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    displaced: Transition {
-        NumberAnimation {
-            property: "y"
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
 }

@@ -18,6 +18,17 @@ Item {
     readonly property bool hasSearchText: search.text.length > 0
     readonly property Item currentList: hasSearchText ? appList.item : defaultList.item
 
+    // Stabilized selectedApp with fallback caching
+    property var _lastSelectedApp: null
+    readonly property var selectedApp: {
+        const app = hasSearchText ? appList.item?.selectedApp : defaultList.item?.selectedApp;
+        if (app) {
+            _lastSelectedApp = app;
+            return app;
+        }
+        return _lastSelectedApp;
+    }
+
     anchors.horizontalCenter: parent.horizontalCenter
     clip: true
     implicitWidth: parent.width
@@ -41,47 +52,6 @@ Item {
         sourceComponent: DefaultAppList {
             maxHeight: root.maxHeight
             padding: root.padding
-        }
-    }
-
-    Row {
-        id: empty
-
-        visible: root.currentList?.count === 0
-
-        spacing: 20
-        padding: 32
-
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-
-        MaterialSymbol {
-            text: "manage_search"
-            color: Appearance.m3colors.m3surfaceText
-            iconSize: 56
-
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Column {
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 8
-
-            StyledText {
-                text: qsTr("No results")
-                color: Appearance.m3colors.m3primaryText
-                font.pixelSize: 20
-                font.family: "-apple-system"
-                font.weight: Font.Medium
-            }
-
-            StyledText {
-                text: qsTr("Try searching for something else")
-                color: Appearance.m3colors.m3surfaceText
-                font.pixelSize: 16
-                font.family: "-apple-system"
-                font.weight: Font.Normal
-            }
         }
     }
 }

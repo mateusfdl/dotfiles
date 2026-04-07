@@ -85,8 +85,7 @@ Scope {
                 visible: root.isActive
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    top: parent.top
-                    topMargin: Math.max(parent.height * 0.15, 80)
+                    verticalCenter: parent.verticalCenter
                 }
 
                 implicitWidth: wrapper.implicitWidth
