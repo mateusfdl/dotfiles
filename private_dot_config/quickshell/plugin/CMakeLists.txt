@@ -23,6 +23,7 @@ qt_add_qml_module(qsutils
         src/obsidian/obsidiantodo.hpp src/obsidian/obsidiantodo.cpp
         src/audio/audiospectrum.hpp src/audio/audiospectrum.cpp
         src/hyprland/hyprlandworkspace.hpp src/hyprland/hyprlandworkspace.cpp
+        src/launcher/appsearch.hpp src/launcher/appsearch.cpp
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/QsUtils"
 )
 
@@ -33,6 +34,7 @@ target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/obsidian
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hyprland
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
 )
 
 # Mark external C library headers as SYSTEM to suppress their warnings
