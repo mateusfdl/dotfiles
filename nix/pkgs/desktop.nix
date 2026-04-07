@@ -27,7 +27,7 @@
     qt6.qtwayland
     quickshell
     slurp
-    swww
+    awww
     tmux
     tree-sitter
     unzip
@@ -42,6 +42,7 @@
     claude-desktop-pkg
     discord
     gh
+    morgen
     obsidian
     spotify
     btop
