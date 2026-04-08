@@ -51,6 +51,8 @@ let
         "uptime-kuma"
         "adguard-home"
         "redis"
+        "postgres"
+        "rabbitmq"
       ];
 
   certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''
