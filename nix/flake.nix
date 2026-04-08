@@ -9,7 +9,6 @@
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
 
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
-    claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
 
     # TODO: check if Handy already updated their flake file deps hash
     handy.url = "github:cjpais/Handy/15fbc47f5a8d1127826a9d3a930336d059f6bf0f";
