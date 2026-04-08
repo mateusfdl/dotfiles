@@ -53,6 +53,7 @@ let
         "redis"
         "postgres"
         "rabbitmq"
+        "firecrawl"
       ];
 
   certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''
