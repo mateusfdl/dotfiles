@@ -2,20 +2,29 @@
 {
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+    configPackages = [ pkgs.xdg-desktop-portal-hyprland ];
+    config = {
+      Hyprland = {
+        default = [ "hyprland" "gtk" ];
+      };
+    };
   };
 
   xdg.mime.defaultApplications = {
-    "video/mp4" = "mpv.desktop";
-    "video/mkv" = "mpv.desktop";
-    "video/x-matroska" = "mpv.desktop";
-    "video/webm" = "mpv.desktop";
-    "video/avi" = "mpv.desktop";
-    "video/x-msvideo" = "mpv.desktop";
-    "video/ogg" = "mpv.desktop";
-    "video/quicktime" = "mpv.desktop";
-    "video/x-flv" = "mpv.desktop";
-    "video/mpeg" = "mpv.desktop";
+    "video/mp4" = "vlc.desktop";
+    "video/mkv" = "vlc.desktop";
+    "video/x-matroska" = "vlc.desktop";
+    "video/webm" = "vlc.desktop";
+    "video/avi" = "vlc.desktop";
+    "video/x-msvideo" = "vlc.desktop";
+    "video/ogg" = "vlc.desktop";
+    "video/quicktime" = "vlc.desktop";
+    "video/x-flv" = "vlc.desktop";
+    "video/mpeg" = "vlc.desktop";
   };
 
   programs.dconf.enable = true;
