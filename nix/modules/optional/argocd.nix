@@ -48,8 +48,6 @@ let
       [
         "minio"
         "vaultwarden"
-        "uptime-kuma"
-        "adguard-home"
         "redis"
         "postgres"
         "rabbitmq"
