@@ -24,6 +24,7 @@ Singleton {
     property bool aiChatOpen: false
     property bool cheatsheetOpen: false
     property bool obsidianTodoOpen: false
+    property bool dailyTodosOpen: false
 
     Connections {
         target: Config

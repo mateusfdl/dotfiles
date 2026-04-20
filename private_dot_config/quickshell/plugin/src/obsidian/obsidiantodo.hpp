@@ -33,6 +33,7 @@ public:
   Q_INVOKABLE bool appendSessionLog(const QString &noteId, int focusMinutes,
                                     int breakMinutes,
                                     const QVariantList &events);
+  Q_INVOKABLE bool setTodoStatus(int index, const QString &marker);
 
 signals:
   void tagsChanged();

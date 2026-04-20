@@ -15,6 +15,7 @@ import qs.modules.windowswitcher
 import qs.modules.aichat
 import qs.modules.cheatsheet
 import qs.modules.obsidiantodo
+import qs.modules.dailytodos
 import qs.modules.lockscreen
 import qs.services
 
@@ -28,6 +29,7 @@ ShellRoot {
     property bool enableAiChat: Config.options.modules.aiChat
     property bool enableCheatsheet: Config.options.modules.cheatsheet
     property bool enableObsidianTodo: Config.options.modules.obsidianTodo
+    property bool enableDailyTodos: Config.options.modules.dailyTodos
     property bool enableLockScreen: Config.options.modules.lockScreen
 
     Component.onCompleted: {
@@ -88,6 +90,12 @@ ShellRoot {
         active: enableObsidianTodo
 
         sourceComponent: ObsidianTodoWindow {}
+    }
+
+    Loader {
+        active: enableDailyTodos
+
+        sourceComponent: DailyTodosWindow {}
     }
 
     Loader {

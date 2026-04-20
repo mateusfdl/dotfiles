@@ -1,0 +1,4 @@
+module qs.modules.dailytodos
+
+DailyTodosWindow 1.0 DailyTodosWindow.qml
+DailyTodosContent 1.0 DailyTodosContent.qml

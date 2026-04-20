@@ -146,7 +146,8 @@ void ObsidianTodo::fetchTodos() {
   const auto todoSection = content.mid(todoIdx, sectionEnd - todoIdx);
 
   static const QRegularExpression todoLineRe(
-      QStringLiteral(R"(^- \[ \] (.+)$)"), QRegularExpression::MultilineOption);
+      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
+      QRegularExpression::MultilineOption);
 
   static const QRegularExpression wikiLinkRe(
       QStringLiteral(R"(\[\[([^\]]+)\]\])"));
@@ -158,7 +159,8 @@ void ObsidianTodo::fetchTodos() {
   auto it = todoLineRe.globalMatch(todoSection);
   while (it.hasNext()) {
     const auto match = it.next();
-    const auto fullLine = match.captured(1).trimmed();
+    const auto statusMarker = match.captured(1);
+    const auto fullLine = match.captured(2).trimmed();
 
     QString noteId;
     const auto linkMatch = wikiLinkRe.match(fullLine);
@@ -176,6 +178,7 @@ void ObsidianTodo::fetchTodos() {
     description = description.trimmed();
 
     QVariantMap entry;
+    entry[QStringLiteral("status")] = statusMarker;
     entry[QStringLiteral("description")] = description;
     entry[QStringLiteral("noteId")] = noteId;
     entry[QStringLiteral("tags")] = lineTags;
@@ -350,6 +353,45 @@ bool ObsidianTodo::updateJournalTodoLink(const QString &description,
     }
 
     searchPos = lineEnd;
+  }
+
+  return false;
+}
+
+bool ObsidianTodo::setTodoStatus(int index, const QString &marker) {
+  if (index < 0 || marker.isEmpty())
+    return false;
+
+  const auto journalPath = journalPathForToday();
+  auto content = readFileContent(journalPath);
+  if (content.isNull())
+    return false;
+
+  const int todoIdx = content.indexOf(QStringLiteral("# TODO"));
+  if (todoIdx == -1)
+    return false;
+
+  const int sectionEnd = findSectionEnd(content, todoIdx);
+  const auto todoSection = content.mid(todoIdx, sectionEnd - todoIdx);
+
+  static const QRegularExpression todoLineRe(
+      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
+      QRegularExpression::MultilineOption);
+
+  int current = 0;
+  auto it = todoLineRe.globalMatch(todoSection);
+  while (it.hasNext()) {
+    const auto match = it.next();
+    if (current == index) {
+      const int absStart = todoIdx + match.capturedStart();
+      const int bracketContentPos = absStart + 3;
+      content.replace(bracketContentPos, 1, marker);
+      if (!writeFileContent(journalPath, content))
+        return false;
+      fetchTodos();
+      return true;
+    }
+    ++current;
   }
 
   return false;

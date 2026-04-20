@@ -223,6 +223,7 @@ Singleton {
                 property bool lockScreen: true
                 property bool cheatsheet: true
                 property bool obsidianTodo: true
+                property bool dailyTodos: true
             }
 
             property JsonObject networking: JsonObject {

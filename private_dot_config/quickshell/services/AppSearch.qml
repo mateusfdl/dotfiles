@@ -32,7 +32,7 @@ Singleton {
             name: "SoundCloud",
             icon: "soundcloud",
             comment: "Listen to music on SoundCloud",
-            exec: "xdg-open https://soundcloud.com"
+            exec: "soundcloud"
         },
         {
             name: "Spotify",
