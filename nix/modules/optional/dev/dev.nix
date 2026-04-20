@@ -14,6 +14,7 @@
     ))
     uv
 
+    ruby
     gcc
     clang-tools
     gnumake
@@ -32,6 +33,8 @@
     mise
     jq
     entr
+    pandoc
+    tectonic
   ];
 
   environment.sessionVariables.GST_PLUGIN_PATH = pkgs.lib.makeSearchPath "lib/gstreamer-1.0" [
