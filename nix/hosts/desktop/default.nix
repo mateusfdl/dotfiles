@@ -7,6 +7,7 @@
     ../../modules/optional/blender.nix
     ../../modules/optional/bluetooth.nix
     ../../modules/optional/fonts.nix
+    ../../modules/optional/freecad.nix
     ../../modules/optional/greetd.nix
     ../../modules/optional/handy.nix
     ../../modules/optional/hyprland.nix

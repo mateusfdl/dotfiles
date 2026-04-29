@@ -35,6 +35,9 @@
     entr
     pandoc
     tectonic
+    graphviz
+    flyctl
+    railway
   ];
 
   environment.sessionVariables.GST_PLUGIN_PATH = pkgs.lib.makeSearchPath "lib/gstreamer-1.0" [
