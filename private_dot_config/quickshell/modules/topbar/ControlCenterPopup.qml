@@ -6,8 +6,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs
 import qs.modules.common
+import qs.modules.common.effects
 import qs.modules.common.widgets
 import qs.services
 
@@ -49,6 +52,12 @@ Scope {
             visible: controlCenterScope.popupVisible
             color: "transparent"
 
+            WlrLayershell.namespace: "quickshell:controlcenter"
+
+            HyprlandWindow.visibleMask: Region {
+                item: controlCenterScope.popupVisible ? panelBackground : null
+            }
+
             anchors {
                 top: true
                 left: true
@@ -69,15 +78,14 @@ Scope {
                 id: panelBackground
 
                 x: controlCenterScope.popupX
-                y: controlCenterScope.popupVisible ? controlCenterScope.popupY : -1000
+                y: controlCenterScope.popupY
                 width: 420
                 height: Math.max(contentColumn.implicitHeight + 40, 800)
                 radius: 20
-                color: Appearance.colors.colLayer1
-                border.color: Appearance.m3colors.m3borderSecondary
+                color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
+                border.color: Qt.rgba(1, 1, 1, 0.08)
                 border.width: 1
                 z: 10
-                layer.enabled: true
 
                 MouseArea {
                     anchors.fill: parent
@@ -653,20 +661,14 @@ Scope {
                     }
                 }
 
-                Behavior on y {
-                    NumberAnimation {
-                        duration: 400
-                        easing.type: Easing.OutCubic
-                    }
-                }
 
-                layer.effect: DropShadow {
-                    radius: 32
-                    samples: 65
-                    color: Qt.rgba(0, 0, 0, 0.7)
-                    verticalOffset: 8
-                    horizontalOffset: 0
-                }
+
+            }
+
+            Elevation {
+                anchors.fill: panelBackground
+                radius: panelBackground.radius
+                level: controlCenterScope.popupVisible ? 4 : 0
             }
         }
     }

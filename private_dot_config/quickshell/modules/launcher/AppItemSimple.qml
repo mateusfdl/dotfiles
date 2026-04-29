@@ -13,12 +13,19 @@ ItemDelegate {
     id: root
 
     required property var modelData
+    required property int index
 
     implicitWidth: ListView.view.width
     implicitHeight: Config.options.launcher.sizes.itemHeight
 
     focus: true
     activeFocusOnTab: true
+    hoverEnabled: true
+
+    onHoveredChanged: {
+        if (hovered)
+            ListView.view.currentIndex = index;
+    }
 
     function launchAndClose() {
         if (typeof modelData.launch === "function") {
@@ -35,6 +42,14 @@ ItemDelegate {
 
     background: Rectangle {
         color: "transparent"
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        acceptedButtons: Qt.LeftButton
+        onClicked: root.launchAndClose()
     }
 
     contentItem: Row {

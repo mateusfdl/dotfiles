@@ -5,7 +5,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.modules.common
+import qs.modules.common.effects
 import qs.modules.common.widgets
 import qs.services
 import QsUtils
@@ -51,6 +54,12 @@ Scope {
             visible: pomodoroPopupScope.popupVisible
             color: "transparent"
 
+            WlrLayershell.namespace: "quickshell:pomodoro"
+
+            HyprlandWindow.visibleMask: Region {
+                item: pomodoroPopupScope.popupVisible ? popupBackground : null
+            }
+
             anchors {
                 top: true
                 left: true
@@ -73,15 +82,14 @@ Scope {
                 id: popupBackground
 
                 x: pomodoroPopupScope.popupX
-                y: pomodoroPopupScope.popupVisible ? pomodoroPopupScope.popupY : -1000
+                y: pomodoroPopupScope.popupY
                 width: 350
                 height: popupColumn.implicitHeight + 48  // 24 margin × 2
                 radius: 16
-                color: Appearance.colors.colLayer1
-                border.color: Appearance.m3colors.m3borderSecondary
+                color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
+                border.color: Qt.rgba(1, 1, 1, 0.08)
                 border.width: 1
                 z: 10
-                layer.enabled: true
 
                 // Prevent clicks from passing through
                 MouseArea {
@@ -779,21 +787,14 @@ Scope {
                     }
                 }
 
-                // Elevator animation from top
-                Behavior on y {
-                    NumberAnimation {
-                        duration: 400
-                        easing.type: Easing.OutCubic
-                    }
-                }
 
-                layer.effect: DropShadow {
-                    radius: 32
-                    samples: 65
-                    color: Qt.rgba(0, 0, 0, 0.7)
-                    verticalOffset: 8
-                    horizontalOffset: 0
-                }
+
+            }
+
+            Elevation {
+                anchors.fill: popupBackground
+                radius: popupBackground.radius
+                level: pomodoroPopupScope.popupVisible ? 4 : 0
             }
         }
     }

@@ -173,8 +173,8 @@ Scope {
             anchors.margins: 20
             width: instructionsText.implicitWidth + 20
             height: instructionsText.implicitHeight + 20
-            color: Appearance.colors.colLayer2
-            border.color: Appearance.m3colors.m3borderSecondary
+            color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
+            border.color: Qt.rgba(1, 1, 1, 0.08)
             border.width: 1
             radius: 8
             z: 100

@@ -6,6 +6,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
@@ -88,6 +90,12 @@ Scope {
             visible: volumePopupScope.popupVisible
             color: "transparent"
 
+            WlrLayershell.namespace: "quickshell:volume"
+
+            HyprlandWindow.visibleMask: Region {
+                item: volumePopupScope.popupVisible ? popupBackground : null
+            }
+
             anchors {
                 top: true
                 left: true
@@ -112,8 +120,8 @@ Scope {
                 width: 280
                 height: volumePopupScope.protectionTriggered ? 130 : 100
                 radius: 12
-                color: Appearance.colors.colLayer1
-                border.color: Appearance.m3colors.m3borderSecondary
+                color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
+                border.color: Qt.rgba(1, 1, 1, 0.08)
                 border.width: 1
                 z: 10
                 layer.enabled: true
