@@ -26,6 +26,14 @@
 
   networking.hostName = "desktop";
 
+  nixpkgs.overlays = [
+    (_: prev: {
+      brave = prev.brave.override {
+        commandLineArgs = "--disable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder";
+      };
+    })
+  ];
+
   programs.ssh.startAgent = true;
 
   services.tailscale.extraSetFlags = [

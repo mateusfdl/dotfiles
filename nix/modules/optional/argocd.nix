@@ -336,7 +336,7 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
-    30022 # Gitea SSH
+    30022
   ];
 
   environment.systemPackages = with pkgs; [ argocd ];
