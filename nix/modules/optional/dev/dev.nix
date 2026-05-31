@@ -32,6 +32,7 @@
 
     mise
     jq
+    yq
     entr
     pandoc
     tectonic
