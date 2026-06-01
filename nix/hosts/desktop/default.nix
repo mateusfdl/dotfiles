@@ -26,6 +26,13 @@
 
   networking.hostName = "desktop";
 
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "backup";
+    users.matheus = import ../../modules/home;
+  };
+
   nixpkgs.overlays = [
     (_: prev: {
       brave = prev.brave.override {

@@ -16,6 +16,11 @@
       url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -26,6 +31,7 @@
       claude-desktop,
       handy,
       hunk,
+      home-manager,
       ...
     }:
     let
@@ -56,7 +62,10 @@
             hunk-pkg
             ;
         };
-        modules = [ ./hosts/desktop ];
+        modules = [
+          ./hosts/desktop
+          home-manager.nixosModules.home-manager
+        ];
       };
 
       nixosConfigurations.server = nixpkgs.lib.nixosSystem {

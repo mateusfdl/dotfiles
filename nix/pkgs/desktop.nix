@@ -46,6 +46,5 @@
     morgen
     obsidian
     spotify
-    btop
   ];
 }
