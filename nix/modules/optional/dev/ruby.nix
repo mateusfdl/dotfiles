@@ -5,5 +5,14 @@
     "$PATH"
   ];
 
-  environment.systemPackages = [ pkgs.ruby ];
+  environment.systemPackages = [
+    (pkgs.ruby.withPackages (
+      ps: with ps; [
+        rspec
+        rubocop
+        solargraph
+      ]
+    ))
+    pkgs.tmuxinator
+  ];
 }
