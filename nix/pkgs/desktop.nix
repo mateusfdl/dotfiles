@@ -1,4 +1,4 @@
-{ pkgs, claude-desktop-pkg, ... }:
+{ pkgs, claude-desktop-pkg, hunk-pkg, ... }:
 {
   environment.systemPackages = with pkgs; [
     apple-cursor
@@ -42,6 +42,7 @@
     claude-desktop-pkg
     discord
     gh
+    hunk-pkg
     morgen
     obsidian
     spotify
