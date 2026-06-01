@@ -12,6 +12,18 @@
     ./graphviz.nix
     ./flyctl.nix
     ./railway.nix
+    ./lazydocker.nix
+    ./claude-code.nix
+    ./opencode.nix
+    ./pi-coding-agent.nix
+    ./cmakelint.nix
+    ./ripgrep.nix
+    ./tokei.nix
+    ./stylua.nix
+    ./hyperfine.nix
+    ./fd.nix
+    ./sd.nix
+    ./fzf.nix
     ./zephyr.nix
   ];
 
