@@ -12,6 +12,7 @@
     ./graphviz.nix
     ./flyctl.nix
     ./railway.nix
+    ./revdiff.nix
     ./lazydocker.nix
     ./claude-code.nix
     ./opencode.nix
