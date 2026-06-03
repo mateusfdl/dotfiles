@@ -50,8 +50,6 @@ let
         "vaultwarden"
         "redis"
         "postgres"
-        "rabbitmq"
-        "glance"
         "searxng"
         "vane"
         "khoj"
