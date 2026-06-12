@@ -16,9 +16,9 @@
     ./lazydocker.nix
     ./claude-code.nix
     ./opencode.nix
-    ./pi-coding-agent.nix
     ./cmakelint.nix
     ./ripgrep.nix
+    ./eza.nix
     ./tokei.nix
     ./stylua.nix
     ./hyperfine.nix
