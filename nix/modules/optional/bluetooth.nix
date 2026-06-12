@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -7,6 +9,7 @@
       General = {
         Enable = "Source,Sink,Media,Socket";
         Experimental = true;
+        FastConnectable = true;
       };
     };
   };
