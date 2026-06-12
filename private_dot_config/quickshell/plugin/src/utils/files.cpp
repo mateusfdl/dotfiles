@@ -13,10 +13,3 @@ QString Files::trimFileProtocol(const QString &str) {
   return str;
 }
 
-QString Files::parentDirectory(const QString &str) {
-  const QString trimmed = trimFileProtocol(str);
-  if (trimmed.isEmpty()) {
-    return {};
-  }
-  return QFileInfo(trimmed).path();
-}

@@ -1,13 +1,10 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
 import qs.modules.common
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
-pragma Singleton
-pragma ComponentBehavior: Bound
 
-/**
- * A nice wrapper for default Pipewire audio sink and source.
- */
 Singleton {
     id: root
 
@@ -16,25 +13,26 @@ Singleton {
     property PwNode source: Pipewire.defaultAudioSource
     readonly property real hardMaxValue: 2.00 // People keep joking about setting volume to 5172% so...
 
-    signal sinkProtectionTriggered(string reason);
+    signal sinkProtectionTriggered(string reason)
 
     PwObjectTracker {
         objects: [sink, source]
     }
 
-    Connections { // Protection against sudden volume changes
+    Connections {
         target: sink?.audio ?? null
         property bool lastReady: false
         property real lastVolume: 0
         function onVolumeChanged() {
-            if (!Config.options.audio.protection.enable) return;
+            if (!Config.options.audio.protection.enable)
+                return;
             if (!lastReady) {
                 lastVolume = sink.audio.volume;
                 lastReady = true;
                 return;
             }
             const newVolume = sink.audio.volume;
-            const maxAllowedIncrease = Config.options.audio.protection.maxAllowedIncrease / 100; 
+            const maxAllowedIncrease = Config.options.audio.protection.maxAllowedIncrease / 100;
             const maxAllowed = Config.options.audio.protection.maxAllowed / 100;
 
             if (newVolume - lastVolume > maxAllowedIncrease) {
@@ -49,8 +47,5 @@ Singleton {
             }
             lastVolume = sink.audio.volume;
         }
-        
     }
-
 }
-

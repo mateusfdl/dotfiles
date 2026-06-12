@@ -12,7 +12,6 @@ import qs.modules.theme
 import qs.modules.topbar
 import qs.modules.wallpaper
 import qs.modules.windowswitcher
-import qs.modules.aichat
 import qs.modules.cheatsheet
 import qs.modules.obsidiantodo
 import qs.modules.dailytodos
@@ -26,7 +25,6 @@ ShellRoot {
     property bool enableLauncher: Config.options.modules.launcher
     property bool enableWallpaper: Config.options.modules.wallpaper
     property bool enableNotifications: Config.options.modules.notifications
-    property bool enableAiChat: Config.options.modules.aiChat
     property bool enableCheatsheet: Config.options.modules.cheatsheet
     property bool enableObsidianTodo: Config.options.modules.obsidianTodo
     property bool enableDailyTodos: Config.options.modules.dailyTodos
@@ -72,12 +70,6 @@ ShellRoot {
         active: enableNotifications
 
         sourceComponent: NotificationPopup {}
-    }
-
-    Loader {
-        active: enableAiChat
-
-        sourceComponent: AiChat {}
     }
 
     Loader {

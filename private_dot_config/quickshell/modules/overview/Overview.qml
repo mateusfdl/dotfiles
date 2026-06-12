@@ -143,9 +143,6 @@ Scope {
         function open() {
             GlobalStates.overviewOpen = true;
         }
-        function toggleReleaseInterrupt() {
-            GlobalStates.superReleaseMightTrigger = false;
-        }
     }
 
     GlobalShortcut {

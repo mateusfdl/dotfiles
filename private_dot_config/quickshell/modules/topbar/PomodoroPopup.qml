@@ -45,33 +45,22 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FocusedMonitorPanel {
             id: popup
 
-            required property var modelData
-
-            screen: modelData
-            visible: pomodoroPopupScope.popupVisible
-            color: "transparent"
+            requestVisible: pomodoroPopupScope.popupVisible
 
             WlrLayershell.namespace: "quickshell:pomodoro"
 
             HyprlandWindow.visibleMask: Region {
-                item: pomodoroPopupScope.popupVisible ? popupBackground : null
-            }
-
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
+                item: popup.isActive ? popupBackground : null
             }
 
             // Background overlay — click to dismiss
             MouseArea {
                 anchors.fill: parent
                 z: 0
-                enabled: pomodoroPopupScope.popupVisible
+                enabled: popup.isActive
                 onClicked: {
                     pomodoroPopupScope.hidePopup();
                 }
@@ -786,15 +775,12 @@ Scope {
                         }
                     }
                 }
-
-
-
             }
 
             Elevation {
                 anchors.fill: popupBackground
                 radius: popupBackground.radius
-                level: pomodoroPopupScope.popupVisible ? 4 : 0
+                level: popup.isActive ? 4 : 0
             }
         }
     }

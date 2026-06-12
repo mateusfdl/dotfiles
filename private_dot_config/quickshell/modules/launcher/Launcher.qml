@@ -16,6 +16,8 @@ import Quickshell.Hyprland
 Scope {
     id: launcherScope
 
+    property bool grabSuspended: false
+
     Variants {
         id: launcherVariants
         model: Quickshell.screens
@@ -52,8 +54,13 @@ Scope {
                 windows: [root]
                 active: false
                 onCleared: () => {
-                    if (!active)
-                        GlobalStates.launcherOpen = false;
+                    if (active)
+                        return;
+                    if (launcherScope.grabSuspended) {
+                        delayedGrabTimer.start();
+                        return;
+                    }
+                    GlobalStates.launcherOpen = false;
                 }
             }
 
@@ -61,6 +68,17 @@ Scope {
                 target: GlobalStates
                 function onLauncherOpenChanged() {
                     if (GlobalStates.launcherOpen) {
+                        delayedGrabTimer.start();
+                    }
+                }
+            }
+
+            Connections {
+                target: launcherScope
+                function onGrabSuspendedChanged() {
+                    if (launcherScope.grabSuspended) {
+                        grab.active = false;
+                    } else {
                         delayedGrabTimer.start();
                     }
                 }
@@ -119,6 +137,12 @@ Scope {
         }
         function open() {
             GlobalStates.launcherOpen = true;
+        }
+        function suspendGrab() {
+            launcherScope.grabSuspended = true;
+        }
+        function resumeGrab() {
+            launcherScope.grabSuspended = false;
         }
     }
 

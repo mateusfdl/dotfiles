@@ -127,8 +127,6 @@ int AudioSpectrum::fps() const { return m_fps; }
 bool AudioSpectrum::active() const { return m_active; }
 qreal AudioSpectrum::smoothing() const { return m_smoothing; }
 qreal AudioSpectrum::sensitivity() const { return m_sensitivity; }
-qreal AudioSpectrum::peak() const { return m_peak; }
-
 void AudioSpectrum::setBarCount(int count) {
   count = std::clamp(count, 2, 128);
   if (m_barCount == count)
@@ -353,7 +351,6 @@ void AudioSpectrum::processFFT() {
         std::sqrt(re * re + im * im) / FFT_SIZE;
   }
 
-  double peakVal = 0.0;
   for (int band = 0; band < m_barCount; ++band) {
     const auto [binLow, binHigh] = m_bandBins[static_cast<size_t>(band)];
 
@@ -371,7 +368,6 @@ void AudioSpectrum::processFFT() {
     val = std::clamp(val, 0.0, 1.0);
 
     m_newBars[static_cast<size_t>(band)] = val;
-    peakVal = std::max(peakVal, val);
   }
 
   bool changed = false;
@@ -401,8 +397,4 @@ void AudioSpectrum::processFFT() {
     emit barsChanged();
   }
 
-  if (!qFuzzyCompare(m_peak, peakVal)) {
-    m_peak = peakVal;
-    emit peakChanged();
-  }
 }

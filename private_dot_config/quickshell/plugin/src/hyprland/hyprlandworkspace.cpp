@@ -15,7 +15,7 @@ namespace {
 
 struct UniqueFd {
   int fd = -1;
-  explicit UniqueFd(int fd) : fd(fd) {}
+  explicit UniqueFd(int descriptor) : fd(descriptor) {}
   ~UniqueFd() {
     if (fd >= 0)
       ::close(fd);

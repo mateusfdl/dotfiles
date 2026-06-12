@@ -6,16 +6,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-/**
- * Automatically reloads generated material colors.
- * It is necessary to run reapplyTheme() on startup because Singletons are lazily loaded.
- */
 Singleton {
     id: root
     property string filePath: Directories.generatedMaterialThemePath
 
     function reapplyTheme() {
-        themeFileView.reload()
+        themeFileView.reload();
     }
 
     function applyColors(fileContent) {
@@ -27,21 +23,21 @@ Singleton {
         repeat: false
         running: false
         onTriggered: {
-            root.applyColors(themeFileView.text())
+            root.applyColors(themeFileView.text());
         }
     }
 
-	FileView { 
+    FileView {
         id: themeFileView
         path: Qt.resolvedUrl(root.filePath)
         watchChanges: true
         onFileChanged: {
-            this.reload()
-            delayedFileRead.start()
+            this.reload();
+            delayedFileRead.start();
         }
         onLoadedChanged: {
-            const fileContent = themeFileView.text()
-            root.applyColors(fileContent)
+            const fileContent = themeFileView.text();
+            root.applyColors(fileContent);
         }
     }
 }

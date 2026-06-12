@@ -8,11 +8,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-/**
- * Parses Hyprland keybind config files in pure QML.
- * Groups keybinds by section headers (# comments above bind groups).
- * Re-parses on Hyprland configreloaded events.
- */
 Singleton {
     id: root
 

@@ -19,15 +19,6 @@ QStringList ObsidianTodo::tags() const { return m_tags; }
 
 QVariantList ObsidianTodo::todos() const { return m_todos; }
 
-bool ObsidianTodo::saving() const { return m_saving; }
-
-void ObsidianTodo::setSaving(bool v) {
-  if (m_saving == v)
-    return;
-  m_saving = v;
-  emit savingChanged();
-}
-
 QString ObsidianTodo::journalPathForToday() {
   const auto date = QDate::currentDate().toString(QStringLiteral("yyyy-MM-dd"));
   return QStringLiteral("%1/Journal/%2.md")
@@ -50,8 +41,7 @@ bool ObsidianTodo::writeFileContent(const QString &path,
   return true;
 }
 
-int ObsidianTodo::findSectionEnd(const QString &content, int sectionStart) {
-  const int searchFrom = sectionStart + 6;
+int ObsidianTodo::findSectionEnd(const QString &content, int searchFrom) {
   const int separatorIdx = content.indexOf(QStringLiteral("\n___"), searchFrom);
   const int nextSectionIdx =
       content.indexOf(QStringLiteral("\n# "), searchFrom);
@@ -64,6 +54,35 @@ int ObsidianTodo::findSectionEnd(const QString &content, int sectionStart) {
     return nextSectionIdx;
 
   return content.length();
+}
+
+void ObsidianTodo::forEachTodoLine(
+    const QString &content,
+    const std::function<bool(int absLineStart,
+                             const QRegularExpressionMatch &match)> &fn) {
+  static const QRegularExpression todoLineRe(
+      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
+      QRegularExpression::MultilineOption);
+
+  static const QStringList headings = {QStringLiteral("# TODO"),
+                                       QStringLiteral("# Recurrent")};
+
+  for (const auto &heading : headings) {
+    const int headingIdx = content.indexOf(heading);
+    if (headingIdx == -1)
+      continue;
+
+    const int sectionEnd =
+        findSectionEnd(content, headingIdx + heading.length());
+    const auto section = content.mid(headingIdx, sectionEnd - headingIdx);
+
+    auto it = todoLineRe.globalMatch(section);
+    while (it.hasNext()) {
+      const auto match = it.next();
+      if (!fn(headingIdx + match.capturedStart(), match))
+        return;
+    }
+  }
 }
 
 void ObsidianTodo::fetchTags() {
@@ -133,22 +152,6 @@ void ObsidianTodo::fetchTodos() {
     return;
   }
 
-  const int todoIdx = content.indexOf(QStringLiteral("# TODO"));
-  if (todoIdx == -1) {
-    if (!m_todos.isEmpty()) {
-      m_todos.clear();
-      emit todosChanged();
-    }
-    return;
-  }
-
-  const int sectionEnd = findSectionEnd(content, todoIdx);
-  const auto todoSection = content.mid(todoIdx, sectionEnd - todoIdx);
-
-  static const QRegularExpression todoLineRe(
-      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
-      QRegularExpression::MultilineOption);
-
   static const QRegularExpression wikiLinkRe(
       QStringLiteral(R"(\[\[([^\]]+)\]\])"));
 
@@ -156,9 +159,7 @@ void ObsidianTodo::fetchTodos() {
 
   QVariantList result;
 
-  auto it = todoLineRe.globalMatch(todoSection);
-  while (it.hasNext()) {
-    const auto match = it.next();
+  forEachTodoLine(content, [&result](int, const QRegularExpressionMatch &match) {
     const auto statusMarker = match.captured(1);
     const auto fullLine = match.captured(2).trimmed();
 
@@ -183,7 +184,8 @@ void ObsidianTodo::fetchTodos() {
     entry[QStringLiteral("noteId")] = noteId;
     entry[QStringLiteral("tags")] = lineTags;
     result.append(entry);
-  }
+    return true;
+  });
 
   if (result != m_todos) {
     m_todos = std::move(result);
@@ -253,11 +255,13 @@ bool ObsidianTodo::insertIntoDailyJournal(const QString &slug,
   const auto todoLine =
       QStringLiteral("- [ ] %1 [[%2]]%3").arg(description, slug, tagStr);
 
-  const int todoIdx = content.indexOf(QStringLiteral("# TODO"));
+  const auto todoHeading = QStringLiteral("# TODO");
+  const int todoIdx = content.indexOf(todoHeading);
   if (todoIdx == -1)
     return false;
 
-  const int insertPos = findSectionEnd(content, todoIdx);
+  const int insertPos =
+      findSectionEnd(content, todoIdx + todoHeading.length());
   content.insert(insertPos, QStringLiteral("\n") + todoLine);
 
   return writeFileContent(journalPath, content);
@@ -270,7 +274,6 @@ void ObsidianTodo::saveTodo(const QString &description,
     return;
   }
 
-  setSaving(true);
 
   const auto now = QDateTime::currentDateTime();
   const auto timestamp = now.toString(QStringLiteral("yyyyMMddHHmm"));
@@ -279,18 +282,15 @@ void ObsidianTodo::saveTodo(const QString &description,
   const auto noteSlug = QStringLiteral("%1-%2").arg(timestamp, slug);
 
   if (!writeNoteFile(slug, timestamp, date, description, tags)) {
-    setSaving(false);
     emit saveFailed(QStringLiteral("Failed to write note file"));
     return;
   }
 
   if (!insertIntoDailyJournal(noteSlug, description, tags)) {
-    setSaving(false);
     emit saveFailed(QStringLiteral("Failed to insert into daily journal"));
     return;
   }
 
-  setSaving(false);
   emit saved();
 }
 
@@ -367,34 +367,28 @@ bool ObsidianTodo::setTodoStatus(int index, const QString &marker) {
   if (content.isNull())
     return false;
 
-  const int todoIdx = content.indexOf(QStringLiteral("# TODO"));
-  if (todoIdx == -1)
-    return false;
-
-  const int sectionEnd = findSectionEnd(content, todoIdx);
-  const auto todoSection = content.mid(todoIdx, sectionEnd - todoIdx);
-
-  static const QRegularExpression todoLineRe(
-      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
-      QRegularExpression::MultilineOption);
-
   int current = 0;
-  auto it = todoLineRe.globalMatch(todoSection);
-  while (it.hasNext()) {
-    const auto match = it.next();
+  int bracketContentPos = -1;
+  forEachTodoLine(content, [&current, &bracketContentPos, index](
+                               int absLineStart,
+                               const QRegularExpressionMatch &) {
     if (current == index) {
-      const int absStart = todoIdx + match.capturedStart();
-      const int bracketContentPos = absStart + 3;
-      content.replace(bracketContentPos, 1, marker);
-      if (!writeFileContent(journalPath, content))
-        return false;
-      fetchTodos();
-      return true;
+      bracketContentPos = absLineStart + 3;
+      return false;
     }
     ++current;
-  }
+    return true;
+  });
 
-  return false;
+  if (bracketContentPos == -1)
+    return false;
+
+  content.replace(bracketContentPos, 1, marker);
+  if (!writeFileContent(journalPath, content))
+    return false;
+
+  fetchTodos();
+  return true;
 }
 
 bool ObsidianTodo::appendSessionLog(const QString &noteId, int focusMinutes,

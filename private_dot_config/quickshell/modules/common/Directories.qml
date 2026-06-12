@@ -10,31 +10,14 @@ Singleton {
     readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
     readonly property string config: StandardPaths.standardLocations(StandardPaths.ConfigLocation)[0]
     readonly property string state: StandardPaths.standardLocations(StandardPaths.StateLocation)[0]
-    readonly property string cache: StandardPaths.standardLocations(StandardPaths.CacheLocation)[0]
-    readonly property string genericCache: StandardPaths.standardLocations(StandardPaths.GenericCacheLocation)[0]
-    readonly property string documents: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
-    readonly property string downloads: StandardPaths.standardLocations(StandardPaths.DownloadLocation)[0]
     readonly property string pictures: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-    readonly property string music: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
-    readonly property string videos: StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0]
 
-    property string assetsPath: Quickshell.shellPath("assets")
-    property string scriptPath: Quickshell.shellPath("scripts")
-    property string favicons: Files.trimFileProtocol(`${Directories.cache}/media/favicons`)
-    property string booruPreviews: Files.trimFileProtocol(`${Directories.cache}/media/boorus`)
-    property string latexOutput: Files.trimFileProtocol(`${Directories.cache}/media/latex`)
     property string shellConfig: Files.trimFileProtocol(`${Directories.config}/quickshell`)
-    property string shellConfigName: "config.json"
-    property string shellConfigPath: `${Directories.shellConfig}/${Directories.shellConfigName}`
-    property string notificationsPath: Files.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
+    property string shellConfigPath: `${Directories.shellConfig}/config.json`
     property string generatedMaterialThemePath: `${Directories.shellConfig}/config/theme.json`
-    property string wallpaperSwitchScriptPath: `${home}/.config/hypr/scripts/switch-theme-mode.sh`
     property string currentWallpaperScriptPath: `${home}/scripts/current_wallpaper`
 
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", `${shellConfig}`])
-        Quickshell.execDetached(["mkdir", "-p", `${favicons}`])
-        Quickshell.execDetached(["bash", "-c", `rm -rf '${booruPreviews}'; mkdir -p '${booruPreviews}'`])
-        Quickshell.execDetached(["bash", "-c", `rm -rf '${latexOutput}'; mkdir -p '${latexOutput}'`])
     }
 }

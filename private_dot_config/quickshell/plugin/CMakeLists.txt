@@ -16,7 +16,6 @@ qt_add_qml_module(qsutils
     VERSION 1.0
     SOURCES
         src/utils/colors.hpp src/utils/colors.cpp
-        src/utils/strings.hpp src/utils/strings.cpp
         src/utils/files.hpp src/utils/files.cpp
         src/utils/levendist.hpp src/utils/levendist.cpp
         src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp

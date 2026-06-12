@@ -178,7 +178,9 @@ Item {
                 }
 
                 Behavior on width {
-                    NumberAnimation { duration: 200 }
+                    NumberAnimation {
+                        duration: 200
+                    }
                 }
             }
         }

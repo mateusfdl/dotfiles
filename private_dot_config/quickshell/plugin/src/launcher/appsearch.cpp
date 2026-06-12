@@ -31,19 +31,10 @@ QVariantList AppSearchBackend::applications() const {
 
 bool AppSearchBackend::sloppySearch() const { return m_sloppySearch; }
 
-qreal AppSearchBackend::scoreThreshold() const { return m_scoreThreshold; }
-
 void AppSearchBackend::setSloppySearch(bool value) {
   if (m_sloppySearch != value) {
     m_sloppySearch = value;
     emit sloppySearchChanged();
-  }
-}
-
-void AppSearchBackend::setScoreThreshold(qreal value) {
-  if (!qFuzzyCompare(m_scoreThreshold, value)) {
-    m_scoreThreshold = value;
-    emit scoreThresholdChanged();
   }
 }
 

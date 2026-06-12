@@ -30,12 +30,9 @@ Rectangle { // Window
     property bool pressed: false
 
     property var iconToWindowRatio: 0.35
-    property var xwaylandIndicatorToIconRatio: 0.35
     property var iconToWindowRatioCompact: 0.6
     property var iconPath: Quickshell.iconPath(AppSearch.guessIcon(windowData?.class), "image-missing")
     property bool compactMode: Appearance.font.pixelSize.textSmall * 4 > targetWindowHeight || Appearance.font.pixelSize.textSmall * 4 > targetWindowWidth
-
-    property bool indicateXWayland: (Config.options.overview.showXwaylandIndicator && windowData?.xwayland) ?? false
 
     // Find the matching Toplevel for window preview using ToplevelManager
     property var toplevel: {

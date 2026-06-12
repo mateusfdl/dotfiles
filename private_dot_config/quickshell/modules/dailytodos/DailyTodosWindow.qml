@@ -4,6 +4,7 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.effects
+import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -29,25 +30,14 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FocusedMonitorPanel {
             id: todosWindow
 
-            required property var modelData
-
-            screen: modelData
-            visible: GlobalStates.dailyTodosOpen
-            color: "transparent"
+            requestVisible: GlobalStates.dailyTodosOpen
 
             WlrLayershell.namespace: "quickshell:dailytodos"
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: GlobalStates.dailyTodosOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
-            }
+            WlrLayershell.keyboardFocus: todosWindow.isActive ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
             Item {
                 anchors.fill: parent
@@ -55,7 +45,7 @@ Scope {
                 MouseArea {
                     anchors.fill: parent
                     z: 0
-                    enabled: GlobalStates.dailyTodosOpen
+                    enabled: todosWindow.isActive
                     onClicked: {
                         dailyTodosScope.closeWindow();
                     }
@@ -64,14 +54,14 @@ Scope {
                 Elevation {
                     anchors.fill: panelBackground
                     radius: panelBackground.radius
-                    level: GlobalStates.dailyTodosOpen ? 4 : 0
+                    level: todosWindow.isActive ? 4 : 0
                 }
 
                 Rectangle {
                     id: panelBackground
 
                     anchors.horizontalCenter: parent.horizontalCenter
-                    y: GlobalStates.dailyTodosOpen ? (parent.height - height) / 2 : -1000
+                    y: todosWindow.isActive ? (parent.height - height) / 2 : -1000
                     width: 700
                     height: Math.min(todosContent.implicitHeight, parent.height - 120)
 

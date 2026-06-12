@@ -14,8 +14,6 @@ public:
   explicit Levendist(QObject *parent = nullptr);
 
   Q_INVOKABLE static qreal computeScore(const QString &s1, const QString &s2);
-  Q_INVOKABLE static qreal computeTextMatchScore(const QString &s1,
-                                                 const QString &s2);
 
 private:
   static int levenshteinDistance(QStringView s1, QStringView s2);

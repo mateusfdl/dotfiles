@@ -79,44 +79,35 @@ Scope {
                 bottom: true
             }
 
-            HyprlandFocusGrab {
-                id: grab
-                windows: [menuWindow]
-                active: false
-                onCleared: () => {
-                    if (!active) sessionMenuScope.hide();
+            Rectangle {
+                anchors.fill: parent
+                color: Qt.rgba(0, 0, 0, 0.35)
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: dismissArmTimer.armed
+                    onClicked: sessionMenuScope.hide()
                 }
             }
 
             Timer {
-                id: delayedGrabTimer
-                interval: 100
+                id: dismissArmTimer
+                interval: 200
                 repeat: false
-                onTriggered: {
-                    grab.active = sessionMenuScope.menuVisible;
-                }
+                property bool armed: false
+                onTriggered: armed = true
             }
 
             Connections {
                 target: sessionMenuScope
                 function onMenuVisibleChanged() {
                     if (sessionMenuScope.menuVisible) {
-                        delayedGrabTimer.start();
+                        dismissArmTimer.armed = false;
+                        dismissArmTimer.restart();
                     } else {
-                        delayedGrabTimer.stop();
-                        grab.active = false;
+                        dismissArmTimer.stop();
+                        dismissArmTimer.armed = false;
                     }
-                }
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                color: "#000000"
-                opacity: 0.7
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: sessionMenuScope.hide()
                 }
             }
 
@@ -181,16 +172,6 @@ Scope {
                             iconColor: "#ff5555"
                             onClicked: sessionMenuScope.doShutdown()
                         }
-                    }
-
-                    Item { Layout.preferredHeight: 32 }
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "Press Escape or click outside to cancel"
-                        color: Appearance.m3colors.m3secondaryText
-                        font.pixelSize: 12
-                        font.family: Appearance.font.family.uiFont
                     }
                 }
             }

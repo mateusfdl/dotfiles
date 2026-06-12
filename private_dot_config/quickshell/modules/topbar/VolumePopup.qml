@@ -81,32 +81,21 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FocusedMonitorPanel {
             id: popup
 
-            required property var modelData
-
-            screen: modelData
-            visible: volumePopupScope.popupVisible
-            color: "transparent"
+            requestVisible: volumePopupScope.popupVisible
 
             WlrLayershell.namespace: "quickshell:volume"
 
             HyprlandWindow.visibleMask: Region {
-                item: volumePopupScope.popupVisible ? popupBackground : null
-            }
-
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
+                item: popup.isActive ? popupBackground : null
             }
 
             MouseArea {
                 anchors.fill: parent
                 z: 0
-                enabled: volumePopupScope.popupVisible
+                enabled: popup.isActive
                 onClicked: {
                     volumePopupScope.hidePopup();
                 }

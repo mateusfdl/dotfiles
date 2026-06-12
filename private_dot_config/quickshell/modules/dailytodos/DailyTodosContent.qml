@@ -41,21 +41,29 @@ FocusScope {
     }
 
     function setStatus(marker: string) {
-        if (root.todoCount === 0) return;
+        if (root.todoCount === 0)
+            return;
         const idx = root.currentIndex;
         ObsidianTodo.setTodoStatus(idx, marker);
     }
 
     function iconForStatus(s: string): string {
         switch (s) {
-            case "x": return "\uf14a";
-            case "/": return "\uf017";
-            case ">": return "\uf061";
-            case "-": return "\uf057";
-            case "?": return "\uf128";
-            case "!": return "\uf12a";
-            case " ":
-            default:  return "\uf096";
+        case "x":
+            return "\uf14a";
+        case "/":
+            return "\uf017";
+        case ">":
+            return "\uf061";
+        case "-":
+            return "\uf057";
+        case "?":
+            return "\uf128";
+        case "!":
+            return "\uf12a";
+        case " ":
+        default:
+            return "\uf096";
         }
     }
 
@@ -189,11 +197,7 @@ FocusScope {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(
-                Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7",
-                Appearance.m3colors?.m3borderSecondary ?? "#292e42",
-                0.3
-            )
+            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
             opacity: 0.5
         }
 
@@ -253,16 +257,14 @@ FocusScope {
                         Layout.fillWidth: true
                         implicitHeight: todoRow.implicitHeight + 20
                         radius: 10
-                        color: isSelected
-                            ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.82)
-                            : todoMouseArea.containsMouse
-                                ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.92)
-                                : "transparent"
+                        color: isSelected ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.82) : todoMouseArea.containsMouse ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.92) : "transparent"
                         border.width: isSelected ? 1 : 0
                         border.color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.5)
 
                         Behavior on color {
-                            ColorAnimation { duration: 120 }
+                            ColorAnimation {
+                                duration: 120
+                            }
                         }
 
                         RowLayout {
@@ -317,10 +319,7 @@ FocusScope {
                                             width: tagText.implicitWidth + 16
                                             height: tagText.implicitHeight + 6
                                             radius: 4
-                                            color: Colors.transparentize(
-                                                Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7",
-                                                0.85
-                                            )
+                                            color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.85)
 
                                             Text {
                                                 id: tagText

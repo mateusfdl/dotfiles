@@ -95,15 +95,10 @@ Singleton {
         const searchLower = search.toLowerCase();
         const desktopResults = AppSearchBackend.search(search);
 
-        const quickshellResults = quickshellApps.filter(
-            app => app.name.toLowerCase().includes(searchLower)
-                || (app.comment && app.comment.toLowerCase().includes(searchLower))
-        );
+        const quickshellResults = quickshellApps.filter(app => app.name.toLowerCase().includes(searchLower) || (app.comment && app.comment.toLowerCase().includes(searchLower)));
 
         const qsNames = new Set(quickshellResults.map(a => a.name.toLowerCase()));
-        const filtered = desktopResults.filter(
-            app => !qsNames.has((app.name ?? "").toLowerCase())
-        );
+        const filtered = desktopResults.filter(app => !qsNames.has((app.name ?? "").toLowerCase()));
 
         return [...quickshellResults, ...filtered];
     }

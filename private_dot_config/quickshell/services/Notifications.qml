@@ -6,13 +6,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 
-/**
- * Notification service that provides:
- *  - DBus notification server
- *  - Popup notifications with timeout
- *  - Notification grouping by app
- *  - Persistent storage
- */
 Singleton {
     id: root
 
@@ -51,19 +44,10 @@ Singleton {
         }
     }
 
-    property bool silent: false
-    property int unread: 0
     property list<Notif> list: []
     property var popupList: list.filter(notif => notif.popup)
-    property bool popupInhibited: silent
     property var latestTimeForApp: ({})
     property int idOffset: 0
-
-    signal initDone
-    signal notify(notification: var)
-    signal discard(id: int)
-    signal discardAll
-    signal timeout(id: var)
 
     Component {
         id: notifComponent
@@ -95,37 +79,14 @@ Singleton {
             });
             root.list = [...root.list, newNotifObject];
 
-            if (!root.popupInhibited) {
-                newNotifObject.popup = true;
-                if (notification.expireTimeout != 0) {
-                    newNotifObject.timer = notifTimerComponent.createObject(root, {
-                        "notificationId": newNotifObject.notificationId,
-                        "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout
-                    });
-                }
-                root.unread++;
+            newNotifObject.popup = true;
+            if (notification.expireTimeout != 0) {
+                newNotifObject.timer = notifTimerComponent.createObject(root, {
+                    "notificationId": newNotifObject.notificationId,
+                    "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout
+                });
             }
-
-            root.notify(newNotifObject);
         }
-    }
-
-    function notifToJSON(notif) {
-        return {
-            "notificationId": notif.notificationId,
-            "actions": notif.actions,
-            "appIcon": notif.appIcon,
-            "appName": notif.appName,
-            "body": notif.body,
-            "image": notif.image,
-            "summary": notif.summary,
-            "time": notif.time,
-            "urgency": notif.urgency
-        };
-    }
-
-    function stringifyList(list) {
-        return JSON.stringify(list.map(notif => notifToJSON(notif)), null, 2);
     }
 
     function groupsForList(list) {
@@ -151,9 +112,7 @@ Singleton {
         });
     }
 
-    property var groupsByAppName: groupsForList(root.list)
     property var popupGroupsByAppName: groupsForList(root.popupList)
-    property var appNameList: appNameListForGroups(root.groupsByAppName)
     property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
 
     onListChanged: {
@@ -169,10 +128,6 @@ Singleton {
         });
     }
 
-    function markAllRead() {
-        root.unread = 0;
-    }
-
     function discardNotification(id) {
         const index = root.list.findIndex(notif => notif.notificationId === id);
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
@@ -183,38 +138,12 @@ Singleton {
         if (notifServerIndex !== -1) {
             notifServer.trackedNotifications.values[notifServerIndex].dismiss();
         }
-        root.discard(id);
-    }
-
-    function discardAllNotifications() {
-        root.list = [];
-        triggerListChange();
-        notifServer.trackedNotifications.values.forEach(notif => {
-            notif.dismiss();
-        });
-        root.discardAll();
-    }
-
-    function cancelTimeout(id) {
-        const index = root.list.findIndex(notif => notif.notificationId === id);
-        if (root.list[index] != null)
-            root.list[index].timer.stop();
     }
 
     function timeoutNotification(id) {
         const index = root.list.findIndex(notif => notif.notificationId === id);
         if (root.list[index] != null)
             root.list[index].popup = false;
-        root.timeout(id);
-    }
-
-    function timeoutAll() {
-        root.popupList.forEach(notif => {
-            root.timeout(notif.notificationId);
-        });
-        root.popupList.forEach(notif => {
-            notif.popup = false;
-        });
     }
 
     function attemptInvokeAction(id, notifIdentifier) {
@@ -231,9 +160,5 @@ Singleton {
 
     function triggerListChange() {
         root.list = root.list.slice(0);
-    }
-
-    Component.onCompleted: {
-        root.initDone();
     }
 }

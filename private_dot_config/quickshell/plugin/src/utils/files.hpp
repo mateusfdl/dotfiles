@@ -13,5 +13,4 @@ public:
   explicit Files(QObject *parent = nullptr);
 
   Q_INVOKABLE static QString trimFileProtocol(const QString &str);
-  Q_INVOKABLE static QString parentDirectory(const QString &str);
 };

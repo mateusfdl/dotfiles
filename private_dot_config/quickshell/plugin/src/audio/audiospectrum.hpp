@@ -28,7 +28,6 @@ class AudioSpectrum : public QObject {
       qreal smoothing READ smoothing WRITE setSmoothing NOTIFY smoothingChanged)
   Q_PROPERTY(qreal sensitivity READ sensitivity WRITE setSensitivity NOTIFY
                  sensitivityChanged)
-  Q_PROPERTY(qreal peak READ peak NOTIFY peakChanged)
 
 public:
   explicit AudioSpectrum(QObject *parent = nullptr);
@@ -43,7 +42,6 @@ public:
   [[nodiscard]] bool active() const;
   [[nodiscard]] qreal smoothing() const;
   [[nodiscard]] qreal sensitivity() const;
-  [[nodiscard]] qreal peak() const;
 
   void setBarCount(int count);
   void setFps(int fps);
@@ -58,7 +56,6 @@ signals:
   void activeChanged();
   void smoothingChanged();
   void sensitivityChanged();
-  void peakChanged();
 
 private slots:
   void processFFT();
@@ -111,7 +108,6 @@ private:
 
   QVariantList m_bars;
   std::vector<double> m_smoothedBars;
-  qreal m_peak = 0.0;
 
   QTimer m_processTimer;
 };

@@ -36,11 +36,12 @@ Item {
             color: {
                 if (Pomodoro.state === Pomodoro.State.Working)
                     return Qt.rgba(1, 0.4, 0.4, 0.9);
-                    // Red for work
-                else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
-                    return Qt.rgba(0.4, 0.8, 1, 0.9);
-                    // Blue for break
                 else
+                // Red for work
+                if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
+                    return Qt.rgba(0.4, 0.8, 1, 0.9);
+                else
+                    // Blue for break
                     return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText;
             }
 

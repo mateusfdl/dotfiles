@@ -272,9 +272,9 @@ FocusScope {
 
                     function tagChipsWidth() {
                         let w = 0;
-                        for (let i = 0; i < tagRow.children.length - 1; ++i) {
+                        for (let i = 0; i < tagRow.children.length; ++i) {
                             const child = tagRow.children[i];
-                            if (child && child.width)
+                            if (child && child !== tagInput && child.width)
                                 w += child.width + tagRow.spacing;
                         }
                         return w;

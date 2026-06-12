@@ -350,52 +350,53 @@ Item {
                 }
             }
         }
+    }
 
-        Item {
-            id: flickableMask
+    Item {
+        id: flickableMask
 
-            anchors.fill: flickable
-            visible: false
-            layer.enabled: true
+        width: flickable.width
+        height: flickable.height
+        visible: false
+        layer.enabled: true
 
-            Rectangle {
-                anchors.top: parent.top
-                width: parent.width
-                height: 20
-                gradient: Gradient {
-                    GradientStop {
-                        position: 0.0
-                        color: "transparent"
-                    }
-                    GradientStop {
-                        position: 1.0
-                        color: "white"
-                    }
+        Rectangle {
+            anchors.top: parent.top
+            width: parent.width
+            height: 20
+            gradient: Gradient {
+                GradientStop {
+                    position: 0.0
+                    color: "transparent"
+                }
+                GradientStop {
+                    position: 1.0
+                    color: "white"
                 }
             }
+        }
 
-            Rectangle {
-                anchors.top: parent.top
-                anchors.topMargin: 20
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                width: parent.width
-                color: "white"
-            }
+        Rectangle {
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            width: parent.width
+            color: "white"
+        }
 
-            Rectangle {
-                anchors.bottom: parent.bottom
-                width: parent.width
-                height: 20
-                gradient: Gradient {
-                    GradientStop {
-                        position: 0.0
-                        color: "white"
-                    }
-                    GradientStop {
-                        position: 1.0
-                        color: "transparent"
-                    }
+        Rectangle {
+            anchors.bottom: parent.bottom
+            width: parent.width
+            height: 20
+            gradient: Gradient {
+                GradientStop {
+                    position: 0.0
+                    color: "white"
+                }
+                GradientStop {
+                    position: 1.0
+                    color: "transparent"
                 }
             }
         }

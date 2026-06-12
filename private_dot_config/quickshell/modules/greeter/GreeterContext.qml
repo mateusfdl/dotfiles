@@ -78,15 +78,6 @@ Scope {
         loginInProgress = false;
     }
 
-    // Cancel any active session and reset
-    function resetSession() {
-        if (Greetd.state === GreetdState.Authenticating || Greetd.state === GreetdState.ReadyToLaunch) {
-            Greetd.cancelSession();
-        }
-        clearPassword();
-        loginSucceeded = false;
-    }
-
     // ===== Greetd signal handlers =====
     Connections {
         target: Greetd
@@ -103,7 +94,7 @@ Scope {
                 // greetd wants the password - send it
                 Greetd.respond(root.currentText);
             }
-        // If no response required, it's just an informational message
+            // If no response required, it's just an informational message
         }
 
         // Authentication succeeded - session is ready to launch

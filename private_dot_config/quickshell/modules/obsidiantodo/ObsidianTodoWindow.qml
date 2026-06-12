@@ -4,6 +4,7 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.effects
+import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -29,25 +30,14 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FocusedMonitorPanel {
             id: todoWindow
 
-            required property var modelData
-
-            screen: modelData
-            visible: GlobalStates.obsidianTodoOpen
-            color: "transparent"
+            requestVisible: GlobalStates.obsidianTodoOpen
 
             WlrLayershell.namespace: "quickshell:obsidiantodo"
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: GlobalStates.obsidianTodoOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
-            }
+            WlrLayershell.keyboardFocus: todoWindow.isActive ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
             Item {
                 id: keyHandler
@@ -56,7 +46,7 @@ Scope {
                 MouseArea {
                     anchors.fill: parent
                     z: 0
-                    enabled: GlobalStates.obsidianTodoOpen
+                    enabled: todoWindow.isActive
                     onClicked: {
                         obsidianTodoScope.closeWindow();
                     }
@@ -65,14 +55,14 @@ Scope {
                 Elevation {
                     anchors.fill: panelBackground
                     radius: panelBackground.radius
-                    level: GlobalStates.obsidianTodoOpen ? 4 : 0
+                    level: todoWindow.isActive ? 4 : 0
                 }
 
                 Rectangle {
                     id: panelBackground
 
                     anchors.horizontalCenter: parent.horizontalCenter
-                    y: GlobalStates.obsidianTodoOpen ? (parent.height - height) / 2 : -1000
+                    y: todoWindow.isActive ? (parent.height - height) / 2 : -1000
                     width: 950
                     height: todoContent.implicitHeight
 

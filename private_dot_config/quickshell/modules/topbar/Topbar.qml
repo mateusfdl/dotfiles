@@ -116,10 +116,6 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                         }
 
-                        Topbar.AiChatIndicator {
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
                         Topbar.ControlCenter {
                             Layout.alignment: Qt.AlignVCenter
                         }

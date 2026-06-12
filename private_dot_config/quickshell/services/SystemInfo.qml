@@ -7,11 +7,29 @@ Singleton {
     id: root
 
     property int volume: 100
-    property bool volumeMuted: false
     property string distroName: "Unknown"
     property string distroId: "unknown"
-    property string uptime: "0:00"
+    property string uptime: ""
     property string username: "user"
+
+    function formatUptime(seconds) {
+        if (!seconds || seconds < 60)
+            return "less than a minute";
+
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+
+        const parts = [];
+        if (days > 0)
+            parts.push(days + "d");
+        if (hours > 0)
+            parts.push(hours + "h");
+        if (mins > 0 || parts.length === 0)
+            parts.push(mins + "m");
+
+        return parts.join(" ");
+    }
 
     Timer {
         triggeredOnStart: true
@@ -20,8 +38,8 @@ Singleton {
         repeat: false
         onTriggered: {
             getUsername.running = true;
-            getUptime.running = true;
             fileOsRelease.reload();
+            fileProcUptime.reload();
             const textOsRelease = fileOsRelease.text();
             const prettyNameMatch = textOsRelease.match(/^PRETTY_NAME="(.+?)"/m);
             const nameMatch = textOsRelease.match(/^NAME="(.+?)"/m);
@@ -29,6 +47,13 @@ Singleton {
             const idMatch = textOsRelease.match(/^ID="?(.+?)"?$/m);
             parent.distroId = idMatch ? idMatch[1] : "unknown";
         }
+    }
+
+    Timer {
+        interval: 60000
+        running: true
+        repeat: true
+        onTriggered: fileProcUptime.reload()
     }
 
     Process {
@@ -49,15 +74,14 @@ Singleton {
         path: "/etc/os-release"
     }
 
-    Process {
-        id: getUptime
+    FileView {
+        id: fileProcUptime
 
-        command: ["uptime", "-p"]
-
-        stdout: SplitParser {
-            onRead: data => {
-                root.uptime = data.replace(/up/, "").trim();
-            }
+        path: "/proc/uptime"
+        onLoaded: {
+            const text = fileProcUptime.text();
+            const seconds = parseInt(text.split(" ")[0], 10);
+            root.uptime = root.formatUptime(seconds);
         }
     }
 }

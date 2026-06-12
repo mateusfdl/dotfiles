@@ -37,8 +37,6 @@ Singleton {
         currentThemeMode = Config.options.ui.theme;
     }
 
-    readonly property var currentThemeColors: themeData?.[currentThemeMode]
-
     function loadThemeFromText(text) {
         try {
             root.themeData = JSON.parse(text);
@@ -82,55 +80,39 @@ Singleton {
         readonly property color m3borderPrimary: root._colors?.borderPrimary ?? "#7aa2f7"
         readonly property color m3shadowColor: root._colors?.shadowColor ?? "#000000"
         readonly property color m3accentPrimary: root._colors?.accentPrimary ?? "#7dcfff"
-        readonly property color m3accentSecondary: root._colors?.accentSecondary ?? "#bb9af7"
         readonly property color m3selectionBackground: root._colors?.selectionBackground ?? "#33467c"
         readonly property color m3accentPrimaryText: root._colors?.accentPrimaryText ?? "#1a1b26"
         readonly property color m3selectionText: root._colors?.selectionText ?? "#c0caf5"
         readonly property color m3borderSecondary: root._colors?.borderSecondary ?? "#414868"
 
         readonly property color m3outline: Colors.mix(m3borderPrimary, m3windowBackground, 0.5)
-        readonly property color m3outlineVariant: Colors.mix(m3borderSecondary, m3windowBackground, 0.6)
-        readonly property color m3surface: m3windowBackground
         readonly property color m3onSurface: m3primaryText
         readonly property color m3onPrimary: m3accentPrimaryText
         readonly property color m3onSecondaryContainer: Colors.mix(m3accentPrimary, m3windowBackground, 0.3)
         readonly property color m3primary: m3accentPrimary
-        readonly property color m3surfaceContainerLow: Colors.mix(m3layerBackground1, m3windowBackground, 0.6)
-        readonly property color m3secondaryContainer: Colors.transparentize(Colors.mix(m3layerBackground2, m3accentSecondary, 0.7), 0.4)
 
         readonly property color colTooltip: darkmode ? "#1f2335" : "#F4F0D9"
         readonly property color colOnTooltip: darkmode ? "#c0caf5" : "#5C6A72"
     }
 
     readonly property QtObject colors: QtObject {
-        readonly property color colSubtext: m3colors.m3borderPrimary
         readonly property color colBackground: m3colors.m3windowBackground
         readonly property real transparency: theme.transparency?.background || 0.5
         readonly property real contentTransparency: theme.transparency?.content || 0.1
-        readonly property real workspaceTransparency: theme.transparency?.workspace || 0.8
 
         readonly property color colLayer0: Colors.transparentize(m3colors.m3windowBackground, transparency)
-        readonly property color colOnLayer0: m3colors.m3primaryText
         readonly property color colLayer1: Colors.mix(m3colors.m3layerBackground1, m3colors.m3windowBackground, 1)
         readonly property color colOnLayer1: m3colors.m3secondaryText
         readonly property color colLayer2: Colors.transparentize(Colors.mix(m3colors.m3layerBackground2, m3colors.m3layerBackground3, 0.55), contentTransparency)
         readonly property color colOnLayer2: m3colors.m3surfaceText
         readonly property color colLayer1Hover: Colors.transparentize(Colors.mix(colLayer1, colOnLayer1, 0.92), contentTransparency)
-        readonly property color colLayer1Active: Colors.transparentize(Colors.mix(colLayer1, colOnLayer1, 0.85), contentTransparency)
         readonly property color colLayer2Hover: Colors.transparentize(Colors.mix(colLayer2, colOnLayer2, 0.90), contentTransparency)
         readonly property color colLayer2Active: Colors.transparentize(Colors.mix(colLayer2, colOnLayer2, 0.80), contentTransparency)
         readonly property color colPrimary: m3colors.m3accentPrimary
-        readonly property color colPrimaryHover: Colors.mix(colors.colPrimary, colLayer1Hover, 0.87)
-        readonly property color colPrimaryActive: Colors.mix(colors.colPrimary, colLayer1Active, 0.7)
         readonly property color colShadow: Colors.transparentize(m3colors.m3shadowColor, 0.7)
 
         readonly property color colSecondaryContainer: Colors.transparentize(Colors.mix(m3colors.m3layerBackground2, m3colors.m3accentPrimary, 0.85), 0.5)
         readonly property color colSurfaceContainerHighest: Colors.transparentize(Colors.mix(m3colors.m3layerBackground3, m3colors.m3windowBackground, 0.5), 0.3)
-        readonly property color colPrimaryContainer: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.7), 0.4)
-        readonly property color colPrimaryContainerHover: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.6), 0.3)
-        readonly property color colPrimaryContainerActive: Colors.transparentize(Colors.mix(m3colors.m3accentPrimary, m3colors.m3windowBackground, 0.5), 0.2)
-        readonly property color colOnPrimaryContainer: m3colors.m3accentPrimaryText
-        readonly property color colOnSecondaryContainer: m3colors.m3primaryText
     }
 
     readonly property QtObject rounding: QtObject {
@@ -144,19 +126,6 @@ Singleton {
         readonly property int verylarge: theme.rounding?.verylarge ?? 30
         readonly property int veryverylarge: theme.rounding?.veryverylarge ?? 60
         readonly property int full: theme.rounding?.full ?? 9999
-        readonly property int screenRounding: getRoundingValue(theme.rounding?.screen) ?? veryverylarge
-        readonly property int windowRounding: getRoundingValue(theme.rounding?.window) ?? veryverylarge
-
-        function getRoundingValue(key) {
-            if (!key)
-                return null;
-            if (typeof key === 'number')
-                return key;
-            if (theme.rounding && theme.rounding[key] !== undefined) {
-                return theme.rounding[key];
-            }
-            return null;
-        }
     }
 
     readonly property QtObject font: QtObject {
@@ -320,11 +289,6 @@ Singleton {
     }
 
     readonly property QtObject color: QtObject {
-        readonly property color surfaceContainer: colors.colLayer2
-        readonly property color onSurface: colors.colOnLayer2
-        readonly property color onSurfaceVariant: colors.colOnLayer1
-        readonly property color surface: colors.colLayer0
         readonly property color primary: colors.colPrimary
-        readonly property color onPrimary: m3colors.m3accentPrimaryText
     }
 }

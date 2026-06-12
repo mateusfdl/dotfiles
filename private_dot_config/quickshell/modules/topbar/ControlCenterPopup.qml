@@ -43,32 +43,21 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FocusedMonitorPanel {
             id: popup
 
-            required property var modelData
-
-            screen: modelData
-            visible: controlCenterScope.popupVisible
-            color: "transparent"
+            requestVisible: controlCenterScope.popupVisible
 
             WlrLayershell.namespace: "quickshell:controlcenter"
 
             HyprlandWindow.visibleMask: Region {
-                item: controlCenterScope.popupVisible ? panelBackground : null
-            }
-
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
+                item: popup.isActive ? panelBackground : null
             }
 
             MouseArea {
                 anchors.fill: parent
                 z: 0
-                enabled: controlCenterScope.popupVisible
+                enabled: popup.isActive
                 onClicked: {
                     controlCenterScope.hidePopup();
                 }
@@ -194,29 +183,42 @@ Scope {
 
                             RowLayout {
                                 Layout.fillWidth: true
-                                spacing: 8
+                                spacing: 12
 
                                 MaterialSymbol {
-                                    text: "wb_sunny"
-                                    iconSize: 28
+                                    text: Weather.loaded ? Weather.iconFor(Weather.currentCode, Weather.isDay) : "cloud_queue"
+                                    iconSize: 32
                                     fill: 1
-                                    color: Qt.rgba(1, 0.8, 0.2, 1)
+                                    color: Weather.loaded ? Weather.colorFor(Weather.currentCode, Weather.isDay) : Appearance.m3colors.m3secondaryText
                                 }
 
                                 ColumnLayout {
-                                    Layout.fillWidth: true
                                     spacing: 2
 
                                     StyledText {
-                                        text: "Weather"
+                                        text: Weather.loaded ? (Weather.city || "Weather") : "Weather"
                                         font.pixelSize: 14
                                         font.weight: Font.Medium
                                         color: Appearance.m3colors.m3secondaryText
+                                        elide: Text.ElideRight
+                                    }
+
+                                    StyledText {
+                                        text: Weather.loaded ? Weather.descriptionFor(Weather.currentCode) : (Weather.error ? "Unavailable" : "Loading…")
+                                        font.pixelSize: 11
+                                        color: Appearance.m3colors.m3surfaceText
+                                        elide: Text.ElideRight
+                                        visible: Weather.loaded || Weather.error !== ""
                                     }
                                 }
 
+                                Item {
+                                    Layout.fillWidth: true
+                                }
+
                                 StyledText {
-                                    text: "20°C"
+                                    Layout.alignment: Qt.AlignVCenter
+                                    text: Weather.loaded ? Math.round(Weather.currentTemp) + "°C" : "--°"
                                     font.pixelSize: 36
                                     font.weight: Font.Bold
                                     color: Appearance.m3colors.m3primaryText
@@ -228,9 +230,13 @@ Scope {
                                 spacing: 8
 
                                 Repeater {
-                                    model: ["Mon", "Tue", "Wed", "Thu", "Fri"]
+                                    model: Weather.forecast
 
                                     Rectangle {
+                                        id: dayCard
+
+                                        required property var modelData
+
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 70
                                         radius: 8
@@ -242,22 +248,22 @@ Scope {
 
                                             StyledText {
                                                 Layout.alignment: Qt.AlignHCenter
-                                                text: modelData
+                                                text: dayCard.modelData.weekday
                                                 font.pixelSize: 11
                                                 color: Appearance.m3colors.m3surfaceText
                                             }
 
                                             MaterialSymbol {
                                                 Layout.alignment: Qt.AlignHCenter
-                                                text: "cloud"
+                                                text: Weather.iconFor(dayCard.modelData.code, true)
                                                 iconSize: 20
                                                 fill: 1
-                                                color: Appearance.m3colors.m3secondaryText
+                                                color: Weather.colorFor(dayCard.modelData.code, true)
                                             }
 
                                             StyledText {
                                                 Layout.alignment: Qt.AlignHCenter
-                                                text: "18°"
+                                                text: dayCard.modelData.max + "°"
                                                 font.pixelSize: 12
                                                 font.weight: Font.Medium
                                                 color: Appearance.m3colors.m3surfaceText
@@ -266,6 +272,12 @@ Scope {
                                     }
                                 }
                             }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Weather.refresh()
                         }
                     }
 
@@ -315,31 +327,41 @@ Scope {
                                 Layout.fillWidth: true
                                 spacing: 12
 
-                                Rectangle {
+                                Item {
                                     Layout.preferredWidth: 80
                                     Layout.preferredHeight: 80
-                                    radius: 10
-                                    color: Appearance.m3colors.m3layerBackground3
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        radius: 10
+                                        color: Qt.rgba(0.15, 0.15, 0.18, 0.6)
+                                    }
 
                                     Image {
                                         id: albumArt
-
                                         anchors.fill: parent
-                                        source: MediaPlayer.hasActivePlayer ? MediaPlayer.artUrl : ""
+                                        source: MediaPlayer.artUrl
                                         fillMode: Image.PreserveAspectCrop
+                                        sourceSize.width: 160
+                                        sourceSize.height: 160
                                         smooth: true
                                         asynchronous: true
-                                        visible: MediaPlayer.hasActivePlayer && status === Image.Ready
+                                        visible: false
+                                    }
+
+                                    Rectangle {
+                                        id: albumMask
+                                        anchors.fill: parent
+                                        radius: 10
+                                        visible: false
                                         layer.enabled: true
+                                    }
 
-                                        layer.effect: OpacityMask {
-
-                                            maskSource: Rectangle {
-                                                width: albumArt.width
-                                                height: albumArt.height
-                                                radius: 10
-                                            }
-                                        }
+                                    OpacityMask {
+                                        anchors.fill: parent
+                                        source: albumArt
+                                        maskSource: albumMask
+                                        visible: albumArt.status === Image.Ready
                                     }
 
                                     MaterialSymbol {
@@ -348,7 +370,7 @@ Scope {
                                         iconSize: 40
                                         fill: 1
                                         color: Appearance.m3colors.m3secondaryText
-                                        visible: !MediaPlayer.hasActivePlayer || albumArt.status !== Image.Ready
+                                        visible: albumArt.status !== Image.Ready
                                     }
                                 }
 
@@ -660,15 +682,12 @@ Scope {
                         }
                     }
                 }
-
-
-
             }
 
             Elevation {
                 anchors.fill: panelBackground
                 radius: panelBackground.radius
-                level: controlCenterScope.popupVisible ? 4 : 0
+                level: popup.isActive ? 4 : 0
             }
         }
     }

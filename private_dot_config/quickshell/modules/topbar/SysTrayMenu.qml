@@ -13,7 +13,6 @@ Scope {
     required property QsMenuHandle trayItemMenuHandle
     required property var trayItem
     property bool menuVisible: false
-    property real menuX: 0
     property real menuY: 0
     property real iconRightX: 0
 

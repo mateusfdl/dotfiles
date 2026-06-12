@@ -24,12 +24,10 @@ Item {
     property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor.id)
     property var monitorWorkspaceIds: HyprlandData.workspaces.filter(ws => ws.monitorID === root.monitor.id).map(ws => ws.id)
     property real scale: Config.options.overview.scale
-    property color activeBorderColor: Appearance.m3colors.m3accentSecondary
 
     property real workspaceImplicitWidth: Math.max(100, (monitorData?.transform % 2 === 1) ? ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) : ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale))
     property real workspaceImplicitHeight: Math.max(60, (monitorData?.transform % 2 === 1) ? ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) : ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale))
 
-    property real workspaceNumberMargin: 80
     property real workspaceNumberSize: (Config.options.overview.workspaceNumberSize > 0) ? Config.options.overview.workspaceNumberSize : Math.min(workspaceImplicitHeight, workspaceImplicitWidth) * monitor.scale
     property int workspaceZ: 0
     property int windowZ: 1
@@ -41,9 +39,6 @@ Item {
 
     implicitWidth: overviewBackground.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: overviewBackground.implicitHeight + Appearance.sizes.elevationMargin * 2
-
-    property Component windowComponent: OverviewWindow {}
-    property list<OverviewWindow> windowWidgets: []
 
     // Refresh wallpaper path from swww when overview becomes visible
     onVisibleChanged: {
@@ -59,7 +54,6 @@ Item {
         cache: true
         asynchronous: true
         smooth: true
-        opacity: Appearance.workpaceTransparency ?? 1.0
     }
 
     StyledRectangularShadow {
@@ -94,8 +88,6 @@ Item {
                     property int workspaceValue: modelData
                     property string workspaceName: HyprlandData.workspaceById[workspaceValue]?.name ?? String(workspaceValue)
                     property color defaultWorkspaceColor: Appearance.colors.colLayer1
-                    property color hoveredWorkspaceColor: Colors.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
-                    property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                     property bool hoveredWhileDragging: false
                     readonly property int padding: Config.options.overview.windowPadding
                     property int workspaceIndex: {

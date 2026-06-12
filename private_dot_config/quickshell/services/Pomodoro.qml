@@ -6,13 +6,6 @@ import Quickshell.Io
 import qs.modules.common
 import QsUtils
 
-/**
- * Pomodoro timer service with work/break intervals.
- * - Reads initial durations from Config.options.time.pomodoro
- * - Logs every session event as JSONL to ~/.local/state/quickshell/pomodoro-sessions.jsonl
- * - After a break finishes the timer goes to Idle (user must click Start again)
- * - Optional lockOnBreak flag shows a fullscreen overlay during breaks
- */
 Singleton {
     id: root
 
@@ -27,7 +20,6 @@ Singleton {
     property var _sessionEvents: []
     property int _totalBreakSeconds: 0
     property int _totalFocusSeconds: 0
-    property real _breakStartEpoch: 0
 
     enum State {
         Idle,

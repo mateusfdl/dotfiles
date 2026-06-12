@@ -94,7 +94,7 @@ Rectangle {
 
     Process {
         id: wallpaperProcess
-        command: ["sh", "-c", "swww img '" + root.wallpaperToApply + "'" + " --transition-bezier .43,1.19,1,.4" + " --transition-fps 144" + " --transition-type grow" + " --transition-pos 0.925,0.977" + " --transition-duration 1"]
+        command: ["awww", "img", root.wallpaperToApply, "--transition-bezier", ".43,1.19,1,.4", "--transition-fps", "144", "--transition-type", "grow", "--transition-pos", "0.925,0.977", "--transition-duration", "1"]
     }
 
     ColumnLayout {
@@ -290,6 +290,8 @@ Rectangle {
                             event.accepted = false;
                         }
                     }
+
+                    onAccepted: root.applyCurrentWallpaper()
                 }
 
                 StyledText {

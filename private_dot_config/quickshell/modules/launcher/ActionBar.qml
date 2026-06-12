@@ -50,7 +50,9 @@ Item {
             }
         }
 
-        Item { Layout.fillWidth: true }
+        Item {
+            Layout.fillWidth: true
+        }
 
         // Right side: shortcut badges
         Row {

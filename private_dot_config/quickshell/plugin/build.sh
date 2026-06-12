@@ -27,10 +27,12 @@ if [ -d /nix/store ]; then
     fi
 fi
 
+CXX_COMPILER="$(command -v clang++ || command -v g++)"
+
 cmake -B "${BUILD_DIR}" -S "${SCRIPT_DIR}" \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_CXX_COMPILER="${CXX_COMPILER}" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     "${CMAKE_EXTRA_ARGS[@]}"
 

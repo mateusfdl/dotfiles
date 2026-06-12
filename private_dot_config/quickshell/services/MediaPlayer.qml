@@ -5,10 +5,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
 
-/**
- * Media Player service using MPRIS
- * Provides access to currently playing media and player controls
- */
 Singleton {
     id: root
 
@@ -35,7 +31,6 @@ Singleton {
 
     readonly property bool isPlaying: playbackState === MprisPlaybackState.Playing
     readonly property bool isPaused: playbackState === MprisPlaybackState.Paused
-    readonly property bool isStopped: playbackState === MprisPlaybackState.Stopped
 
     property MprisPlayer trackedPlayer: null
 

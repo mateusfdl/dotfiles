@@ -21,18 +21,14 @@ class AppSearchBackend : public QObject {
       QVariantList applications READ applications NOTIFY applicationsChanged)
   Q_PROPERTY(bool sloppySearch READ sloppySearch WRITE setSloppySearch NOTIFY
                  sloppySearchChanged)
-  Q_PROPERTY(qreal scoreThreshold READ scoreThreshold WRITE setScoreThreshold
-                 NOTIFY scoreThresholdChanged)
 
 public:
   explicit AppSearchBackend(QObject *parent = nullptr);
 
   [[nodiscard]] QVariantList applications() const;
   [[nodiscard]] bool sloppySearch() const;
-  [[nodiscard]] qreal scoreThreshold() const;
 
   void setSloppySearch(bool value);
-  void setScoreThreshold(qreal value);
 
   Q_INVOKABLE QVariantList search(const QString &query) const;
   Q_INVOKABLE void launch(const QVariantMap &entry) const;
@@ -42,7 +38,6 @@ public:
 signals:
   void applicationsChanged();
   void sloppySearchChanged();
-  void scoreThresholdChanged();
 
 private:
   struct DesktopApp {
