@@ -7,9 +7,13 @@
     powerOnBoot = true;
     settings = {
       General = {
+        ControllerMode = "dual";
         Enable = "Source,Sink,Media,Socket";
         Experimental = true;
         FastConnectable = true;
+      };
+      Policy = {
+        AutoEnable = true;
       };
     };
   };

@@ -6,6 +6,8 @@
     ../../modules/optional/audio.nix
     ../../modules/optional/blender.nix
     ../../modules/optional/bluetooth.nix
+    ../../modules/optional/desktop-reliability.nix
+    ../../modules/optional/firewall.nix
     ../../modules/optional/fonts.nix
     ../../modules/optional/greetd.nix
     ../../modules/optional/handy.nix

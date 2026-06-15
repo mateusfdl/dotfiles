@@ -2,9 +2,7 @@
 {
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [
-      22
-    ];
+    allowedTCPPorts = [ ];
     allowedUDPPorts = [
       config.services.tailscale.port
     ];

@@ -12,6 +12,7 @@
     open = false;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+    powerManagement.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
