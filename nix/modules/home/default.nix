@@ -4,6 +4,7 @@
     ./lazygit.nix
     ./bat.nix
     ./btop.nix
+    ./chezmoi.nix
     ./cli.nix
     ./direnv.nix
     ./git.nix
