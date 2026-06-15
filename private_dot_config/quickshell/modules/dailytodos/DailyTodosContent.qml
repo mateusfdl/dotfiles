@@ -68,6 +68,7 @@ FocusScope {
     }
 
     onTodoCountChanged: clampIndex()
+    onCurrentIndexChanged: todoListView.positionViewAtIndex(root.currentIndex, ListView.Contain)
 
     onIsOpenChanged: {
         if (isOpen) {
@@ -201,16 +202,13 @@ FocusScope {
             opacity: 0.5
         }
 
-        // Todo list
         Item {
             Layout.fillWidth: true
             Layout.topMargin: 16
             Layout.fillHeight: false
-            implicitHeight: Math.max(todoListColumn.implicitHeight, emptyState.visible ? 120 : 0)
+            implicitHeight: ObsidianTodo.todos.length === 0 ? 120 : Math.min(todoListView.contentHeight, 420)
 
-            // Empty state
             ColumnLayout {
-                id: emptyState
                 anchors.centerIn: parent
                 spacing: 12
                 visible: ObsidianTodo.todos.length === 0
@@ -235,115 +233,115 @@ FocusScope {
                 }
             }
 
-            // Todo items
-            ColumnLayout {
-                id: todoListColumn
-                anchors.left: parent.left
-                anchors.right: parent.right
+            ListView {
+                id: todoListView
+                anchors.fill: parent
                 spacing: 4
+                clip: true
+                model: ObsidianTodo.todos
                 visible: ObsidianTodo.todos.length > 0
+                boundsBehavior: Flickable.StopAtBounds
+                interactive: contentHeight > height
+                currentIndex: root.currentIndex
 
-                Repeater {
-                    model: ObsidianTodo.todos
+                ScrollBar.vertical: ScrollBar {
+                    policy: todoListView.contentHeight > todoListView.height ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+                }
 
-                    Rectangle {
-                        id: todoItem
+                delegate: Rectangle {
+                    id: todoItem
 
-                        required property var modelData
-                        required property int index
+                    required property var modelData
+                    required property int index
 
-                        readonly property bool isSelected: index === root.currentIndex
+                    readonly property bool isSelected: index === root.currentIndex
 
-                        Layout.fillWidth: true
-                        implicitHeight: todoRow.implicitHeight + 20
-                        radius: 10
-                        color: isSelected ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.82) : todoMouseArea.containsMouse ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.92) : "transparent"
-                        border.width: isSelected ? 1 : 0
-                        border.color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.5)
+                    width: ListView.view.width
+                    height: todoRow.implicitHeight + 20
+                    radius: 10
+                    color: isSelected ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.82) : todoMouseArea.containsMouse ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.92) : "transparent"
+                    border.width: isSelected ? 1 : 0
+                    border.color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.5)
 
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: 120
-                            }
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: 120
+                        }
+                    }
+
+                    RowLayout {
+                        id: todoRow
+                        anchors {
+                            fill: parent
+                            leftMargin: 14
+                            rightMargin: 14
+                            topMargin: 10
+                            bottomMargin: 10
+                        }
+                        spacing: 14
+
+                        Text {
+                            readonly property string status: todoItem.modelData.status || " "
+                            text: root.iconForStatus(status)
+                            font.family: root.fontFamily
+                            font.pixelSize: 18
+                            color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                            opacity: status !== " " ? 1.0 : 0.7
+                            renderType: Text.NativeRendering
+                            Layout.alignment: Qt.AlignTop
                         }
 
-                        RowLayout {
-                            id: todoRow
-                            anchors {
-                                fill: parent
-                                leftMargin: 14
-                                rightMargin: 14
-                                topMargin: 10
-                                bottomMargin: 10
-                            }
-                            spacing: 14
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 6
 
-                            // Checkbox icon
                             Text {
-                                readonly property string status: todoItem.modelData.status || " "
-                                text: root.iconForStatus(status)
+                                Layout.fillWidth: true
+                                text: todoItem.modelData.description || ""
                                 font.family: root.fontFamily
-                                font.pixelSize: 18
-                                color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
-                                opacity: status !== " " ? 1.0 : 0.7
+                                font.pixelSize: 16
+                                color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                                wrapMode: Text.WordWrap
                                 renderType: Text.NativeRendering
-                                Layout.alignment: Qt.AlignTop
                             }
 
-                            // Description + tags
-                            ColumnLayout {
-                                Layout.fillWidth: true
+                            Row {
                                 spacing: 6
+                                visible: todoItem.modelData.tags && todoItem.modelData.tags.length > 0
 
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: todoItem.modelData.description || ""
-                                    font.family: root.fontFamily
-                                    font.pixelSize: 16
-                                    color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
-                                    wrapMode: Text.WordWrap
-                                    renderType: Text.NativeRendering
-                                }
+                                Repeater {
+                                    model: todoItem.modelData.tags || []
 
-                                // Tags row
-                                Row {
-                                    spacing: 6
-                                    visible: todoItem.modelData.tags && todoItem.modelData.tags.length > 0
+                                    Rectangle {
+                                        required property var modelData
 
-                                    Repeater {
-                                        model: todoItem.modelData.tags || []
+                                        width: tagText.implicitWidth + 16
+                                        height: tagText.implicitHeight + 6
+                                        radius: 4
+                                        color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.85)
 
-                                        Rectangle {
-                                            required property var modelData
-
-                                            width: tagText.implicitWidth + 16
-                                            height: tagText.implicitHeight + 6
-                                            radius: 4
-                                            color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.85)
-
-                                            Text {
-                                                id: tagText
-                                                anchors.centerIn: parent
-                                                text: "#" + parent.modelData
-                                                font.family: root.fontFamily
-                                                font.pixelSize: 12
-                                                color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
-                                                renderType: Text.NativeRendering
-                                            }
+                                        Text {
+                                            id: tagText
+                                            anchors.centerIn: parent
+                                            text: "#" + parent.modelData
+                                            font.family: root.fontFamily
+                                            font.pixelSize: 12
+                                            color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                                            renderType: Text.NativeRendering
                                         }
                                     }
                                 }
                             }
                         }
+                    }
 
-                        MouseArea {
-                            id: todoMouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                root.currentIndex = todoItem.index;
-                            }
+                    MouseArea {
+                        id: todoMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            root.currentIndex = todoItem.index;
                         }
                     }
                 }

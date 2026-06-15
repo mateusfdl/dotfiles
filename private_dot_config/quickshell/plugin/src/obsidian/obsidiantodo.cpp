@@ -1,15 +1,11 @@
 #include "obsidiantodo.hpp"
 
-#include <QDate>
-#include <QDateTime>
-#include <QDir>
-#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRegularExpression>
-#include <QTextStream>
-#include <QTime>
+#include <QStringList>
+#include <QVariantMap>
 
 #include <algorithm>
 
@@ -19,376 +15,253 @@ QStringList ObsidianTodo::tags() const { return m_tags; }
 
 QVariantList ObsidianTodo::todos() const { return m_todos; }
 
-QString ObsidianTodo::journalPathForToday() {
-  const auto date = QDate::currentDate().toString(QStringLiteral("yyyy-MM-dd"));
-  return QStringLiteral("%1/Journal/%2.md")
-      .arg(QLatin1String(VAULT_PATH), date);
+QStringList ObsidianTodo::taskArguments(const QStringList &arguments) {
+  QStringList result;
+  result.append(arguments);
+  return result;
 }
 
-QString ObsidianTodo::readFileContent(const QString &path) {
-  QFile file(path);
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+QProcess *ObsidianTodo::startTask(QObject *parent,
+                                  const QStringList &arguments) {
+  auto *proc = new QProcess(parent);
+  proc->setProgram(QString::fromLatin1(TASKWARRIOR_BIN));
+  proc->setArguments(taskArguments(arguments));
+  proc->start(QProcess::ReadOnly);
+  return proc;
+}
+
+QByteArray ObsidianTodo::runTask(const QStringList &arguments, bool *ok) {
+  QProcess proc;
+  proc.setProgram(QString::fromLatin1(TASKWARRIOR_BIN));
+  proc.setArguments(taskArguments(arguments));
+  proc.start(QProcess::ReadWrite);
+
+  const bool finished = proc.waitForFinished(30000);
+  const bool succeeded = finished && proc.exitStatus() == QProcess::NormalExit &&
+                         proc.exitCode() == 0;
+  if (ok != nullptr)
+    *ok = succeeded;
+
+  if (!succeeded)
+    return proc.readAllStandardError();
+
+  return proc.readAllStandardOutput();
+}
+
+QString ObsidianTodo::normalizeTag(const QString &tag) {
+  auto normalized = tag.trimmed();
+  while (normalized.startsWith(QLatin1Char('#')) ||
+         normalized.startsWith(QLatin1Char('+')))
+    normalized.remove(0, 1);
+
+  static const QRegularExpression invalidTagChars(
+      QStringLiteral("[^A-Za-z0-9_]") );
+  normalized.replace(invalidTagChars, QStringLiteral("_"));
+  normalized.replace(QRegularExpression(QStringLiteral("_+")), QStringLiteral("_"));
+  return normalized.trimmed();
+}
+
+QString ObsidianTodo::markerFromTask(const QVariantMap &task) {
+  const auto status = task.value(QStringLiteral("status")).toString();
+  if (status == QStringLiteral("completed"))
+    return QStringLiteral("x");
+  if (status == QStringLiteral("deleted"))
+    return QStringLiteral("-");
+  if (status == QStringLiteral("waiting"))
+    return QStringLiteral(">");
+
+  const auto marker = task.value(QStringLiteral("marker")).toString().trimmed();
+  if (!marker.isEmpty())
+    return marker.left(1);
+
+  return QStringLiteral(" ");
+}
+
+QVariantList ObsidianTodo::parseTodos(const QByteArray &data) {
+  const auto doc = QJsonDocument::fromJson(data);
+  if (!doc.isArray())
     return {};
-  return QTextStream(&file).readAll();
-}
 
-bool ObsidianTodo::writeFileContent(const QString &path,
-                                    const QString &content) {
-  QFile file(path);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-    return false;
-  QTextStream(&file) << content;
-  return true;
-}
-
-int ObsidianTodo::findSectionEnd(const QString &content, int searchFrom) {
-  const int separatorIdx = content.indexOf(QStringLiteral("\n___"), searchFrom);
-  const int nextSectionIdx =
-      content.indexOf(QStringLiteral("\n# "), searchFrom);
-
-  if (separatorIdx != -1 && nextSectionIdx != -1)
-    return std::min(separatorIdx, nextSectionIdx);
-  if (separatorIdx != -1)
-    return separatorIdx;
-  if (nextSectionIdx != -1)
-    return nextSectionIdx;
-
-  return content.length();
-}
-
-void ObsidianTodo::forEachTodoLine(
-    const QString &content,
-    const std::function<bool(int absLineStart,
-                             const QRegularExpressionMatch &match)> &fn) {
-  static const QRegularExpression todoLineRe(
-      QStringLiteral(R"(^- \[(.)\] (.+)$)"),
-      QRegularExpression::MultilineOption);
-
-  static const QStringList headings = {QStringLiteral("# TODO"),
-                                       QStringLiteral("# Recurrent")};
-
-  for (const auto &heading : headings) {
-    const int headingIdx = content.indexOf(heading);
-    if (headingIdx == -1)
+  QVariantList result;
+  for (const auto &value : doc.array()) {
+    const auto task = value.toObject().toVariantMap();
+    const auto description = task.value(QStringLiteral("description")).toString();
+    const auto uuid = task.value(QStringLiteral("uuid")).toString();
+    if (description.isEmpty() || uuid.isEmpty())
       continue;
 
-    const int sectionEnd =
-        findSectionEnd(content, headingIdx + heading.length());
-    const auto section = content.mid(headingIdx, sectionEnd - headingIdx);
+    QStringList tags;
+    const auto rawTags = task.value(QStringLiteral("tags")).toList();
+    tags.reserve(rawTags.size());
+    for (const auto &rawTag : rawTags) {
+      const auto tag = normalizeTag(rawTag.toString());
+      if (!tag.isEmpty())
+        tags.append(tag);
+    }
 
-    auto it = todoLineRe.globalMatch(section);
-    while (it.hasNext()) {
-      const auto match = it.next();
-      if (!fn(headingIdx + match.capturedStart(), match))
-        return;
+    QVariantMap entry;
+    entry[QStringLiteral("uuid")] = uuid;
+    entry[QStringLiteral("noteId")] = uuid;
+    entry[QStringLiteral("status")] = markerFromTask(task);
+    entry[QStringLiteral("description")] = description;
+    entry[QStringLiteral("tags")] = tags;
+    result.append(entry);
+  }
+
+  return result;
+}
+
+QStringList ObsidianTodo::parseTags(const QByteArray &data) {
+  const auto doc = QJsonDocument::fromJson(data);
+  if (!doc.isArray())
+    return {};
+
+  QStringList result;
+  for (const auto &value : doc.array()) {
+    const auto tags = value.toObject().value(QStringLiteral("tags")).toArray();
+    for (const auto &rawTag : tags) {
+      const auto tag = normalizeTag(rawTag.toString());
+      if (!tag.isEmpty() && !result.contains(tag))
+        result.append(tag);
     }
   }
+
+  result.sort(Qt::CaseInsensitive);
+  return result;
+}
+
+QString ObsidianTodo::uuidForTodo(const QVariantMap &todo) {
+  auto uuid = todo.value(QStringLiteral("uuid")).toString();
+  if (!uuid.isEmpty())
+    return uuid;
+  return todo.value(QStringLiteral("noteId")).toString();
 }
 
 void ObsidianTodo::fetchTags() {
-  auto *proc = new QProcess(this);
-  proc->setProgram(OBSIDIAN_BIN);
-  proc->setArguments({QStringLiteral("vault=Personal"), QStringLiteral("tags"),
-                      QStringLiteral("counts"), QStringLiteral("format=json")});
+  auto *proc = startTask(this, {QStringLiteral("export")});
 
   connect(proc, &QProcess::errorOccurred, this,
           [proc](QProcess::ProcessError) { proc->deleteLater(); });
 
   connect(proc, &QProcess::finished, this,
-          [this, proc](int exitCode, QProcess::ExitStatus) {
+          [this, proc](int exitCode, QProcess::ExitStatus exitStatus) {
             proc->deleteLater();
-            if (exitCode != 0)
+            if (exitStatus != QProcess::NormalExit || exitCode != 0)
               return;
 
-            const auto data = proc->readAllStandardOutput();
-            const auto doc = QJsonDocument::fromJson(data);
-            if (!doc.isArray())
-              return;
-
-            struct TagEntry {
-              QString name;
-              int count = 0;
-            };
-            std::vector<TagEntry> entries;
-
-            for (const auto &val : doc.array()) {
-              const auto obj = val.toObject();
-              auto tag = obj.value(QStringLiteral("tag")).toString();
-              if (tag.startsWith(QLatin1Char('#')))
-                tag = tag.mid(1);
-              const int count =
-                  obj.value(QStringLiteral("count")).toString().toInt();
-              entries.push_back({std::move(tag), count});
-            }
-
-            std::sort(entries.begin(), entries.end(),
-                      [](const TagEntry &a, const TagEntry &b) {
-                        return a.count > b.count;
-                      });
-
-            QStringList result;
-            result.reserve(static_cast<int>(entries.size()));
-            for (auto &e : entries)
-              result.append(std::move(e.name));
-
+            auto result = parseTags(proc->readAllStandardOutput());
             if (result != m_tags) {
               m_tags = std::move(result);
               emit tagsChanged();
             }
           });
-
-  proc->start(QProcess::ReadOnly);
 }
 
 void ObsidianTodo::fetchTodos() {
-  const auto journalPath = journalPathForToday();
+  auto *proc = startTask(this, {QStringLiteral("status:pending"),
+                                QStringLiteral("export")});
 
-  const auto content = readFileContent(journalPath);
-  if (content.isNull()) {
-    if (!m_todos.isEmpty()) {
-      m_todos.clear();
-      emit todosChanged();
-    }
-    return;
-  }
+  connect(proc, &QProcess::errorOccurred, this,
+          [this, proc](QProcess::ProcessError) {
+            proc->deleteLater();
+            if (!m_todos.isEmpty()) {
+              m_todos.clear();
+              emit todosChanged();
+            }
+          });
 
-  static const QRegularExpression wikiLinkRe(
-      QStringLiteral(R"(\[\[([^\]]+)\]\])"));
+  connect(proc, &QProcess::finished, this,
+          [this, proc](int exitCode, QProcess::ExitStatus exitStatus) {
+            proc->deleteLater();
+            if (exitStatus != QProcess::NormalExit || exitCode != 0)
+              return;
 
-  static const QRegularExpression tagRe(QStringLiteral(R"(#([\w-]+))"));
-
-  QVariantList result;
-
-  forEachTodoLine(content, [&result](int, const QRegularExpressionMatch &match) {
-    const auto statusMarker = match.captured(1);
-    const auto fullLine = match.captured(2).trimmed();
-
-    QString noteId;
-    const auto linkMatch = wikiLinkRe.match(fullLine);
-    if (linkMatch.hasMatch())
-      noteId = linkMatch.captured(1);
-
-    QStringList lineTags;
-    auto tagIt = tagRe.globalMatch(fullLine);
-    while (tagIt.hasNext())
-      lineTags.append(tagIt.next().captured(1));
-
-    auto description = fullLine;
-    description.remove(wikiLinkRe);
-    description.remove(tagRe);
-    description = description.trimmed();
-
-    QVariantMap entry;
-    entry[QStringLiteral("status")] = statusMarker;
-    entry[QStringLiteral("description")] = description;
-    entry[QStringLiteral("noteId")] = noteId;
-    entry[QStringLiteral("tags")] = lineTags;
-    result.append(entry);
-    return true;
-  });
-
-  if (result != m_todos) {
-    m_todos = std::move(result);
-    emit todosChanged();
-  }
-}
-
-QString ObsidianTodo::generateSlug(const QString &text) {
-  static const QRegularExpression nonAlnum(QStringLiteral("[^a-z0-9\\s]"));
-  static const QRegularExpression whitespace(QStringLiteral("\\s+"));
-
-  auto lower = text.toLower().trimmed();
-  lower.remove(nonAlnum);
-
-  auto words = lower.split(whitespace, Qt::SkipEmptyParts);
-  if (words.size() > 5)
-    words = words.mid(0, 5);
-
-  return words.join(QLatin1Char('-'));
-}
-
-bool ObsidianTodo::writeNoteFile(const QString &slug, const QString &timestamp,
-                                 const QString &date,
-                                 const QString &description,
-                                 [[maybe_unused]] const QStringList &tags) {
-  const auto dirPath =
-      QStringLiteral("%1/Journal/todos").arg(QLatin1String(VAULT_PATH));
-  QDir dir(dirPath);
-  if (!dir.exists())
-    dir.mkpath(QStringLiteral("."));
-
-  const auto filePath =
-      dir.filePath(QStringLiteral("%1-%2.md").arg(timestamp, slug));
-
-  QFile file(filePath);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    return false;
-
-  QTextStream out(&file);
-  out << QStringLiteral("---\n")
-      << QStringLiteral("id: %1-%2\n").arg(timestamp, slug)
-      << QStringLiteral("date: %1\n").arg(date)
-      << QStringLiteral("hubs:\n  - \n") << QStringLiteral("tags:\n  - TODO\n")
-      << QStringLiteral("refs:\n") << QStringLiteral("status: pending\n")
-      << QStringLiteral("---\n") << description << QStringLiteral("\n");
-
-  return true;
-}
-
-bool ObsidianTodo::insertIntoDailyJournal(const QString &slug,
-                                          const QString &description,
-                                          const QStringList &tags) {
-  const auto journalPath = journalPathForToday();
-  auto content = readFileContent(journalPath);
-  if (content.isNull())
-    return false;
-
-  QStringList tagParts;
-  tagParts.reserve(tags.size());
-  for (const auto &t : tags)
-    tagParts.append(QStringLiteral("#%1").arg(t));
-
-  const auto tagStr = tagParts.isEmpty() ? QString()
-                                         : QStringLiteral(" ") +
-                                               tagParts.join(QLatin1Char(' '));
-
-  const auto todoLine =
-      QStringLiteral("- [ ] %1 [[%2]]%3").arg(description, slug, tagStr);
-
-  const auto todoHeading = QStringLiteral("# TODO");
-  const int todoIdx = content.indexOf(todoHeading);
-  if (todoIdx == -1)
-    return false;
-
-  const int insertPos =
-      findSectionEnd(content, todoIdx + todoHeading.length());
-  content.insert(insertPos, QStringLiteral("\n") + todoLine);
-
-  return writeFileContent(journalPath, content);
+            auto result = parseTodos(proc->readAllStandardOutput());
+            if (result != m_todos) {
+              m_todos = std::move(result);
+              emit todosChanged();
+            }
+          });
 }
 
 void ObsidianTodo::saveTodo(const QString &description,
                             const QStringList &tags) {
-  if (description.trimmed().isEmpty()) {
+  const auto trimmedDescription = description.trimmed();
+  if (trimmedDescription.isEmpty()) {
     emit saveFailed(QStringLiteral("Empty description"));
     return;
   }
 
-
-  const auto now = QDateTime::currentDateTime();
-  const auto timestamp = now.toString(QStringLiteral("yyyyMMddHHmm"));
-  const auto date = now.date().toString(QStringLiteral("yyyy-MM-dd"));
-  const auto slug = generateSlug(description);
-  const auto noteSlug = QStringLiteral("%1-%2").arg(timestamp, slug);
-
-  if (!writeNoteFile(slug, timestamp, date, description, tags)) {
-    emit saveFailed(QStringLiteral("Failed to write note file"));
-    return;
+  QStringList arguments = {QStringLiteral("add"), trimmedDescription,
+                           QStringLiteral("due:today")};
+  for (const auto &rawTag : tags) {
+    const auto tag = normalizeTag(rawTag);
+    if (!tag.isEmpty())
+      arguments.append(QStringLiteral("+") + tag);
   }
 
-  if (!insertIntoDailyJournal(noteSlug, description, tags)) {
-    emit saveFailed(QStringLiteral("Failed to insert into daily journal"));
-    return;
-  }
+  auto *proc = startTask(this, arguments);
 
-  emit saved();
+  connect(proc, &QProcess::errorOccurred, this,
+          [this, proc](QProcess::ProcessError) {
+            proc->deleteLater();
+            emit saveFailed(QStringLiteral("Failed to start Taskwarrior"));
+          });
+
+  connect(proc, &QProcess::finished, this,
+          [this, proc](int exitCode, QProcess::ExitStatus exitStatus) {
+            proc->deleteLater();
+            if (exitStatus != QProcess::NormalExit || exitCode != 0) {
+              emit saveFailed(QString::fromUtf8(proc->readAllStandardError()));
+              return;
+            }
+
+            fetchTodos();
+            fetchTags();
+            emit saved();
+          });
 }
 
 QString ObsidianTodo::ensureNoteFile(const QString &description,
                                      const QStringList &tags) {
-  if (description.trimmed().isEmpty())
+  const auto trimmedDescription = description.trimmed();
+  if (trimmedDescription.isEmpty())
     return {};
 
-  const auto now = QDateTime::currentDateTime();
-  const auto timestamp = now.toString(QStringLiteral("yyyyMMddHHmm"));
-  const auto date = now.date().toString(QStringLiteral("yyyy-MM-dd"));
-  const auto slug = generateSlug(description);
-  const auto noteId = QStringLiteral("%1-%2").arg(timestamp, slug);
-
-  const auto dirPath =
-      QStringLiteral("%1/Journal/todos").arg(QLatin1String(VAULT_PATH));
-  const auto filePath = QStringLiteral("%1/%2.md").arg(dirPath, noteId);
-
-  if (QFile::exists(filePath))
-    return noteId;
-
-  if (!writeNoteFile(slug, timestamp, date, description, tags))
-    return {};
-
-  updateJournalTodoLink(description, noteId);
-
-  return noteId;
-}
-
-bool ObsidianTodo::updateJournalTodoLink(const QString &description,
-                                         const QString &noteId) {
-  const auto journalPath = journalPathForToday();
-  auto content = readFileContent(journalPath);
-  if (content.isNull())
-    return false;
-
-  int searchPos = 0;
-  const auto prefix = QStringLiteral("- [ ] ");
-
-  while (true) {
-    const int idx = content.indexOf(prefix + description, searchPos);
-    if (idx == -1)
-      break;
-
-    int lineEnd = content.indexOf(QLatin1Char('\n'), idx);
-    if (lineEnd == -1)
-      lineEnd = content.length();
-
-    const auto line = content.mid(idx, lineEnd - idx);
-
-    if (!line.contains(QStringLiteral("[["))) {
-      static const QRegularExpression firstTagRe(
-          QStringLiteral(R"(\s+#[\w-]+)"));
-      const auto tagMatch = firstTagRe.match(line);
-      const int insertOffset =
-          tagMatch.hasMatch() ? idx + tagMatch.capturedStart() : lineEnd;
-
-      content.insert(insertOffset, QStringLiteral(" [[%1]]").arg(noteId));
-      return writeFileContent(journalPath, content);
-    }
-
-    searchPos = lineEnd;
+  bool ok = false;
+  const auto data = runTask({QStringLiteral("description:"),
+                             trimmedDescription, QStringLiteral("export")},
+                            &ok);
+  if (ok) {
+    const auto todos = parseTodos(data);
+    if (!todos.isEmpty())
+      return uuidForTodo(todos.first().toMap());
   }
 
-  return false;
-}
+  QStringList arguments = {QStringLiteral("add"), trimmedDescription,
+                           QStringLiteral("due:today")};
+  for (const auto &rawTag : tags) {
+    const auto tag = normalizeTag(rawTag);
+    if (!tag.isEmpty())
+      arguments.append(QStringLiteral("+") + tag);
+  }
 
-bool ObsidianTodo::setTodoStatus(int index, const QString &marker) {
-  if (index < 0 || marker.isEmpty())
-    return false;
+  runTask(arguments, &ok);
+  if (!ok)
+    return {};
 
-  const auto journalPath = journalPathForToday();
-  auto content = readFileContent(journalPath);
-  if (content.isNull())
-    return false;
+  const auto createdData = runTask({QStringLiteral("description:"),
+                                    trimmedDescription,
+                                    QStringLiteral("export")},
+                                   &ok);
+  if (!ok)
+    return {};
 
-  int current = 0;
-  int bracketContentPos = -1;
-  forEachTodoLine(content, [&current, &bracketContentPos, index](
-                               int absLineStart,
-                               const QRegularExpressionMatch &) {
-    if (current == index) {
-      bracketContentPos = absLineStart + 3;
-      return false;
-    }
-    ++current;
-    return true;
-  });
+  const auto todos = parseTodos(createdData);
+  if (todos.isEmpty())
+    return {};
 
-  if (bracketContentPos == -1)
-    return false;
-
-  content.replace(bracketContentPos, 1, marker);
-  if (!writeFileContent(journalPath, content))
-    return false;
-
-  fetchTodos();
-  return true;
+  return uuidForTodo(todos.first().toMap());
 }
 
 bool ObsidianTodo::appendSessionLog(const QString &noteId, int focusMinutes,
@@ -397,60 +270,51 @@ bool ObsidianTodo::appendSessionLog(const QString &noteId, int focusMinutes,
   if (noteId.isEmpty() || events.isEmpty())
     return false;
 
-  const auto filePath = QStringLiteral("%1/Journal/todos/%2.md")
-                            .arg(QLatin1String(VAULT_PATH), noteId);
+  QStringList lines;
+  lines.append(QStringLiteral("Time: %1 min").arg(focusMinutes));
+  lines.append(QStringLiteral("Break time: %1 min").arg(breakMinutes));
 
-  auto content = readFileContent(filePath);
-  if (content.isNull())
+  for (const auto &event : events) {
+    const auto map = event.toMap();
+    const auto time = map.value(QStringLiteral("time")).toString();
+    const auto text = map.value(QStringLiteral("text")).toString();
+    if (!time.isEmpty() || !text.isEmpty())
+      lines.append(QStringLiteral("%1 %2").arg(time, text).trimmed());
+  }
+
+  bool ok = false;
+  runTask({noteId, QStringLiteral("annotate"), lines.join(QStringLiteral(" | "))},
+          &ok);
+  return ok;
+}
+
+bool ObsidianTodo::setTodoStatus(int index, const QString &marker) {
+  if (index < 0 || marker.isEmpty() || index >= m_todos.size())
     return false;
 
-  const auto today =
-      QDate::currentDate().toString(QStringLiteral("yyyy-MM-dd"));
+  const auto todo = m_todos.at(index).toMap();
+  const auto uuid = uuidForTodo(todo);
+  if (uuid.isEmpty())
+    return false;
 
-  QString logBlock;
-  QTextStream lb(&logBlock);
-  lb << QStringLiteral("__Time__: %1 min\n").arg(focusMinutes)
-     << QStringLiteral("__Break time__: %1 min\n").arg(breakMinutes)
-     << QStringLiteral("\n==== logs ====\n");
-
-  for (const auto &ev : events) {
-    const auto map = ev.toMap();
-    lb << map.value(QStringLiteral("time")).toString() << QStringLiteral(" ")
-       << map.value(QStringLiteral("text")).toString() << QStringLiteral("\n");
-  }
-  lb << QStringLiteral("==============\n");
-
-  const int sessionsIdx = content.indexOf(QStringLiteral("# Sessions"));
-
-  if (sessionsIdx == -1) {
-    if (!content.endsWith(QLatin1Char('\n')))
-      content += QLatin1Char('\n');
-    content += QStringLiteral("\n# Sessions\n\n");
-    content += QStringLiteral("## %1\n\n").arg(today);
-    content += logBlock;
+  bool ok = false;
+  const auto markerValue = marker.left(1);
+  if (markerValue == QStringLiteral("x")) {
+    runTask({uuid, QStringLiteral("done")}, &ok);
+  } else if (markerValue == QStringLiteral("-")) {
+    runTask({uuid, QStringLiteral("delete")}, &ok);
+  } else if (markerValue == QStringLiteral(">")) {
+    runTask({uuid, QStringLiteral("modify"), QStringLiteral("due:tomorrow"),
+             QStringLiteral("marker:>")},
+            &ok);
   } else {
-    const auto dateHeading = QStringLiteral("## %1").arg(today);
-    const int dateIdx = content.indexOf(dateHeading, sessionsIdx);
-
-    if (dateIdx != -1) {
-      int insertPos = content.length();
-      const int nextDateIdx = content.indexOf(QStringLiteral("\n## "),
-                                              dateIdx + dateHeading.length());
-      if (nextDateIdx != -1)
-        insertPos = nextDateIdx;
-
-      QString insertion;
-      if (insertPos > 0 && content[insertPos - 1] != QLatin1Char('\n'))
-        insertion += QLatin1Char('\n');
-      insertion += logBlock;
-      content.insert(insertPos, insertion);
-    } else {
-      if (!content.endsWith(QLatin1Char('\n')))
-        content += QLatin1Char('\n');
-      content += QStringLiteral("\n## %1\n\n").arg(today);
-      content += logBlock;
-    }
+    runTask({uuid, QStringLiteral("modify"),
+             QStringLiteral("marker:%1").arg(markerValue)},
+            &ok);
   }
 
-  return writeFileContent(filePath, content);
+  if (ok)
+    fetchTodos();
+
+  return ok;
 }
