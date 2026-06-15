@@ -1,31 +1,32 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-# ensure docker is running
 docker ps >/dev/null || exit 1
 
-PREV_PWD=$(pwd)
-
 VERSION="26.0.2"
-RELEASE_URL="https://github.com/be5invis/Iosevka/releases/download/v$VERSION/ttf-iosevka-ss04-$VERSION.zip"
+STYLE="${1:-ss04}"
+RELEASE_URL="https://github.com/be5invis/Iosevka/releases/download/v$VERSION/ttf-iosevka-$STYLE-$VERSION.zip"
+
+OUTDIR="${2:-$PWD/patched-iosevka-$STYLE}"
 
 TEMPDIR=$(mktemp -d)
-pushd $TEMPDIR
+trap 'rm -rf "$TEMPDIR"' EXIT
 
-curl -Lo ./iosevka.zip "$RELEASE_URL"
-unzip iosevka.zip
+{
+  curl -fLo "$TEMPDIR/iosevka.zip" "$RELEASE_URL"
+  mkdir -p "$TEMPDIR/extract" "$TEMPDIR/in" "$TEMPDIR/out"
+  unzip -q "$TEMPDIR/iosevka.zip" -d "$TEMPDIR/extract"
+  find "$TEMPDIR/extract" -name '*.ttf' -exec mv {} "$TEMPDIR/in" \;
 
-mkdir in out
-mv *.ttf in
+  docker run \
+    --rm \
+    -v "$TEMPDIR/in:/in" \
+    -v "$TEMPDIR/out:/out" nerdfonts/patcher \
+    --complete \
+    --use-single-width-glyphs
+} >&2
 
-docker run \
-  --rm \
-  -v $(pwd)/in:/in \
-  -v $(pwd)/out:/out nerdfonts/patcher \
-  --complete \
-  --use-single-width-glyphs
+mkdir -p "$OUTDIR"
+cp "$TEMPDIR"/out/* "$OUTDIR"
 
-mkdir $PREV_PWD/patched-iosevka
-mv out/* $PREV_PWD/patched-iosevka
-
-popd
-rm -rf "$TEMPDIR"
+echo "$OUTDIR"

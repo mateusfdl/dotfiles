@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo $(awww query | grep "DP-4" | awk -F'image: ' '{print $2}')

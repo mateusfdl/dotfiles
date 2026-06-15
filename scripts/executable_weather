@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEFAULT_CITY="Pelotas, BR"
+FORECAST_DAYS=5
+UNITS="celsius"
+
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/weather"
+CITY_FILE="$CONFIG_DIR/city"
+CACHE_FILE="$CONFIG_DIR/cache.json"
+
+mkdir -p "$CONFIG_DIR"
+
+if [ "$#" -gt 0 ]; then
+    CITY="$*"
+    printf '%s\n' "$CITY" > "$CITY_FILE"
+elif [ -s "$CITY_FILE" ]; then
+    CITY=$(cat "$CITY_FILE")
+else
+    CITY="$DEFAULT_CITY"
+    printf '%s\n' "$CITY" > "$CITY_FILE"
+fi
+
+CITY_NAME=$(printf '%s' "$CITY" | awk -F',' '{print $1}' | sed 's/^ *//;s/ *$//')
+CITY_COUNTRY=$(printf '%s' "$CITY" | awk -F',' '{print $2}' | sed 's/^ *//;s/ *$//')
+
+urlencode() {
+    jq -rn --arg s "$1" '$s|@uri'
+}
+
+GEO_URL="https://geocoding-api.open-meteo.com/v1/search?name=$(urlencode "$CITY_NAME")&count=1&language=en&format=json"
+if [ -n "$CITY_COUNTRY" ]; then
+    GEO_URL="${GEO_URL}&country_code=$(urlencode "$CITY_COUNTRY")"
+fi
+
+GEO=$(curl -fsSL --max-time 10 "$GEO_URL")
+LAT=$(printf '%s' "$GEO" | jq -r '.results[0].latitude // empty')
+LON=$(printf '%s' "$GEO" | jq -r '.results[0].longitude // empty')
+RESOLVED=$(printf '%s' "$GEO" | jq -r '.results[0] | "\(.name), \(.country_code)" // empty')
+
+if [ -z "$LAT" ] || [ -z "$LON" ]; then
+    printf 'weather: city not found: %s\n' "$CITY" >&2
+    exit 1
+fi
+
+WX_URL="https://api.open-meteo.com/v1/forecast"
+WX_URL="${WX_URL}?latitude=${LAT}&longitude=${LON}"
+WX_URL="${WX_URL}&current=temperature_2m,weather_code,is_day"
+WX_URL="${WX_URL}&daily=weather_code,temperature_2m_max,temperature_2m_min"
+WX_URL="${WX_URL}&temperature_unit=${UNITS}"
+WX_URL="${WX_URL}&timezone=auto&forecast_days=${FORECAST_DAYS}"
+
+WX=$(curl -fsSL --max-time 10 "$WX_URL")
+
+printf '%s' "$WX" | jq --arg city "$RESOLVED" '. + {city: $city}' | tee "$CACHE_FILE"

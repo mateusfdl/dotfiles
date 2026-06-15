@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+import json
+import os
+import pathlib
+import re
+import signal
+import subprocess
+import sys
+import time
+from datetime import datetime, timedelta
+
+PID_FILE = pathlib.Path("/tmp/daily-tokens-daemon.pid")
+OUTPUT_FILE = pathlib.Path("/tmp/daily-tokens-status")
+SLEEP_INTERVAL = 60
+
+def run(command):
+    return subprocess.run(
+        command,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+    ).stdout
+def compact_tokens(tokens):
+    if tokens >= 1_000_000_000:
+        return f"{tokens / 1_000_000_000:.1f}B".replace(".0B", "B")
+    if tokens >= 1_000_000:
+        return f"{tokens / 1_000_000:.0f}M"
+    if tokens >= 1_000:
+        return f"{tokens / 1_000:.0f}K"
+    return str(tokens)
+def compact_liters(tokens):
+    liters = tokens / 200_000
+    if liters >= 10:
+        return f"{liters:.0f}L"
+    return f"{liters:.1f}L".replace(".0L", "L")
+def today_since():
+    now = datetime.now().astimezone()
+    return now.replace(hour=0, minute=0, second=0, microsecond=0).strftime("%Y%m%d")
+def update_status():
+    home = os.environ["HOME"]
+    usage_output = run(["bash", "-lc", f"source {home}/.scripts; ccusage --from=today"])
+    cost_match = re.search(r"Total cost:\s+\$([0-9,.]+)", usage_output)
+    if cost_match is None:
+        OUTPUT_FILE.write_text("", encoding="utf-8")
+        return
+    json_output = run(["bunx", "ccusage", "claude", "daily", "--since", today_since(), "--json"])
+    usage = json.loads(json_output)
+    tokens = int(usage.get("totals", {}).get("totalTokens", 0))
+    status = f"🔥 {compact_tokens(tokens)} 💸 ${cost_match.group(1)} 🪣 {compact_liters(tokens)}\n"
+    OUTPUT_FILE.write_text(status, encoding="utf-8")
+def process_exists(pid):
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+def check_running():
+    if not PID_FILE.exists():
+        return
+    try:
+        pid = int(PID_FILE.read_text(encoding="utf-8").strip())
+    except ValueError:
+        PID_FILE.unlink(missing_ok=True)
+        return
+    if process_exists(pid):
+        print(f"Daemon already running with PID {pid}", file=sys.stderr)
+        raise SystemExit(1)
+    PID_FILE.unlink(missing_ok=True)
+def daemonize():
+    if os.fork() > 0:
+        raise SystemExit(0)
+    os.setsid()
+    if os.fork() > 0:
+        raise SystemExit(0)
+    os.chdir("/")
+    os.umask(0)
+    sys.stdout.flush()
+    sys.stderr.flush()
+    devnull = os.open(os.devnull, os.O_RDWR)
+    os.dup2(devnull, sys.stdin.fileno())
+    os.dup2(devnull, sys.stdout.fileno())
+    os.dup2(devnull, sys.stderr.fileno())
+    os.close(devnull)
+def cleanup(*_):
+    PID_FILE.unlink(missing_ok=True)
+    raise SystemExit(0)
+def main():
+    check_running()
+    print("Starting daily tokens daemon in the background...")
+    daemonize()
+    PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
+    signal.signal(signal.SIGTERM, cleanup)
+    signal.signal(signal.SIGINT, cleanup)
+    while True:
+        try:
+            update_status()
+        except Exception:
+            OUTPUT_FILE.write_text("", encoding="utf-8")
+        time.sleep(SLEEP_INTERVAL)
+if __name__ == "__main__":
+    main()

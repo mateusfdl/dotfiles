@@ -1,27 +1,354 @@
-#!/bin/bash
+#!/bin/sh
 
-TMUX_THEME_DIR="$HOME/.tmux/themes"
+LIGHT_THEME="${LIGHT_THEME:-everforest-light}"
+DARK_THEME="${DARK_THEME:-onedark}"
+
+THEMES_DIR="$HOME/scripts/themes"
+TEMPLATE_DIR="$THEMES_DIR/templates"
+
 TMUX_THEME_FILE="$HOME/.tmux/theme.conf"
-ALACRITTY_THEME_DIR="$HOME/.config/alacritty/themes"
-ALACRITTY_THEME_FILE="$ALACRITTY_THEME_DIR/.selected_theme.toml"
-KITTY_THEME_DIR="$HOME/.config/kitty/themes"
+ALACRITTY_THEME_FILE="$HOME/.config/alacritty/themes/.selected_theme.toml"
 KITTY_THEME_FILE="$HOME/.config/kitty/theme.conf"
 
 GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
-
 TMP_MODE_FILE="$HOME/.cache/theme-mode"
+STATE_FILE="$HOME/.cache/theme-state.json"
+SET_THEME=""
+QUERY_CURRENT_MODE=""
+QUERY_CURRENT_THEME=""
+QUERY_MODE=""
+MODE_ARG=""
+
+for arg in "$@"; do
+    case "$arg" in
+        --set-theme=*)
+            SET_THEME="${arg#--set-theme=}"
+            ;;
+        --current-mode)
+            QUERY_CURRENT_MODE="1"
+            ;;
+        --current-theme)
+            QUERY_CURRENT_THEME="1"
+            ;;
+        --mode=*)
+            QUERY_MODE="${arg#--mode=}"
+            ;;
+        dark|light)
+            MODE_ARG="$arg"
+            ;;
+        *)
+            echo "Invalid argument: $arg" >&2
+            exit 1
+            ;;
+    esac
+done
 
 detect_os() {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "macos"
-    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        if [ -n "$(command -v wsl.exe)" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
-            echo "wsl"
-        else
-            echo "linux"
+    case "$(uname -s 2>/dev/null)" in
+        Darwin*)
+            echo "macos"
+            ;;
+        Linux*)
+            if [ -n "$(command -v wsl.exe)" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+                echo "wsl"
+            else
+                echo "linux"
+            fi
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+
+ensure_jq() {
+    command -v jq >/dev/null 2>&1 || {
+        echo "jq not found" >&2
+        return 1
+    }
+}
+
+validate_mode() {
+    case "$1" in
+        dark|light)
+            return 0
+            ;;
+        *)
+            echo "Invalid mode: $1" >&2
+            return 1
+            ;;
+    esac
+}
+
+read_legacy_mode() {
+    local mode
+
+    if [ -f "$TMP_MODE_FILE" ]; then
+        IFS= read -r mode < "$TMP_MODE_FILE"
+        if validate_mode "$mode" >/dev/null 2>&1; then
+            echo "$mode"
+            return 0
         fi
-    else
-        echo "unknown"
+    fi
+
+    echo "dark"
+}
+
+fallback_theme() {
+    case "$1" in
+        dark)
+            echo "$DARK_THEME"
+            ;;
+        light)
+            echo "$LIGHT_THEME"
+            ;;
+    esac
+}
+
+read_state_mode() {
+    local mode
+
+    if [ -f "$STATE_FILE" ]; then
+        mode=$(jq -r '.mode // empty' "$STATE_FILE" 2>/dev/null || true)
+        if validate_mode "$mode" >/dev/null 2>&1; then
+            echo "$mode"
+            return 0
+        fi
+    fi
+
+    read_legacy_mode
+}
+
+read_state_theme() {
+    local mode="$1"
+    local theme
+
+    validate_mode "$mode" >/dev/null 2>&1 || return 1
+
+    if [ -f "$STATE_FILE" ]; then
+        theme=$(jq -r --arg mode "$mode" '.themes[$mode] // empty' "$STATE_FILE" 2>/dev/null || true)
+        if [ -n "$theme" ]; then
+            echo "$theme"
+            return 0
+        fi
+    fi
+
+    fallback_theme "$mode"
+}
+
+write_state() {
+    local mode="$1"
+    local dark_theme="$2"
+    local light_theme="$3"
+    local tmp_file
+
+    validate_mode "$mode" >/dev/null 2>&1 || return 1
+    mkdir -p "$(dirname "$STATE_FILE")"
+    tmp_file=$(mktemp) || return 1
+
+    jq -n \
+        --arg mode "$mode" \
+        --arg dark "$dark_theme" \
+        --arg light "$light_theme" \
+        '{mode: $mode, themes: {dark: $dark, light: $light}}' > "$tmp_file" || {
+            rm -f "$tmp_file"
+            return 1
+        }
+
+    mv "$tmp_file" "$STATE_FILE"
+    echo "$mode" > "$TMP_MODE_FILE"
+}
+
+find_theme_file() {
+    local mode="$1"
+    local theme="$2"
+
+    if [ -f "$THEMES_DIR/$mode/$theme.json" ]; then
+        echo "$THEMES_DIR/$mode/$theme.json"
+        return 0
+    fi
+
+    if [ -f "$THEMES_DIR/dark/$theme.json" ]; then
+        echo "$THEMES_DIR/dark/$theme.json"
+        return 0
+    fi
+
+    if [ -f "$THEMES_DIR/light/$theme.json" ]; then
+        echo "$THEMES_DIR/light/$theme.json"
+        return 0
+    fi
+
+    return 1
+}
+
+render_template() {
+    local template_file="$1"
+    local theme_file="$2"
+    local output_file="$3"
+
+    mkdir -p "$(dirname "$output_file")"
+
+    jq -r --rawfile template "$template_file" '
+        . as $theme |
+
+        def value($key):
+            $theme | getpath($key | split("."));
+
+        reduce ([
+            $template
+            | match("\\{\\{\\s*(?<key>[A-Za-z0-9_.]+)\\s*\\}\\}"; "g")
+        ] | unique_by(.string)[]) as $m
+        (
+            $template;
+            ($m.captures[0].string) as $key |
+            split($m.string) | join((value($key) // error("Missing theme variable: " + $key)) | tostring)
+        )
+    ' "$theme_file" > "$output_file"
+}
+
+replace_managed_block() {
+    local target_file="$1"
+    local block_file="$2"
+    local begin_marker="$3"
+    local end_marker="$4"
+    local tmp_file
+    local begin_count
+    local end_count
+
+    mkdir -p "$(dirname "$target_file")"
+    tmp_file=$(mktemp) || return 1
+
+    if [ ! -f "$target_file" ]; then
+        {
+            echo "$begin_marker"
+            cat "$block_file"
+            echo "$end_marker"
+        } > "$tmp_file" || {
+            rm -f "$tmp_file"
+            return 1
+        }
+        mv "$tmp_file" "$target_file"
+        return 0
+    fi
+
+    begin_count=$(grep -Fxc "$begin_marker" "$target_file" || true)
+    end_count=$(grep -Fxc "$end_marker" "$target_file" || true)
+
+    if [ "$begin_count" -ne "$end_count" ]; then
+        rm -f "$tmp_file"
+        echo "Managed block markers are unbalanced in $target_file" >&2
+        return 1
+    fi
+
+    if [ "$begin_count" -gt 1 ]; then
+        rm -f "$tmp_file"
+        echo "Managed block markers appear more than once in $target_file" >&2
+        return 1
+    fi
+
+    if [ "$begin_count" -eq 0 ] && grep -q '^# Generated from ' "$target_file"; then
+        {
+            echo "$begin_marker"
+            cat "$block_file"
+            echo "$end_marker"
+        } > "$tmp_file" || {
+            rm -f "$tmp_file"
+            return 1
+        }
+        mv "$tmp_file" "$target_file"
+        return 0
+    fi
+
+    awk -v begin_marker="$begin_marker" -v end_marker="$end_marker" -v block_file="$block_file" '
+        BEGIN {
+            while ((getline line < block_file) > 0) {
+                block = block line ORS
+            }
+            close(block_file)
+        }
+        $0 == begin_marker {
+            print begin_marker
+            printf "%s", block
+            skipping = 1
+            replaced = 1
+            next
+        }
+        $0 == end_marker && skipping == 1 {
+            print end_marker
+            skipping = 0
+            next
+        }
+        skipping == 1 {
+            next
+        }
+        {
+            print
+        }
+        END {
+            if (replaced != 1) {
+                if (NR > 0) print ""
+                print begin_marker
+                printf "%s", block
+                print end_marker
+            }
+        }
+    ' "$target_file" > "$tmp_file" || {
+        rm -f "$tmp_file"
+        return 1
+    }
+
+    mv "$tmp_file" "$target_file"
+}
+
+render_managed_template() {
+    local template_file="$1"
+    local theme_file="$2"
+    local output_file="$3"
+    local begin_marker="$4"
+    local end_marker="$5"
+    local rendered_file
+
+    rendered_file=$(mktemp) || return 1
+    render_template "$template_file" "$theme_file" "$rendered_file" || {
+        rm -f "$rendered_file"
+        return 1
+    }
+
+    replace_managed_block "$output_file" "$rendered_file" "$begin_marker" "$end_marker"
+    local status=$?
+    rm -f "$rendered_file"
+    return "$status"
+}
+
+apply_terminal_templates() {
+    local mode="$1"
+    local theme="$2"
+    local theme_file
+
+    ensure_jq || return 1
+
+    theme_file=$(find_theme_file "$mode" "$theme") || {
+        echo "Theme $theme not found in $THEMES_DIR/$mode, $THEMES_DIR/dark, or $THEMES_DIR/light"
+        return 1
+    }
+
+    render_managed_template "$TEMPLATE_DIR/tmux.template" "$theme_file" "$TMUX_THEME_FILE" "# scripts theme begin" "# scripts theme end"
+    render_template "$TEMPLATE_DIR/alacritty.template" "$theme_file" "$ALACRITTY_THEME_FILE"
+    render_template "$TEMPLATE_DIR/kitty.template" "$theme_file" "$KITTY_THEME_FILE"
+}
+
+reload_terminal_apps() {
+    if command -v tmux >/dev/null 2>&1; then
+        tmux source-file "$TMUX_THEME_FILE" 2>/dev/null || echo "Tmux not running or failed to source theme"
+    fi
+
+    if [ -f "$GHOSTTY_FILE_TOGGLER" ]; then
+        echo "theme=$SELECTED_THEME" > "$GHOSTTY_FILE_TOGGLER"
+        osascript -e 'tell application "System Events" to tell process "Ghostty" to click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1'
+    fi
+
+    if command -v pgrep >/dev/null 2>&1; then
+        pgrep kitty | xargs -I {} kill -SIGUSR1 {} 2>/dev/null
     fi
 }
 
@@ -55,70 +382,96 @@ switch_windows_theme() {
 
 switch_linux_theme() {
     local mode="$1"
-    if command -v gsettings >/dev/null 2>&1; then
-        if [ "$mode" = "light" ]; then
-            gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
-            gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
-            quickshell ipc call theme setLight
-            echo "Switched GNOME to light mode"
-        else
-            gsettings set org.gnome.desktop.interface gtk-theme 'Flat-Remix-GTK-Blue-Dark'
-            gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-            quickshell ipc call theme setDark
-            echo "Switched GNOME to dark mode"
-        fi
+    local color_scheme
+    local qs_cmd
+
+    if [ "$mode" = "light" ]; then
+        color_scheme="prefer-light"
+        qs_cmd="setLight"
     else
-        echo "Linux theme switching not implemented for this desktop environment"
+        color_scheme="prefer-dark"
+        qs_cmd="setDark"
     fi
+
+    if command -v dconf >/dev/null 2>&1; then
+        dconf write /org/gnome/desktop/interface/color-scheme "'${color_scheme}'"
+        echo "Set color-scheme to ${color_scheme} via dconf"
+    elif command -v gsettings >/dev/null 2>&1; then
+        gsettings set org.gnome.desktop.interface color-scheme "${color_scheme}"
+        echo "Set color-scheme to ${color_scheme} via gsettings"
+    else
+        echo "Warning: neither dconf nor gsettings available, GTK theme not updated"
+    fi
+
+    if command -v quickshell >/dev/null 2>&1; then
+        quickshell ipc call theme "${qs_cmd}" 2>/dev/null
+    fi
+
+    echo "Switched Linux to ${mode} mode"
 }
+
+ensure_jq || exit 1
+
+CURRENT_MODE=$(read_state_mode)
+
+if [ -n "$QUERY_MODE" ]; then
+    validate_mode "$QUERY_MODE" || exit 1
+fi
+
+if [ -n "$QUERY_CURRENT_MODE" ]; then
+    echo "$CURRENT_MODE"
+    exit 0
+fi
+
+if [ -n "$QUERY_CURRENT_THEME" ]; then
+    if [ -n "$QUERY_MODE" ]; then
+        read_state_theme "$QUERY_MODE"
+    else
+        read_state_theme "$CURRENT_MODE"
+    fi
+    exit 0
+fi
 
 OS=$(detect_os)
 echo "Detected OS: $OS"
 
-if [ -f "$TMP_MODE_FILE" ]; then
-    CURRENT_MODE=$(cat "$TMP_MODE_FILE")
-else
-    CURRENT_MODE="dark"
-    echo "dark" > "$TMP_MODE_FILE"
-fi
+if [ -n "$SET_THEME" ]; then
+    NEW_MODE="$CURRENT_MODE"
+    SELECTED_THEME="$SET_THEME"
+    DARK_SELECTED_THEME=$(read_state_theme dark)
+    LIGHT_SELECTED_THEME=$(read_state_theme light)
 
-if [ "$CURRENT_MODE" = "light" ]; then
-    NEW_MODE="dark"
-    SELECTED_THEME=$DARK_THEME
-else
-    NEW_MODE="light"
-    SELECTED_THEME=$LIGHT_THEME
-fi
+    apply_terminal_templates "$NEW_MODE" "$SELECTED_THEME" || exit 1
 
-if [ -f "$TMUX_THEME_DIR/$SELECTED_THEME" ]; then
-    cp "$TMUX_THEME_DIR/$SELECTED_THEME" "$TMUX_THEME_FILE"
-    if command -v tmux >/dev/null 2>&1; then
-        tmux source-file "$TMUX_THEME_FILE" 2>/dev/null || echo "Tmux not running or failed to source theme"
+    if [ "$NEW_MODE" = "dark" ]; then
+        DARK_SELECTED_THEME="$SELECTED_THEME"
+    else
+        LIGHT_SELECTED_THEME="$SELECTED_THEME"
     fi
+
+    write_state "$NEW_MODE" "$DARK_SELECTED_THEME" "$LIGHT_SELECTED_THEME" || exit 1
+    reload_terminal_apps
+
+    echo "Theme $SELECTED_THEME applied in current $NEW_MODE mode on $OS"
+    exit 0
+fi
+
+if [ -n "$MODE_ARG" ]; then
+    NEW_MODE="$MODE_ARG"
 else
-    echo "Tmux theme file $SELECTED_THEME not found in $TMUX_THEME_DIR!"
-fi
-
-if [ -f "$GHOSTTY_FILE_TOGGLER" ]; then
-  echo "theme=$SELECTED_THEME" > $GHOSTTY_FILE_TOGGLER
-  osascript -e 'tell application "System Events" to tell process "Ghostty" to click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1'
-
-fi
-
-if [ -f "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" ]; then
-    cp "$ALACRITTY_THEME_DIR/$SELECTED_THEME.toml" "$ALACRITTY_THEME_FILE"
-else
-    echo "Alacritty theme file $SELECTED_THEME.toml not found in $ALACRITTY_THEME_DIR!"
-fi
-
-if [ -f "$KITTY_THEME_DIR/$NEW_MODE.conf" ]; then
-    cp "$KITTY_THEME_DIR/$NEW_MODE.conf" "$KITTY_THEME_FILE"
-    if command -v pgrep >/dev/null 2>&1; then
-        pgrep kitty | xargs -I {} kill -SIGUSR1 {} 2>/dev/null
+    if [ "$CURRENT_MODE" = "light" ]; then
+        NEW_MODE="dark"
+    else
+        NEW_MODE="light"
     fi
-else
-    echo "Kitty theme file $SELECTED_THEME.conf not found in $KITTY_THEME_DIR!"
 fi
+
+SELECTED_THEME=$(read_state_theme "$NEW_MODE")
+DARK_SELECTED_THEME=$(read_state_theme dark)
+LIGHT_SELECTED_THEME=$(read_state_theme light)
+
+apply_terminal_templates "$NEW_MODE" "$SELECTED_THEME" || exit 1
+reload_terminal_apps
 
 case "$OS" in
     "macos")
@@ -127,14 +480,15 @@ case "$OS" in
     "wsl")
         LOCAL_APP_DATA=$(powershell.exe -Command '[Environment]::GetFolderPath("LocalApplicationData")' 2>/dev/null | tr -d '\r')
         TERMINAL_SETTINGS_FILE=$(wslpath "${LOCAL_APP_DATA}\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json" 2>/dev/null)
-        
+
         if [ -f "$TERMINAL_SETTINGS_FILE" ] && command -v jq >/dev/null 2>&1; then
-            jq --arg theme "$SELECTED_THEME" '.profiles.list |= map(if has("colorScheme") then .colorScheme = $theme else . end)' "$TERMINAL_SETTINGS_FILE" > settings.tmp && mv settings.tmp "$TERMINAL_SETTINGS_FILE"
+            TERMINAL_SETTINGS_TMP=$(mktemp) || exit 1
+            jq --arg theme "$SELECTED_THEME" '.profiles.list |= map(if has("colorScheme") then .colorScheme = $theme else . end)' "$TERMINAL_SETTINGS_FILE" > "$TERMINAL_SETTINGS_TMP" && mv "$TERMINAL_SETTINGS_TMP" "$TERMINAL_SETTINGS_FILE"
         else
             [ ! -f "$TERMINAL_SETTINGS_FILE" ] && echo "Windows Terminal settings file not found!"
-            [ ! command -v jq >/dev/null 2>&1 ] && echo "jq not found, skipping Windows Terminal theme switch"
+            command -v jq >/dev/null 2>&1 || echo "jq not found, skipping Windows Terminal theme switch"
         fi
-        
+
         switch_windows_theme "$NEW_MODE"
         ;;
     "linux")
@@ -145,7 +499,7 @@ case "$OS" in
         ;;
 esac
 
-echo "$NEW_MODE" > "$TMP_MODE_FILE"
+write_state "$NEW_MODE" "$DARK_SELECTED_THEME" "$LIGHT_SELECTED_THEME" || exit 1
 echo "Theme switched to $NEW_MODE mode on $OS"
 
 pgrep nvim | xargs -n1 kill -SIGUSR1 2>/dev/null

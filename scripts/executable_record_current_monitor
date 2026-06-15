@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+RECORDING_DIR="$HOME/Videos/Recordings"
+mkdir -p "$RECORDING_DIR"
+
+PID_FILE="/tmp/screen_recording.pid"
+STATUS_FILE="/tmp/screen_recording.status"
+LOCK_FILE="/tmp/screen_recording.lock"
+
+get_current_monitor_geometry() {
+    hyprctl monitors -j | jq -r '.[] | select(.focused == true) | "\(.x),\(.y) \(.width)x\(.height)"'
+}
+
+start_recording() {
+    if [ -f "$PID_FILE" ] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
+        echo "Recording is already in progress"
+        exit 1
+    fi
+
+    local geometry
+    geometry=$(get_current_monitor_geometry)
+
+    local timestamp
+    timestamp=$(date +"%Y%m%d_%H%M%S")
+    local output_file="$RECORDING_DIR/recording_${timestamp}.mp4"
+
+    local audio_sink
+    audio_sink=$(wpctl inspect @DEFAULT_AUDIO_SINK@ | grep 'node.name' | sed 's/.*= "\(.*\)"/\1/').monitor
+
+    wf-recorder -g "$geometry" \
+                --audio="$audio_sink" \
+                -f "$output_file" \
+                > /tmp/wf_recorder.log 2>&1 &
+
+    echo $! > "$PID_FILE"
+    echo "recording" > "$STATUS_FILE"
+}
+
+stop_recording() {
+    if [ ! -f "$PID_FILE" ]; then
+        exit 1
+    fi
+
+    local pid=$(cat "$PID_FILE")
+
+    if kill -0 "$pid" 2>/dev/null; then
+        kill -INT "$pid"
+
+        wait "$pid" 2>/dev/null
+
+        rm -f "$PID_FILE"
+        echo "stopped" > "$STATUS_FILE"
+    else
+        rm -f "$PID_FILE"
+        echo "stopped" > "$STATUS_FILE"
+    fi
+}
+
+check_status() {
+    if [ -f "$PID_FILE" ] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
+        echo "recording" > "$STATUS_FILE"
+    else
+        echo "stopped" > "$STATUS_FILE"
+        rm -f "$PID_FILE"
+    fi
+}
+
+acquire_lock() {
+    if ! mkdir "$LOCK_FILE" 2>/dev/null; then
+        exit 0
+    fi
+    trap 'rm -rf "$LOCK_FILE"' EXIT
+}
+
+case "$1" in
+    start)
+        acquire_lock
+        start_recording
+        ;;
+    stop)
+        acquire_lock
+        stop_recording
+        ;;
+    toggle)
+        acquire_lock
+        if [ -f "$PID_FILE" ] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
+            stop_recording
+        else
+            start_recording
+        fi
+        ;;
+    status)
+        check_status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|toggle|status}"
+        exit 1
+        ;;
+esac
+
+exit 0

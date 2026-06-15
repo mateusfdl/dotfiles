@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FONT_BASE="${XDG_DATA_HOME:-$HOME/.local/share}/fonts"
+
+NF_VER="v3.4.0"
+
+NERD_FONTS=(
+  "jetbrains-mono|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/JetBrainsMono.zip|JetBrainsMonoNerdFont|JetBrainsMono Nerd Font Mono"
+  "fira-code|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/FiraCode.zip|FiraCodeNerdFont|FiraCode Nerd Font Mono"
+  "hack|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/Hack.zip|HackNerdFont|Hack Nerd Font Mono"
+  "monaspace|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/Monaspace.zip|MonaspaceNerdFont|MonaspiceNe Nerd Font"
+  "cascadia-code|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/CascadiaCode.zip|CascadiaCodeNerdFont|CaskaydiaCove Nerd Font Mono"
+  "commit-mono|https://github.com/ryanoasis/nerd-fonts/releases/download/$NF_VER/CommitMono.zip|CommitMonoNerdFont|CommitMono Nerd Font"
+  "maple-mono|https://github.com/subframe7536/maple-font/releases/download/v7.0/MapleMono-NF.zip|MapleMonoNF|Maple Mono NF"
+)
+
+PATCHED_FONTS=(
+  "iosevka-ss04|download_and_patch_iosevka ss04|IosevkaSS04NerdFont|IosevkaSS04 Nerd Font Mono"
+)
+
+list() {
+  for entry in "${NERD_FONTS[@]}" "${PATCHED_FONTS[@]}"; do
+    printf '%s\n' "${entry%%|*}"
+  done
+}
+
+want() {
+  local key="$1"; shift
+  [ "$#" -eq 0 ] && return 0
+  for k in "$@"; do [ "$k" = "$key" ] && return 0; done
+  return 1
+}
+
+install_dir() {
+  local folder="$1" src="$2"
+  local dest="$FONT_BASE/$folder"
+  mkdir -p "$dest"
+  find "$src" -type f \( -iname '*.ttf' -o -iname '*.otf' \) -exec cp {} "$dest" \;
+}
+
+case "${1:-}" in
+  -l|--list) list; exit 0 ;;
+esac
+
+SELECTED=("$@")
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+
+for entry in "${NERD_FONTS[@]}"; do
+  IFS='|' read -r key url folder family <<<"$entry"
+  want "$key" "${SELECTED[@]}" || continue
+  echo ">> $key"
+  curl -fLo "$TMP/$key.zip" "$url"
+  mkdir -p "$TMP/$key"
+  unzip -q "$TMP/$key.zip" -d "$TMP/$key"
+  install_dir "$folder" "$TMP/$key"
+done
+
+for entry in "${PATCHED_FONTS[@]}"; do
+  IFS='|' read -r key cmd folder family <<<"$entry"
+  want "$key" "${SELECTED[@]}" || continue
+  echo ">> $key"
+  out=$("$HERE"/$cmd "$TMP/$key-out")
+  install_dir "$folder" "$out"
+done
+
+fc-cache -f "$FONT_BASE"
+
+for entry in "${NERD_FONTS[@]}" "${PATCHED_FONTS[@]}"; do
+  IFS='|' read -r key _ _ family <<<"$entry"
+  want "$key" "${SELECTED[@]}" || continue
+  printf '%-16s %s\n' "$key" "$(fc-match -f '%{family}\n' "$family")"
+done
