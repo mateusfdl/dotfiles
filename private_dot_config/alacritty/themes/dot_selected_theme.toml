@@ -1,36 +1,48 @@
-[[colors.indexed_colors]]
-color = "0xffa066"
-index = 16
-
-[[colors.indexed_colors]]
-color = "0xff5d62"
-index = 17
-
-[colors.bright]
-black = "0x727169"
-blue = "0x7fb4ca"
-cyan = "0x7aa89f"
-green = "0x98bb6c"
-magenta = "0x938aa9"
-red = "0xe82424"
-white = "0xdcd7ba"
-yellow = "0xe6c384"
-
-[colors.normal]
-black = "0x090618"
-blue = "0x7e9cd8"
-cyan = "0x6a9589"
-green = "0x76946a"
-magenta = "0x957fb8"
-red = "0xc34043"
-white = "0xc8c093"
-yellow = "0xc0a36e"
+# Generated from silverado (dark)
 
 [colors.primary]
-background = "0x1e222a"
-foreground = "0xdcd7ba"
+background = "#1b1e2a"
+foreground = "#c9d1e3"
+dim_foreground = "#666e87"
+bright_foreground = "#e6eaf2"
+
+[colors.cursor]
+text = "#1b1e2a"
+cursor = "#c9d1e3"
+
+[colors.vi_mode_cursor]
+text = "#1b1e2a"
+cursor = "#82aaff"
 
 [colors.selection]
-background = "0x2d4f67"
-foreground = "0xc8c093"
+text = "#c9d1e3"
+background = "#2e3343"
+
+[colors.search.matches]
+foreground = "#1b1e2a"
+background = "#ffd882"
+
+[colors.search.focused_match]
+foreground = "#1b1e2a"
+background = "#50fa7b"
+
+[colors.normal]
+black = "#1b1e2a"
+red = "#f7768e"
+green = "#50fa7b"
+yellow = "#ffd882"
+blue = "#82aaff"
+magenta = "#c7a4ff"
+cyan = "#86e1fc"
+white = "#c9d1e3"
+
+[colors.bright]
+black = "#454c61"
+red = "#f7768e"
+green = "#50fa7b"
+yellow = "#ffd882"
+blue = "#82aaff"
+magenta = "#c7a4ff"
+cyan = "#86e1fc"
+white = "#e6eaf2"
 
