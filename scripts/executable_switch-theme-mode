@@ -9,6 +9,7 @@ TEMPLATE_DIR="$THEMES_DIR/templates"
 TMUX_THEME_FILE="$HOME/.tmux/theme.conf"
 ALACRITTY_THEME_FILE="$HOME/.config/alacritty/themes/.selected_theme.toml"
 KITTY_THEME_FILE="$HOME/.config/kitty/theme.conf"
+GHOSTTY_THEMES_DIR="$HOME/.config/ghostty/themes"
 
 GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
 TMP_MODE_FILE="$HOME/.cache/theme-mode"
@@ -335,6 +336,7 @@ apply_terminal_templates() {
     render_managed_template "$TEMPLATE_DIR/tmux.template" "$theme_file" "$TMUX_THEME_FILE" "# scripts theme begin" "# scripts theme end"
     render_template "$TEMPLATE_DIR/alacritty.template" "$theme_file" "$ALACRITTY_THEME_FILE"
     render_template "$TEMPLATE_DIR/kitty.template" "$theme_file" "$KITTY_THEME_FILE"
+    render_template "$TEMPLATE_DIR/ghostty.template" "$theme_file" "$GHOSTTY_THEMES_DIR/$theme"
 }
 
 reload_terminal_apps() {
