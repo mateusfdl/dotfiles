@@ -1,0 +1,54 @@
+# Generated from {{ theme.name }} ({{ theme.type }})
+
+foreground            {{ base16.base05 }}
+background            {{ base16.base00 }}
+selection_foreground  {{ base16.base05 }}
+selection_background  {{ base16.base02 }}
+
+url_color {{ base16.base0D }}
+
+# black
+color0  {{ base16.base00 }}
+color8  {{ base16.base03 }}
+
+# red
+color1  {{ base16.base08 }}
+color9  {{ base16.base08 }}
+
+# green
+color2  {{ base16.base0B }}
+color10 {{ base16.base0B }}
+
+# yellow
+color3  {{ base16.base0A }}
+color11 {{ base16.base0A }}
+
+# blue
+color4  {{ base16.base0D }}
+color12 {{ base16.base0D }}
+
+# magenta
+color5  {{ base16.base0E }}
+color13 {{ base16.base0E }}
+
+# cyan
+color6  {{ base16.base0C }}
+color14 {{ base16.base0C }}
+
+# white
+color7  {{ base16.base05 }}
+color15 {{ base16.base07 }}
+
+# Cursor colors
+cursor            {{ base16.base05 }}
+cursor_text_color {{ base16.base00 }}
+
+# Tab bar colors
+active_tab_foreground   {{ base16.base00 }}
+active_tab_background   {{ base16.base05 }}
+inactive_tab_foreground {{ base16.base05 }}
+inactive_tab_background {{ base16.base02 }}
+
+# Marks
+mark1_foreground {{ base16.base00 }}
+mark1_background {{ base16.base08 }}

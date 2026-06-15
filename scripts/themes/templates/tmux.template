@@ -1,0 +1,31 @@
+# Generated from {{ theme.name }} ({{ theme.type }})
+
+white='{{ base30.white }}'
+gray='{{ base16.base00 }}'
+dark_gray='{{ base30.one_bg }}'
+light_purple='{{ base30.purple }}'
+dark_purple='{{ base30.dark_purple }}'
+cyan='{{ base30.cyan }}'
+green='{{ base30.green }}'
+orange='{{ base30.orange }}'
+red='{{ base30.red }}'
+pink='{{ base30.pink }}'
+yellow='{{ base30.yellow }}'
+left_sep=
+left_icon="#S ";
+
+set-option -g status-style "bg=${gray},fg=${white}"
+set-option -g message-style "bg=${gray},fg=${cyan}"
+set-option -g pane-border-style "fg=${gray}"
+set-option -g pane-active-border-style "fg=${green}"
+
+set-window-option -g window-status-current-format "#[fg=${gray},bg=${dark_gray}]${left_sep}#[fg=${white},bg=${dark_gray}] #I #W${current_flags} #[fg=${dark_gray},bg=${gray}]${left_sep}"
+
+set-option -g status-left "#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green},bg=${gray}]#{?client_prefix,#[fg=${yellow}],}${left_sep}"
+set-option -g status-left-length 100
+set-option -g status-right-length 100
+set-window-option -g window-status-format "#[fg=${white}]#[bg=${gray}] #I #W${flags}"
+set-window-option -g window-status-activity-style "bold"
+set-window-option -g window-status-bell-style "bold"
+
+set-option -g status-right "#[bg=${gray},fg=${green}]#($HOME/scripts/wakatime_status.sh)"

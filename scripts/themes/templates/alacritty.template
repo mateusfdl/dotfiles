@@ -1,0 +1,47 @@
+# Generated from {{ theme.name }} ({{ theme.type }})
+
+[colors.primary]
+background = "{{ base16.base00 }}"
+foreground = "{{ base16.base05 }}"
+dim_foreground = "{{ base16.base04 }}"
+bright_foreground = "{{ base16.base07 }}"
+
+[colors.cursor]
+text = "{{ base16.base00 }}"
+cursor = "{{ base16.base05 }}"
+
+[colors.vi_mode_cursor]
+text = "{{ base16.base00 }}"
+cursor = "{{ base16.base0D }}"
+
+[colors.selection]
+text = "{{ base16.base05 }}"
+background = "{{ base16.base02 }}"
+
+[colors.search.matches]
+foreground = "{{ base16.base00 }}"
+background = "{{ base16.base0A }}"
+
+[colors.search.focused_match]
+foreground = "{{ base16.base00 }}"
+background = "{{ base16.base0B }}"
+
+[colors.normal]
+black = "{{ base16.base00 }}"
+red = "{{ base16.base08 }}"
+green = "{{ base16.base0B }}"
+yellow = "{{ base16.base0A }}"
+blue = "{{ base16.base0D }}"
+magenta = "{{ base16.base0E }}"
+cyan = "{{ base16.base0C }}"
+white = "{{ base16.base05 }}"
+
+[colors.bright]
+black = "{{ base16.base03 }}"
+red = "{{ base16.base08 }}"
+green = "{{ base16.base0B }}"
+yellow = "{{ base16.base0A }}"
+blue = "{{ base16.base0D }}"
+magenta = "{{ base16.base0E }}"
+cyan = "{{ base16.base0C }}"
+white = "{{ base16.base07 }}"
