@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 unalias z 2> /dev/null
 
@@ -89,14 +89,137 @@ zlaude() {
 
 open() {
   if is_arch; then
-    if command -v thunar >/dev/null 2>&1; then
-      thunar "$@" &
+    if command -v nautilus >/dev/null 2>&1; then
+      nautilus "$@" &
     else
       return 1
     fi
   else
     return 1
   fi
+}
+
+pclaude() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-personal/" claude "$@"
+}
+
+rsclaude() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-runsmith/" claude "$@"
+}
+
+ccusage() {
+  case "${1:-}" in
+    --from=today|--from=week|--from=month)
+      python - "$1" <<'PY'
+import datetime
+import json
+import pathlib
+import subprocess
+import sys
+
+
+def die(message):
+    print(f"error: {message}", file=sys.stderr)
+    raise SystemExit(1)
+
+
+def compact_duration(milliseconds):
+    seconds = int(milliseconds / 1000)
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    remaining_seconds = seconds % 60
+    return f"{hours}h {minutes}m {remaining_seconds}s"
+
+
+def project_session_path(project_path, session_id):
+    encoded_project = project_path.strip("/").replace("/", "-")
+    return pathlib.Path.home() / ".claude" / "projects" / encoded_project / f"{session_id}.jsonl"
+
+
+def session_last_timestamp(session_path):
+    last_timestamp = None
+    with session_path.open(encoding="utf-8") as session_file:
+        for line in session_file:
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            timestamp = record.get("timestamp")
+            if timestamp is None:
+                continue
+
+            current = datetime.datetime.fromisoformat(timestamp.replace("Z", "+00:00")).astimezone()
+            if last_timestamp is None or current > last_timestamp:
+                last_timestamp = current
+
+    return last_timestamp
+
+
+period = sys.argv[1].split("=", 1)[1]
+now = datetime.datetime.now().astimezone()
+
+if period == "today":
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+elif period == "week":
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    start = today_start - datetime.timedelta(days=today_start.weekday())
+elif period == "month":
+    start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+else:
+    die("expected --from=today, --from=week, or --from=month")
+
+since = start.strftime("%Y%m%d")
+until = now.strftime("%Y%m%d")
+
+result = subprocess.run(
+    ["bunx", "ccusage", "claude", "daily", "--since", since, "--until", until, "--json"],
+    check=True,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.DEVNULL,
+    text=True,
+)
+usage = json.loads(result.stdout)
+total_cost = usage.get("totals", {}).get("totalCost", 0)
+
+state_path = pathlib.Path.home() / ".claude.json"
+try:
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+except FileNotFoundError:
+    die("~/.claude.json was not found")
+
+duration_ms = 0
+for project_path, project in state.get("projects", {}).items():
+    session_id = project.get("lastSessionId")
+    if session_id is None:
+        continue
+
+    path = project_session_path(project_path, session_id)
+    if not path.exists():
+        matches = list((pathlib.Path.home() / ".claude" / "projects").rglob(f"{session_id}.jsonl"))
+        if len(matches) == 0:
+            continue
+        path = matches[0]
+
+    last_timestamp = session_last_timestamp(path)
+    if last_timestamp is None:
+        continue
+
+    if start <= last_timestamp <= now:
+        duration_ms += project.get("lastAPIDuration", 0)
+
+print(f"Total cost:             ${total_cost:,.2f}")
+print(f"Total duration (API):   {compact_duration(duration_ms)}")
+PY
+      ;;
+    --from=*)
+      printf '%s\n' "Usage: ccusage --from=today|week|month" >&2
+      return 1
+      ;;
+    *)
+      bunx ccusage "$@"
+      ;;
+  esac
 }
 
 scripts() {
@@ -106,6 +229,7 @@ scripts() {
   echo "grl - git log with fzf"
   echo "gdf - git diff files with fzf"
   echo "on - create a new obsidian note"
-  echo "open - alias for thunar in Arch"
+  echo "open - alias for nautilus in NixOS"
   echo "zlaude - claude with Z"
+  echo "ccusage --from=today|week|month - compact Claude usage cost and API duration"
 }
