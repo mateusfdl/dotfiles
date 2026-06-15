@@ -5,14 +5,15 @@ MISE_NODE_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/node"
 MISE_RUST_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/rust"
 
 [tools]
-go = "latest"
-node = "22.14.0"
-rust = "stable"
-lua = "5.4.6"
-chezmoi = "latest"
-pnpm = "latest"
 python = "stable"
 zig = "0.16.0"
+go = "latest"
+node = "24.14.1"
+rust = "stable"
+lua = "latest"
+zig = "latest"
+k6 = "latest"
+bun = "latest"
 "cargo:zola" = { git = "https://github.com/getzola/zola" }
 
 
@@ -32,3 +33,6 @@ tuist = "4.24.0"
 
 [settings]
 go_set_gobin = true
+
+[settings.node]
+compile = false
