@@ -58,7 +58,7 @@ tmfz-widget() {
       fi
       tmux capture-pane -ep -t "${active_pane}"
     '\''' \
-    --preview-window=right:50% \
+    --preview-window=right:50%:wrap \
     --tmux 80%)
   zle reset-prompt
 }
