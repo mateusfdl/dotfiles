@@ -1,1 +1,0 @@
-loginctl lock-session
