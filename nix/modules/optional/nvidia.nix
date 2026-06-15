@@ -18,4 +18,9 @@
   environment.systemPackages = with pkgs; [
     nvidia-vaapi-driver
   ];
+
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "nvidia";
+    NVD_BACKEND = "direct";
+  };
 }
