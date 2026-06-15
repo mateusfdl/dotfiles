@@ -1,4 +1,9 @@
 { pkgs, claude-desktop-pkg, hunk-pkg, ... }:
+let
+  taskwarriorAsTaskw = pkgs.writeShellScriptBin "taskw" ''
+    exec ${pkgs.taskwarrior3}/bin/task "$@"
+  '';
+in
 {
   environment.systemPackages = with pkgs; [
     apple-cursor
@@ -28,6 +33,7 @@
     quickshell
     slurp
     awww
+    taskwarriorAsTaskw
     tmux
     tree-sitter
     unzip
