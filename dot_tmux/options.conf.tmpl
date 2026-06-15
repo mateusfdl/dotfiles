@@ -29,3 +29,5 @@ bind -T copy-mode-vi y send -X copy-pipe-and-cancel "tmux osc52"
 bind -T copy-mode-vi Enter send -X copy-pipe-and-cancel "tmux osc52"
 
 set -g @continuum-restore 'on'
+set -g extended-keys on
+set -g extended-keys-format csi-u
