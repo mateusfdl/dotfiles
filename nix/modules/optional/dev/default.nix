@@ -26,6 +26,7 @@
     ./sd.nix
     ./fzf.nix
     ./neovim.nix
+    ./bubblewrap.nix
     ./zephyr.nix
   ];
 
