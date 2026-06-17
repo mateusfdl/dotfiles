@@ -6,6 +6,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs
 import qs.modules.common
+import QsUtils
 
 Scope {
     Variants {

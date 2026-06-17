@@ -8,6 +8,7 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Widgets
+import QsUtils
 
 ItemDelegate {
     id: root
@@ -70,8 +71,8 @@ ItemDelegate {
             width: parent.width - appIcon.width - parent.spacing - parent.leftPadding - parent.rightPadding
             text: root.modelData.name
             color: Appearance.m3colors.m3primaryText
-            font.family: Appearance.font.family.uiFont
-            font.pixelSize: Appearance.font.pixelSize.textBase
+            font.family: Style.font.family.uiFont
+            font.pixelSize: Style.font.pixelSize.textBase
             font.weight: Font.Normal
             elide: Text.ElideRight
             maximumLineCount: 1

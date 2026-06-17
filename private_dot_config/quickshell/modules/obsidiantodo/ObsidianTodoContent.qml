@@ -149,7 +149,7 @@ FocusScope {
                 text: "\uf0c8"
                 font.family: root.fontFamily
                 font.pixelSize: 28
-                color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                color: Appearance.m3colors.m3accentPrimary
                 renderType: Text.NativeRendering
             }
 
@@ -158,7 +158,7 @@ FocusScope {
                 font.family: root.fontFamily
                 font.pixelSize: 26
                 font.weight: Font.DemiBold
-                color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                color: Appearance.m3colors.m3primaryText
                 renderType: Text.NativeRendering
             }
 
@@ -170,7 +170,7 @@ FocusScope {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
+            color: Colors.mix(Appearance.m3colors.m3accentPrimary, Appearance.m3colors.m3borderSecondary, 0.3)
             opacity: 0.5
         }
 
@@ -182,9 +182,9 @@ FocusScope {
 
             font.family: root.fontFamily
             font.pixelSize: 20
-            color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
-            selectionColor: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
-            selectedTextColor: Appearance.m3colors?.m3windowBackground ?? "#1a1b26"
+            color: Appearance.m3colors.m3primaryText
+            selectionColor: Appearance.m3colors.m3accentPrimary
+            selectedTextColor: Appearance.m3colors.m3windowBackground
             renderType: Text.NativeRendering
             clip: true
 
@@ -193,7 +193,7 @@ FocusScope {
                 verticalAlignment: Text.AlignVCenter
                 text: "What needs to be done?"
                 font: descriptionInput.font
-                color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                color: Appearance.m3colors.m3secondaryText
                 visible: descriptionInput.text.length === 0 && !descriptionInput.activeFocus
                 renderType: Text.NativeRendering
             }
@@ -203,7 +203,7 @@ FocusScope {
             Layout.fillWidth: true
             Layout.topMargin: 16
             height: 1
-            color: Appearance.m3colors?.m3borderSecondary ?? "#292e42"
+            color: Appearance.m3colors.m3borderSecondary
             opacity: 0.4
         }
 
@@ -216,7 +216,7 @@ FocusScope {
                 text: "Tags:"
                 font.family: root.fontFamily
                 font.pixelSize: 16
-                color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                color: Appearance.m3colors.m3secondaryText
                 renderType: Text.NativeRendering
                 Layout.alignment: Qt.AlignVCenter
             }
@@ -237,7 +237,7 @@ FocusScope {
                         width: chipText.implicitWidth + 28
                         height: 34
                         radius: 17
-                        color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.8)
+                        color: Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.8)
 
                         Text {
                             id: chipText
@@ -245,7 +245,7 @@ FocusScope {
                             text: "#" + tagChip.modelData
                             font.family: root.fontFamily
                             font.pixelSize: 16
-                            color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                            color: Appearance.m3colors.m3accentPrimary
                             renderType: Text.NativeRendering
                         }
 
@@ -267,7 +267,7 @@ FocusScope {
 
                     font.family: root.fontFamily
                     font.pixelSize: 16
-                    color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                    color: Appearance.m3colors.m3primaryText
                     renderType: Text.NativeRendering
 
                     function tagChipsWidth() {
@@ -286,7 +286,7 @@ FocusScope {
                         verticalAlignment: Text.AlignVCenter
                         text: "Add tag..."
                         font: tagInput.font
-                        color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                        color: Appearance.m3colors.m3secondaryText
                         visible: tagInput.text.length === 0 && !tagInput.activeFocus
                         renderType: Text.NativeRendering
                     }

@@ -5,6 +5,7 @@ import Quickshell.Hyprland
 import qs.services
 import qs.modules.common.widgets
 import qs.modules.common
+import QsUtils
 
 Item {
     id: root
@@ -50,19 +51,19 @@ Item {
 
                     Behavior on width {
                         NumberAnimation {
-                            duration: Appearance.animation.elementMoveFast.duration
+                            duration: Style.animation.elementMoveFast.duration
                         }
                     }
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: Appearance.animation.elementMoveFast.duration
+                            duration: Style.animation.elementMoveFast.duration
                         }
                     }
 
                     Behavior on border.color {
                         ColorAnimation {
-                            duration: Appearance.animation.elementMoveFast.duration
+                            duration: Style.animation.elementMoveFast.duration
                         }
                     }
                 }

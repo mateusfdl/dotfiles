@@ -159,6 +159,8 @@ void ObsidianTodo::fetchTags() {
 
 void ObsidianTodo::fetchTodos() {
   auto *proc = startTask(this, {QStringLiteral("status:pending"),
+                                QStringLiteral("or"),
+                                QStringLiteral("due.before:tomorrow"),
                                 QStringLiteral("export")});
 
   connect(proc, &QProcess::errorOccurred, this,
@@ -304,14 +306,33 @@ bool ObsidianTodo::setTodoStatus(int index, const QString &marker) {
   } else if (markerValue == QStringLiteral("-")) {
     runTask({uuid, QStringLiteral("delete")}, &ok);
   } else if (markerValue == QStringLiteral(">")) {
-    runTask({uuid, QStringLiteral("modify"), QStringLiteral("due:tomorrow"),
-             QStringLiteral("marker:>")},
+    runTask({uuid, QStringLiteral("modify"), QStringLiteral("status:pending"),
+             QStringLiteral("due:tomorrow"), QStringLiteral("marker:>")},
             &ok);
   } else {
-    runTask({uuid, QStringLiteral("modify"),
+    runTask({uuid, QStringLiteral("modify"), QStringLiteral("status:pending"),
              QStringLiteral("marker:%1").arg(markerValue)},
             &ok);
   }
+
+  if (ok)
+    fetchTodos();
+
+  return ok;
+}
+
+bool ObsidianTodo::annotateTodo(int index, const QString &note) {
+  const auto trimmedNote = note.trimmed();
+  if (index < 0 || trimmedNote.isEmpty() || index >= m_todos.size())
+    return false;
+
+  const auto todo = m_todos.at(index).toMap();
+  const auto uuid = uuidForTodo(todo);
+  if (uuid.isEmpty())
+    return false;
+
+  bool ok = false;
+  runTask({uuid, QStringLiteral("annotate"), trimmedNote}, &ok);
 
   if (ok)
     fetchTodos();

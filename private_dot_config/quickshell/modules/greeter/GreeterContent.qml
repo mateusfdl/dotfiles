@@ -8,6 +8,7 @@ import Quickshell
 import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Item {
     id: root
@@ -30,7 +31,7 @@ Item {
 
     Process {
         id: wallpaperQuery
-        command: ["sh", "-c", `for d in "$HOME/.cache/awww" "$HOME/.cache/swww"; do for f in "$d"/*; do [ -f "$f" ] && tr '\\0' '\\n' < "$f" | sed -n '3p' && exit 0; done; done`]
+        command: ["sh", "-c", `for f in "$HOME"/.cache/awww/*/DP-4 "$HOME"/.cache/awww/*/* "$HOME"/.cache/swww/DP-4 "$HOME"/.cache/swww/*; do [ -f "$f" ] || continue; p=$(tr '\\0' '\\n' < "$f" | tail -n1); [ -n "$p" ] && [ -e "$p" ] && printf '%s\\n' "$p" && exit 0; done`]
         running: true
         stdout: SplitParser {
             onRead: data => {
@@ -103,7 +104,7 @@ Item {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
                 color: Qt.rgba(1, 1, 1, 0.7)
                 font.pixelSize: 22
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.Normal
             }
 
@@ -114,7 +115,7 @@ Item {
                 text: Qt.formatDateTime(new Date(), "HH:mm")
                 color: "#ffffff"
                 font.pixelSize: 120
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.Light
 
                 Timer {
@@ -138,7 +139,7 @@ Item {
                 text: "Welcome"
                 color: Qt.rgba(1, 1, 1, 0.9)
                 font.pixelSize: 24
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.DemiBold
             }
 
@@ -178,7 +179,7 @@ Item {
 
                         color: "#ffffff"
                         font.pixelSize: 16
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                         focus: true
                         clip: true
                         selectByMouse: true
@@ -286,7 +287,7 @@ Item {
                         color: "#ffffff"
                         echoMode: TextInput.Password
                         font.pixelSize: 16
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                         passwordCharacter: "\u2022"
                         enabled: !root.context.loginInProgress
                         clip: true
@@ -366,7 +367,7 @@ Item {
                 text: root.context.errorMessage || "Authentication failed"
                 color: "#ff5555"
                 font.pixelSize: 14
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 opacity: root.context.showFailure ? 1 : 0
 
                 Behavior on opacity {
@@ -386,7 +387,7 @@ Item {
                 text: root.context.greetdAvailable ? "" : "greetd is not available"
                 color: "#ffaa55"
                 font.pixelSize: 12
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 visible: !root.context.greetdAvailable && !root.context.loginSucceeded
             }
 
@@ -396,7 +397,7 @@ Item {
                 text: "Press Escape to close"
                 color: Qt.rgba(1, 1, 1, 0.3)
                 font.pixelSize: 12
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 visible: root.context.loginSucceeded && !root.context.greetdAvailable
             }
         }

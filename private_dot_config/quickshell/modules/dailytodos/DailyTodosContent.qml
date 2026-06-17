@@ -14,6 +14,7 @@ FocusScope {
     signal closeRequested
 
     property bool isOpen: false
+    property bool noteMode: false
     property int currentIndex: 0
     readonly property string fontFamily: "IosevkaSS04 Nerd Font Mono"
     readonly property int todoCount: ObsidianTodo.todos.length
@@ -30,6 +31,37 @@ FocusScope {
         interval: 50
         repeat: false
         onTriggered: focusAnchor.forceActiveFocus()
+    }
+
+    Timer {
+        id: noteFocusTimer
+        interval: 50
+        repeat: false
+        onTriggered: noteInput.forceActiveFocus()
+    }
+
+    function openNoteMode() {
+        if (root.todoCount === 0)
+            return;
+        noteInput.text = "";
+        root.noteMode = true;
+        noteFocusTimer.restart();
+    }
+
+    function closeNoteMode() {
+        root.noteMode = false;
+        noteInput.text = "";
+        focusAnchor.forceActiveFocus();
+    }
+
+    function submitNote() {
+        const text = noteInput.text.trim();
+        if (text.length === 0) {
+            root.closeNoteMode();
+            return;
+        }
+        ObsidianTodo.annotateTodo(root.currentIndex, text);
+        root.closeNoteMode();
     }
 
     function clampIndex() {
@@ -73,17 +105,28 @@ FocusScope {
     onIsOpenChanged: {
         if (isOpen) {
             root.currentIndex = 0;
+            root.noteMode = false;
             ObsidianTodo.fetchTodos();
             focusTimer.restart();
         } else {
+            root.noteMode = false;
             focusAnchor.focus = false;
             root.focus = false;
         }
     }
 
     Keys.onPressed: event => {
+        if (root.noteMode)
+            return;
+
         if (event.key === Qt.Key_Escape) {
             root.closeRequested();
+            event.accepted = true;
+            return;
+        }
+
+        if (event.key === Qt.Key_A) {
+            root.openNoteMode();
             event.accepted = true;
             return;
         }
@@ -167,17 +210,17 @@ FocusScope {
             Text {
                 text: "\uf0ae"
                 font.family: root.fontFamily
-                font.pixelSize: 28
-                color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                font.pixelSize: 34
+                color: Appearance.m3colors.m3accentPrimary
                 renderType: Text.NativeRendering
             }
 
             Text {
                 text: "Daily TODOs"
                 font.family: root.fontFamily
-                font.pixelSize: 26
+                font.pixelSize: 32
                 font.weight: Font.DemiBold
-                color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                color: Appearance.m3colors.m3primaryText
                 renderType: Text.NativeRendering
             }
 
@@ -188,8 +231,8 @@ FocusScope {
             Text {
                 text: Qt.formatDate(new Date(), "ddd, dd/MM")
                 font.family: root.fontFamily
-                font.pixelSize: 14
-                color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                font.pixelSize: 16
+                color: Appearance.m3colors.m3secondaryText
                 renderType: Text.NativeRendering
             }
         }
@@ -198,7 +241,7 @@ FocusScope {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
+            color: Colors.mix(Appearance.m3colors.m3accentPrimary, Appearance.m3colors.m3borderSecondary, 0.3)
             opacity: 0.5
         }
 
@@ -206,7 +249,7 @@ FocusScope {
             Layout.fillWidth: true
             Layout.topMargin: 16
             Layout.fillHeight: false
-            implicitHeight: ObsidianTodo.todos.length === 0 ? 120 : Math.min(todoListView.contentHeight, 420)
+            implicitHeight: ObsidianTodo.todos.length === 0 ? 200 : Math.min(todoListView.contentHeight, 640)
 
             ColumnLayout {
                 anchors.centerIn: parent
@@ -216,8 +259,8 @@ FocusScope {
                 Text {
                     text: "\uf058"
                     font.family: root.fontFamily
-                    font.pixelSize: 40
-                    color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                    font.pixelSize: 48
+                    color: Appearance.m3colors.m3secondaryText
                     opacity: 0.4
                     Layout.alignment: Qt.AlignHCenter
                     renderType: Text.NativeRendering
@@ -226,8 +269,8 @@ FocusScope {
                 Text {
                     text: "No tasks for today"
                     font.family: root.fontFamily
-                    font.pixelSize: 16
-                    color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                    font.pixelSize: 19
+                    color: Appearance.m3colors.m3secondaryText
                     Layout.alignment: Qt.AlignHCenter
                     renderType: Text.NativeRendering
                 }
@@ -259,9 +302,9 @@ FocusScope {
                     width: ListView.view.width
                     height: todoRow.implicitHeight + 20
                     radius: 10
-                    color: isSelected ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.82) : todoMouseArea.containsMouse ? Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.92) : "transparent"
+                    color: isSelected ? Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.82) : todoMouseArea.containsMouse ? Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.92) : "transparent"
                     border.width: isSelected ? 1 : 0
-                    border.color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.5)
+                    border.color: Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.5)
 
                     Behavior on color {
                         ColorAnimation {
@@ -284,8 +327,8 @@ FocusScope {
                             readonly property string status: todoItem.modelData.status || " "
                             text: root.iconForStatus(status)
                             font.family: root.fontFamily
-                            font.pixelSize: 18
-                            color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                            font.pixelSize: 22
+                            color: Appearance.m3colors.m3accentPrimary
                             opacity: status !== " " ? 1.0 : 0.7
                             renderType: Text.NativeRendering
                             Layout.alignment: Qt.AlignTop
@@ -299,8 +342,8 @@ FocusScope {
                                 Layout.fillWidth: true
                                 text: todoItem.modelData.description || ""
                                 font.family: root.fontFamily
-                                font.pixelSize: 16
-                                color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                                font.pixelSize: 19
+                                color: Appearance.m3colors.m3primaryText
                                 wrapMode: Text.WordWrap
                                 renderType: Text.NativeRendering
                             }
@@ -318,15 +361,15 @@ FocusScope {
                                         width: tagText.implicitWidth + 16
                                         height: tagText.implicitHeight + 6
                                         radius: 4
-                                        color: Colors.transparentize(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", 0.85)
+                                        color: Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.85)
 
                                         Text {
                                             id: tagText
                                             anchors.centerIn: parent
                                             text: "#" + parent.modelData
                                             font.family: root.fontFamily
-                                            font.pixelSize: 12
-                                            color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                                            font.pixelSize: 14
+                                            color: Appearance.m3colors.m3accentPrimary
                                             renderType: Text.NativeRendering
                                         }
                                     }
@@ -359,12 +402,133 @@ FocusScope {
             }
 
             Text {
-                text: "j/k navigate · d done · p pending · n next day · u won't do · r refresh · esc close"
+                text: "j/k navigate · d done · p pending · n next day · u won't do · a note · r refresh · esc close"
                 font.family: root.fontFamily
-                font.pixelSize: 11
-                color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                font.pixelSize: 13
+                color: Appearance.m3colors.m3secondaryText
                 opacity: 0.6
                 renderType: Text.NativeRendering
+            }
+        }
+    }
+
+    Rectangle {
+        id: noteOverlay
+        anchors.fill: parent
+        visible: root.noteMode
+        z: 50
+        color: Colors.transparentize(Appearance.m3colors.m3windowBackground, 0.2)
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: root.closeNoteMode()
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: parent.width - 96
+            height: noteCard.implicitHeight + 36
+            radius: Appearance.rounding.normal
+            color: Appearance.m3colors.m3layerBackground1
+            border.width: 1
+            border.color: Colors.transparentize(Appearance.m3colors.m3accentPrimary, 0.5)
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: mouse => {
+                    mouse.accepted = true;
+                }
+            }
+
+            ColumnLayout {
+                id: noteCard
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 22
+                    rightMargin: 22
+                }
+                spacing: 12
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Text {
+                        text: "\uf075"
+                        font.family: root.fontFamily
+                        font.pixelSize: 22
+                        color: Appearance.m3colors.m3accentPrimary
+                        renderType: Text.NativeRendering
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: root.currentIndex >= 0 && root.currentIndex < root.todoCount ? (ObsidianTodo.todos[root.currentIndex].description || "") : ""
+                        font.family: root.fontFamily
+                        font.pixelSize: 17
+                        font.weight: Font.DemiBold
+                        color: Appearance.m3colors.m3primaryText
+                        elide: Text.ElideRight
+                        renderType: Text.NativeRendering
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 1
+                    color: Appearance.m3colors.m3borderSecondary
+                    opacity: 0.4
+                }
+
+                TextInput {
+                    id: noteInput
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: 36
+
+                    font.family: root.fontFamily
+                    font.pixelSize: 19
+                    color: Appearance.m3colors.m3primaryText
+                    selectionColor: Appearance.m3colors.m3accentPrimary
+                    selectedTextColor: Appearance.m3colors.m3windowBackground
+                    renderType: Text.NativeRendering
+                    clip: true
+
+                    Keys.onPressed: event => {
+                        if (event.key === Qt.Key_Escape) {
+                            root.closeNoteMode();
+                            event.accepted = true;
+                            return;
+                        }
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            root.submitNote();
+                            event.accepted = true;
+                            return;
+                        }
+                    }
+
+                    Text {
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Add a note..."
+                        font: noteInput.font
+                        color: Appearance.m3colors.m3secondaryText
+                        visible: noteInput.text.length === 0
+                        renderType: Text.NativeRendering
+                    }
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: "enter save · esc cancel"
+                    font.family: root.fontFamily
+                    font.pixelSize: 12
+                    color: Appearance.m3colors.m3secondaryText
+                    opacity: 0.6
+                    renderType: Text.NativeRendering
+                }
             }
         }
     }

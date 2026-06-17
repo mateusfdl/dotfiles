@@ -8,6 +8,7 @@ import Quickshell.Services.Mpris
 Singleton {
     id: root
 
+    property MprisPlayer trackedPlayer: null
     property MprisPlayer activePlayer: null
 
     readonly property bool hasActivePlayer: activePlayer !== null
@@ -15,24 +16,17 @@ Singleton {
     readonly property string artist: activePlayer?.metadata["xesam:artist"] ?? ""
     readonly property string album: activePlayer?.metadata["xesam:album"] ?? ""
     readonly property string artUrl: activePlayer?.metadata["mpris:artUrl"] ?? ""
+    readonly property string identity: activePlayer?.identity ?? ""
     readonly property int playbackState: activePlayer?.playbackState ?? MprisPlaybackState.Stopped
-    readonly property bool canPlay: activePlayer?.canPlay ?? false
-    readonly property bool canPause: activePlayer?.canPause ?? false
+    readonly property bool isPlaying: playbackState === MprisPlaybackState.Playing
     readonly property bool canGoNext: activePlayer?.canGoNext ?? false
     readonly property bool canGoPrevious: activePlayer?.canGoPrevious ?? false
+
     readonly property real position: activePlayer?.position ?? 0
     readonly property real length: activePlayer?.length ?? 0
-
-    readonly property string identity: activePlayer?.identity ?? ""
-
     readonly property string positionText: formatTime(position)
     readonly property string lengthText: formatTime(length)
     readonly property real progress: length > 0 ? position / length : 0
-
-    readonly property bool isPlaying: playbackState === MprisPlaybackState.Playing
-    readonly property bool isPaused: playbackState === MprisPlaybackState.Paused
-
-    property MprisPlayer trackedPlayer: null
 
     Instantiator {
         model: Mpris.players
@@ -50,7 +44,7 @@ Singleton {
             Component.onDestruction: {
                 if (root.trackedPlayer === modelData) {
                     root.trackedPlayer = null;
-                    updateActivePlayer();
+                    root.updateActivePlayer();
                 }
             }
 
@@ -71,74 +65,51 @@ Singleton {
 
         function onPlaybackStateChanged() {
             if (activePlayer && activePlayer.playbackState === MprisPlaybackState.Stopped) {
-                updateActivePlayer();
+                root.updateActivePlayer();
             }
         }
     }
 
     function updateActivePlayer() {
-        if (!Mpris.players || !Mpris.players.values || Mpris.players.values.length === 0) {
+        const players = Mpris.players?.values ?? [];
+        if (players.length === 0) {
             trackedPlayer = null;
             return;
         }
 
-        let playingPlayer = null;
         let pausedPlayer = null;
-        let anyPlayer = null;
-
-        for (const player of Mpris.players.values) {
-            if (!anyPlayer)
-                anyPlayer = player;
-
+        for (const player of players) {
             if (player.playbackState === MprisPlaybackState.Playing) {
-                playingPlayer = player;
-                break;
-            } else if (player.playbackState === MprisPlaybackState.Paused && !pausedPlayer) {
+                trackedPlayer = player;
+                return;
+            }
+            if (player.playbackState === MprisPlaybackState.Paused && !pausedPlayer) {
                 pausedPlayer = player;
             }
         }
 
-        trackedPlayer = playingPlayer || pausedPlayer || anyPlayer;
+        trackedPlayer = pausedPlayer ?? players[0];
     }
 
-    function play() {
-        if (activePlayer && canPlay) {
+    function playPause() {
+        if (!activePlayer)
+            return;
+        if (isPlaying) {
+            if (activePlayer.canPause)
+                activePlayer.pause();
+        } else if (activePlayer.canPlay) {
             activePlayer.play();
         }
     }
 
-    function pause() {
-        if (activePlayer && canPause) {
-            activePlayer.pause();
-        }
-    }
-
-    function playPause() {
-        if (activePlayer) {
-            if (isPlaying) {
-                pause();
-            } else {
-                play();
-            }
-        }
-    }
-
     function next() {
-        if (activePlayer && canGoNext) {
+        if (activePlayer && canGoNext)
             activePlayer.next();
-        }
     }
 
     function previous() {
-        if (activePlayer && canGoPrevious) {
+        if (activePlayer && canGoPrevious)
             activePlayer.previous();
-        }
-    }
-
-    function stop() {
-        if (activePlayer) {
-            activePlayer.stop();
-        }
     }
 
     function formatTime(seconds) {
@@ -150,7 +121,5 @@ Singleton {
         return mins + ":" + (secs < 10 ? "0" : "") + secs;
     }
 
-    Component.onCompleted: {
-        updateActivePlayer();
-    }
+    Component.onCompleted: updateActivePlayer()
 }

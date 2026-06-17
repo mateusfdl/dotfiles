@@ -6,6 +6,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Widgets
+import QsUtils
 
 /**
  * Material 3 slider. See https://m3.material.io/components/sliders/overview
@@ -55,12 +56,12 @@ Slider {
     Behavior on value {
         // This makes the adjusted value (like volume) shift smoothly
         SmoothedAnimation {
-            velocity: Appearance.animation.elementMoveFast.velocity
+            velocity: Style.animation.elementMoveFast.velocity
         }
     }
 
     Behavior on handleMargins {
-        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+        animation: Style.animation.elementMoveFast.numberAnimation.createObject(this)
     }
 
     component TrackDot: Rectangle {
@@ -73,7 +74,7 @@ Slider {
         color: value > root.visualPosition ? root.dotColor : root.dotColorHighlighted
 
         Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
     }
 

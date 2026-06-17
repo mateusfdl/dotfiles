@@ -16,7 +16,6 @@ import qs.modules.cheatsheet
 import qs.modules.obsidiantodo
 import qs.modules.dailytodos
 import qs.modules.lockscreen
-import qs.services
 
 ShellRoot {
     property bool enableTopbar: Config.options.modules.topbar
@@ -29,10 +28,6 @@ ShellRoot {
     property bool enableObsidianTodo: Config.options.modules.obsidianTodo
     property bool enableDailyTodos: Config.options.modules.dailyTodos
     property bool enableLockScreen: Config.options.modules.lockScreen
-
-    Component.onCompleted: {
-        MaterialThemeLoader.reapplyTheme();
-    }
 
     ThemeIpc {}
 
@@ -100,5 +95,11 @@ ShellRoot {
         active: enableTopbar
 
         sourceComponent: PomodoroBreakOverlay {}
+    }
+
+    Loader {
+        active: enableTopbar
+
+        sourceComponent: RecordingOverlay {}
     }
 }

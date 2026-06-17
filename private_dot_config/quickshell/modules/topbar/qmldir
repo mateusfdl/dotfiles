@@ -11,6 +11,7 @@ Topbar 1.0 Topbar.qml
 Workspaces 1.0 Workspaces.qml
 PomodoroIndicator 1.0 PomodoroIndicator.qml
 RecordingIndicator 1.0 RecordingIndicator.qml
+RecordingOverlay 1.0 RecordingOverlay.qml
 VolumeIndicator 1.0 VolumeIndicator.qml
 ControlCenter 1.0 ControlCenter.qml
 Clock 1.0 Clock.qml

@@ -8,6 +8,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
+import QsUtils
 
 Item {
     id: root
@@ -65,8 +66,8 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: root.selectedApp?.name ?? ""
                         color: Appearance.m3colors.m3primaryText
-                        font.family: Appearance.font.family.uiFont
-                        font.pixelSize: Appearance.font.pixelSize.textLarge
+                        font.family: Style.font.family.uiFont
+                        font.pixelSize: Style.font.pixelSize.textLarge
                         font.weight: Font.DemiBold
                         elide: Text.ElideRight
                         maximumLineCount: 1
@@ -99,8 +100,8 @@ Item {
                     StyledText {
                         text: qsTr("Metadata")
                         color: Appearance.m3colors.m3secondaryText
-                        font.family: Appearance.font.family.uiFont
-                        font.pixelSize: Appearance.font.pixelSize.textSmall
+                        font.family: Style.font.family.uiFont
+                        font.pixelSize: Style.font.pixelSize.textSmall
                         font.weight: Font.DemiBold
                         bottomPadding: 12
                     }
@@ -165,8 +166,8 @@ Item {
                 width: 100
                 text: metaRow.label
                 color: Appearance.m3colors.m3secondaryText
-                font.family: Appearance.font.family.uiFont
-                font.pixelSize: Appearance.font.pixelSize.textSmall
+                font.family: Style.font.family.uiFont
+                font.pixelSize: Style.font.pixelSize.textSmall
                 font.weight: Font.Normal
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -176,8 +177,8 @@ Item {
                 width: metaRow.width - 100
                 text: metaRow.value
                 color: Appearance.m3colors.m3primaryText
-                font.family: Appearance.font.family.uiFont
-                font.pixelSize: Appearance.font.pixelSize.textSmall
+                font.family: Style.font.family.uiFont
+                font.pixelSize: Style.font.pixelSize.textSmall
                 font.weight: Font.Normal
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter

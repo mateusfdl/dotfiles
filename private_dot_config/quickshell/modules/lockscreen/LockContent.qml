@@ -8,6 +8,7 @@ import Quickshell
 import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Item {
     id: root
@@ -89,7 +90,7 @@ Item {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
                 color: Qt.rgba(1, 1, 1, 0.7)
                 font.pixelSize: 22
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.Normal
             }
 
@@ -99,7 +100,7 @@ Item {
                 text: Qt.formatDateTime(new Date(), "HH:mm")
                 color: "#ffffff"
                 font.pixelSize: 120
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.Light
 
                 Timer {
@@ -122,7 +123,7 @@ Item {
                 text: root.username
                 color: Qt.rgba(1, 1, 1, 0.8)
                 font.pixelSize: 20
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.weight: Font.Normal
             }
 
@@ -202,7 +203,7 @@ Item {
                         color: "#ffffff"
                         echoMode: TextInput.Password
                         font.pixelSize: 16
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                         passwordCharacter: "\u2022"
                         focus: true
                         enabled: !root.context.unlockInProgress
@@ -259,7 +260,7 @@ Item {
                 text: "Authentication failed"
                 color: "#ff5555"
                 font.pixelSize: 14
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 opacity: root.context.showFailure ? 1 : 0
 
                 Behavior on opacity {
@@ -279,7 +280,7 @@ Item {
                 text: Config.options.lock?.showLockedText ? "Screen Locked" : ""
                 color: Qt.rgba(1, 1, 1, 0.5)
                 font.pixelSize: 12
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 visible: text.length > 0
             }
         }

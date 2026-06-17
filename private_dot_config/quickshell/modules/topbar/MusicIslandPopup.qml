@@ -236,7 +236,7 @@ Scope {
                             StyledText {
                                 text: MediaPlayer.positionText
                                 font.pixelSize: 10
-                                font.family: Appearance.font.family.monospace
+                                font.family: Style.font.family.monospace
                                 color: Qt.rgba(1, 1, 1, 0.4)
                             }
 
@@ -247,7 +247,7 @@ Scope {
                             StyledText {
                                 text: MediaPlayer.lengthText
                                 font.pixelSize: 10
-                                font.family: Appearance.font.family.monospace
+                                font.family: Style.font.family.monospace
                                 color: Qt.rgba(1, 1, 1, 0.4)
                             }
                         }
@@ -325,9 +325,9 @@ Scope {
                 // Slide-down animation
                 Behavior on y {
                     NumberAnimation {
-                        duration: Appearance.animation.elementMove.duration
+                        duration: Style.animation.elementMove.duration
                         easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Appearance.animationCurves.expressiveDefaultSpatial
+                        easing.bezierCurve: Style.animationCurves.expressiveDefaultSpatial
                     }
                 }
 

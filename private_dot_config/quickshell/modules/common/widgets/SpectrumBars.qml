@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.modules.common
+import QsUtils
 
 Item {
     id: root

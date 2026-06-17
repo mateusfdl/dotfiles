@@ -13,6 +13,7 @@ import qs.modules.common
 import qs.modules.common.effects
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 
 Scope {
     id: controlCenterScope
@@ -71,8 +72,8 @@ Scope {
                 width: 420
                 height: Math.max(contentColumn.implicitHeight + 40, 800)
                 radius: 20
-                color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
-                border.color: Qt.rgba(1, 1, 1, 0.08)
+                color: Appearance.colors.colLayer0
+                border.color: Appearance.m3colors.m3borderSecondary
                 border.width: 1
                 z: 10
 
@@ -108,14 +109,14 @@ Scope {
                                 Layout.preferredWidth: 48
                                 Layout.preferredHeight: 48
                                 radius: 24
-                                color: Qt.rgba(1, 0.8, 0.2, 0.9)
+                                color: Appearance.m3colors.m3accentPrimary
 
                                 MaterialSymbol {
                                     anchors.centerIn: parent
                                     text: "person"
                                     iconSize: 28
                                     fill: 1
-                                    color: Qt.rgba(0.1, 0.1, 0.1, 1)
+                                    color: Appearance.m3colors.m3onPrimary
                                 }
                             }
 
@@ -302,7 +303,7 @@ Scope {
                                     text: "music_note"
                                     iconSize: 20
                                     fill: 1
-                                    color: Qt.rgba(1, 0.6, 0.8, 1)
+                                    color: Appearance.m3colors.m3accentPrimary
                                 }
 
                                 StyledText {
@@ -334,7 +335,7 @@ Scope {
                                     Rectangle {
                                         anchors.fill: parent
                                         radius: 10
-                                        color: Qt.rgba(0.15, 0.15, 0.18, 0.6)
+                                        color: Appearance.colors.colLayer2
                                     }
 
                                     Image {

@@ -27,6 +27,16 @@ Scope {
         GlobalStates.obsidianTodoOpen = false;
     }
 
+    FileView {
+        path: `${Config.vaultPath}/Journal/todos/views/pending.md`
+        watchChanges: true
+        onFileChanged: {
+            reload();
+            if (obsidianTodoScope.isOpen)
+                ObsidianTodo.fetchTags();
+        }
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -66,9 +76,9 @@ Scope {
                     width: 950
                     height: todoContent.implicitHeight
 
-                    radius: Appearance.rounding?.large ?? 23
-                    color: Appearance.m3colors?.m3windowBackground ?? "#1a1b26"
-                    border.color: Appearance.m3colors?.m3borderSecondary ?? "#414868"
+                    radius: Appearance.rounding.large
+                    color: Appearance.m3colors.m3windowBackground
+                    border.color: Appearance.m3colors.m3borderSecondary
                     border.width: 1
                     z: 10
 
@@ -89,9 +99,9 @@ Scope {
 
                     Behavior on y {
                         NumberAnimation {
-                            duration: Appearance.animation.elementMoveEnter.duration
-                            easing.type: Appearance.animation.elementMoveEnter.type
-                            easing.bezierCurve: Appearance.animation.elementMoveEnter.bezierCurve
+                            duration: Style.animation.elementMoveEnter.duration
+                            easing.type: Style.animation.elementMoveEnter.type
+                            easing.bezierCurve: Style.animation.elementMoveEnter.bezierCurve
                         }
                     }
                 }

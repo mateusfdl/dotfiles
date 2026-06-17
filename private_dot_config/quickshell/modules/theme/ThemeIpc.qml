@@ -2,9 +2,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.modules.common
+import QsUtils
 
 Scope {
     id: themeIpcScope
+
+    Component.onCompleted: Appearance.currentThemeMode = Config.options.ui.theme
 
     IpcHandler {
         target: "theme"

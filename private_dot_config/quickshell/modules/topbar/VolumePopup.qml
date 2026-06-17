@@ -11,6 +11,7 @@ import Quickshell.Hyprland
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 
 Scope {
     id: volumePopupScope

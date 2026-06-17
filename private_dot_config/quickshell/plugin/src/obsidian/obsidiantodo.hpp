@@ -30,6 +30,7 @@ public:
                                     int breakMinutes,
                                     const QVariantList &events);
   Q_INVOKABLE bool setTodoStatus(int index, const QString &marker);
+  Q_INVOKABLE bool annotateTodo(int index, const QString &note);
 
 signals:
   void tagsChanged();

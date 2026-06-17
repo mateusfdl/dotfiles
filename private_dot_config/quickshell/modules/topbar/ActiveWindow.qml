@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.modules.common
+import QsUtils
 
 Item {
     id: root
@@ -77,7 +78,7 @@ Item {
         color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
         font.pixelSize: 18
         font.weight: Font.DemiBold
-        font.family: Appearance.font.family.uiFont
+        font.family: Style.font.family.uiFont
         elide: Text.ElideRight
         verticalAlignment: Text.AlignVCenter
     }

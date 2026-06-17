@@ -3,14 +3,12 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Notifications
 
 Singleton {
     id: root
 
     component Notif: QtObject {
-        id: wrapper
         required property int notificationId
         property Notification notification
         property list<var> actions: notification?.actions.map(action => ({
@@ -28,15 +26,13 @@ Singleton {
         property Timer timer
 
         onNotificationChanged: {
-            if (notification === null) {
+            if (notification === null)
                 root.discardNotification(notificationId);
-            }
         }
     }
 
     component NotifTimer: Timer {
         required property int notificationId
-        interval: 7000
         running: true
         onTriggered: () => {
             root.timeoutNotification(notificationId);
@@ -45,9 +41,9 @@ Singleton {
     }
 
     property list<Notif> list: []
-    property var popupList: list.filter(notif => notif.popup)
-    property var latestTimeForApp: ({})
-    property int idOffset: 0
+    readonly property var popupList: list.filter(notif => notif.popup)
+    readonly property var popupGroupsByAppName: groupsForList(popupList)
+    readonly property var popupAppNameList: appNameListForGroups(popupGroupsByAppName)
 
     Component {
         id: notifComponent
@@ -72,93 +68,58 @@ Singleton {
 
         onNotification: notification => {
             notification.tracked = true;
-            const newNotifObject = notifComponent.createObject(root, {
-                "notificationId": notification.id + root.idOffset,
+            const notif = notifComponent.createObject(root, {
+                "notificationId": notification.id,
                 "notification": notification,
-                "time": Date.now()
+                "time": Date.now(),
+                "popup": true
             });
-            root.list = [...root.list, newNotifObject];
+            root.list = [...root.list, notif];
 
-            newNotifObject.popup = true;
-            if (notification.expireTimeout != 0) {
-                newNotifObject.timer = notifTimerComponent.createObject(root, {
-                    "notificationId": newNotifObject.notificationId,
+            if (notification.expireTimeout !== 0) {
+                notif.timer = notifTimerComponent.createObject(root, {
+                    "notificationId": notif.notificationId,
                     "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout
                 });
             }
         }
     }
 
-    function groupsForList(list) {
+    function groupsForList(notifs) {
         const groups = {};
-        list.forEach(notif => {
-            if (!groups[notif.appName]) {
-                groups[notif.appName] = {
-                    appName: notif.appName,
-                    appIcon: notif.appIcon,
-                    notifications: [],
-                    time: 0
-                };
-            }
-            groups[notif.appName].notifications.push(notif);
-            groups[notif.appName].time = latestTimeForApp[notif.appName] || notif.time;
-        });
+        for (const notif of notifs) {
+            const group = groups[notif.appName] ?? (groups[notif.appName] = {
+                notifications: [],
+                time: 0
+            });
+            group.notifications.push(notif);
+            group.time = Math.max(group.time, notif.time);
+        }
         return groups;
     }
 
     function appNameListForGroups(groups) {
-        return Object.keys(groups).sort((a, b) => {
-            return groups[b].time - groups[a].time;
-        });
-    }
-
-    property var popupGroupsByAppName: groupsForList(root.popupList)
-    property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
-
-    onListChanged: {
-        root.list.forEach(notif => {
-            if (!root.latestTimeForApp[notif.appName] || notif.time > root.latestTimeForApp[notif.appName]) {
-                root.latestTimeForApp[notif.appName] = Math.max(root.latestTimeForApp[notif.appName] || 0, notif.time);
-            }
-        });
-        Object.keys(root.latestTimeForApp).forEach(appName => {
-            if (!root.list.some(notif => notif.appName === appName)) {
-                delete root.latestTimeForApp[appName];
-            }
-        });
+        return Object.keys(groups).sort((a, b) => groups[b].time - groups[a].time);
     }
 
     function discardNotification(id) {
-        const index = root.list.findIndex(notif => notif.notificationId === id);
-        const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
-        if (index !== -1) {
-            root.list.splice(index, 1);
-            triggerListChange();
-        }
-        if (notifServerIndex !== -1) {
-            notifServer.trackedNotifications.values[notifServerIndex].dismiss();
-        }
+        root.list = root.list.filter(notif => notif.notificationId !== id);
+        const serverNotif = notifServer.trackedNotifications.values.find(notif => notif.id === id);
+        if (serverNotif)
+            serverNotif.dismiss();
     }
 
     function timeoutNotification(id) {
-        const index = root.list.findIndex(notif => notif.notificationId === id);
-        if (root.list[index] != null)
-            root.list[index].popup = false;
+        const notif = root.list.find(notif => notif.notificationId === id);
+        if (notif)
+            notif.popup = false;
     }
 
-    function attemptInvokeAction(id, notifIdentifier) {
-        const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
-        if (notifServerIndex !== -1) {
-            const notifServerNotif = notifServer.trackedNotifications.values[notifServerIndex];
-            const action = notifServerNotif.actions.find(action => action.identifier === notifIdentifier);
-            if (action) {
-                action.invoke();
-            }
-        }
+    function attemptInvokeAction(id, actionIdentifier) {
+        const serverNotif = notifServer.trackedNotifications.values.find(notif => notif.id === id);
+        const action = serverNotif?.actions.find(action => action.identifier === actionIdentifier);
+        if (action)
+            action.invoke();
         root.discardNotification(id);
-    }
-
-    function triggerListChange() {
-        root.list = root.list.slice(0);
     }
 }

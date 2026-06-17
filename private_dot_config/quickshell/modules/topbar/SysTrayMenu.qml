@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Scope {
     id: sysTrayMenuScope
@@ -195,7 +196,7 @@ Scope {
                     StyledText {
                         Layout.fillWidth: true
                         text: "Back"
-                        font.pixelSize: Appearance.font.pixelSize.textSmall
+                        font.pixelSize: Style.font.pixelSize.textSmall
                         color: Appearance.m3colors.m3primaryText
                     }
                 }
@@ -241,7 +242,7 @@ Scope {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: Appearance.animation.elementMoveFast.duration
+                duration: Style.animation.elementMoveFast.duration
                 easing.type: Easing.OutCubic
             }
         }

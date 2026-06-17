@@ -6,6 +6,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 MouseArea {
     id: root
@@ -49,7 +50,7 @@ MouseArea {
 
         Behavior on color {
             ColorAnimation {
-                duration: Appearance.animation.elementMoveFast.duration
+                duration: Style.animation.elementMoveFast.duration
             }
         }
     }
@@ -73,7 +74,7 @@ MouseArea {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: Appearance.animation.elementMoveFast.duration
+                duration: Style.animation.elementMoveFast.duration
             }
         }
     }

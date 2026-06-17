@@ -10,6 +10,7 @@ import Quickshell.Hyprland
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Scope {
     id: sessionMenuScope
@@ -131,7 +132,7 @@ Scope {
                         text: "Session"
                         color: Appearance.m3colors.m3primaryText
                         font.pixelSize: 28
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                         font.weight: Font.Light
                     }
 
@@ -162,7 +163,7 @@ Scope {
                         SessionButton {
                             icon: "restart_alt"
                             label: "Reboot"
-                            iconColor: Appearance.color.primary
+                            iconColor: Appearance.colors.colPrimary
                             onClicked: sessionMenuScope.doReboot()
                         }
 
@@ -234,7 +235,7 @@ Scope {
                 text: btn.label
                 color: Appearance.m3colors.m3primaryText
                 font.pixelSize: 13
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
             }
         }
     }

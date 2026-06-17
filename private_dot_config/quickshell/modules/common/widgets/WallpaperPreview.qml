@@ -7,6 +7,7 @@ import Qt.labs.folderlistmodel
 import Qt5Compat.GraphicalEffects
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Rectangle {
     id: root
@@ -262,7 +263,7 @@ Rectangle {
                     text: ">"
                     color: Appearance.m3colors.m3accentPrimary
                     font.pixelSize: 16
-                    font.family: Appearance.font.family.codeFont
+                    font.family: Style.font.family.codeFont
                     font.bold: true
                 }
 
@@ -277,7 +278,7 @@ Rectangle {
                     selectedTextColor: Appearance.m3colors.m3selectionText
                     selectionColor: Appearance.m3colors.m3selectionBackground
                     font.pixelSize: 14
-                    font.family: Appearance.font.family.uiFont
+                    font.family: Style.font.family.uiFont
 
                     background: Rectangle {
                         color: "transparent"

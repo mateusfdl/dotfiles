@@ -109,7 +109,7 @@ Scope {
                         text: Pomodoro.state === Pomodoro.State.LongBreak ? "Long Break" : "Short Break"
                         color: Qt.rgba(1, 1, 1, 0.9)
                         font.pixelSize: 28
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                         font.weight: Font.Light
                     }
 
@@ -220,7 +220,7 @@ Scope {
                         text: "Screen will unlock when break ends"
                         color: Qt.rgba(1, 1, 1, 0.4)
                         font.pixelSize: 14
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                     }
 
                     // Completed pomodoros count
@@ -229,7 +229,7 @@ Scope {
                         text: "Completed: " + Pomodoro.completedPomodoros + " pomodoros"
                         color: Qt.rgba(1, 1, 1, 0.3)
                         font.pixelSize: 12
-                        font.family: Appearance.font.family.uiFont
+                        font.family: Style.font.family.uiFont
                     }
                 }
             }

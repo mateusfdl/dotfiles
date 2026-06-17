@@ -118,7 +118,7 @@ RippleButton {
             id: label
 
             text: root.menuEntry.text
-            font.pixelSize: Appearance.font.pixelSize.textBase
+            font.pixelSize: Style.font.pixelSize.textBase
             color: Appearance.m3colors.m3primaryText
             Layout.fillWidth: true
         }

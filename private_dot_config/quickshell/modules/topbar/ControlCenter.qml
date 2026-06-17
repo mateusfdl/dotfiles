@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
 import qs.modules.common.widgets
+import QsUtils
 
 Item {
     id: root

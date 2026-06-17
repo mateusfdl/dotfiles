@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import "root:/modules/common"
+import qs.modules.common
 
 MultiEffect {
     property color sourceColor: "black"
@@ -10,9 +11,9 @@ MultiEffect {
 
     Behavior on colorizationColor {
         ColorAnimation {
-            duration: Appearance.animation.elementMove.duration
-            easing.type: Appearance.animation.elementMove.type
-            easing.bezierCurve: Appearance.animation.elementMove.bezierCurve
+            duration: Style.animation.elementMove.duration
+            easing.type: Style.animation.elementMove.type
+            easing.bezierCurve: Style.animation.elementMove.bezierCurve
         }
     }
 }

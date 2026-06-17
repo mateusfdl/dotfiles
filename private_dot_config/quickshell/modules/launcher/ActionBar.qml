@@ -5,6 +5,7 @@ import qs.modules.common
 import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
+import QsUtils
 
 Item {
     id: root
@@ -44,8 +45,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("Applications")
                 color: Appearance.m3colors.m3secondaryText
-                font.family: Appearance.font.family.uiFont
-                font.pixelSize: Appearance.font.pixelSize.textSmall
+                font.family: Style.font.family.uiFont
+                font.pixelSize: Style.font.pixelSize.textSmall
                 font.weight: Font.Normal
             }
         }
@@ -68,8 +69,8 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: qsTr("Open")
                     color: Appearance.m3colors.m3secondaryText
-                    font.family: Appearance.font.family.uiFont
-                    font.pixelSize: Appearance.font.pixelSize.textSmall
+                    font.family: Style.font.family.uiFont
+                    font.pixelSize: Style.font.pixelSize.textSmall
                     font.weight: Font.Normal
                 }
 
@@ -99,7 +100,7 @@ Item {
             anchors.centerIn: parent
             text: badge.text
             color: Appearance.m3colors.m3secondaryText
-            font.family: Appearance.font.family.uiFont
+            font.family: Style.font.family.uiFont
             font.pixelSize: 12
             font.weight: Font.Medium
         }

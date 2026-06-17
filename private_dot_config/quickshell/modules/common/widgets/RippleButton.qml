@@ -15,7 +15,7 @@ Button {
     id: root
     property bool toggled
     property string buttonText
-    property real buttonRadius: Appearance?.rounding?.small ?? 4
+    property real buttonRadius: Appearance.rounding.small
     property real buttonRadiusPressed: buttonRadius
     property real buttonEffectiveRadius: root.down ? root.buttonRadiusPressed : root.buttonRadius
     property int rippleDuration: 1200
@@ -25,12 +25,12 @@ Button {
     property var altAction // When right clicking
     property var middleClickAction // When middle clicking
 
-    property color colBackground: Colors.transparentize(Appearance?.m3colors.m3selectionBackground, 1) || "transparent"
-    property color colBackgroundHover: Appearance?.m3colors.m3selectionBackground ?? "#E5DFED"
-    property color colBackgroundToggled: Appearance?.m3colors.m3selectionBackground ?? "#65558F"
-    property color colBackgroundToggledHover: Qt.lighter(Appearance?.m3colors.m3selectionBackground ?? "#77699C", 1.1)
-    property color colRipple: Qt.lighter(Appearance?.m3colors.m3selectionBackground ?? "#D6CEE2", 1.2)
-    property color colRippleToggled: Qt.lighter(Appearance?.m3colors.m3selectionBackground ?? "#D6CEE2", 1.2)
+    property color colBackground: Colors.transparentize(Appearance.m3colors.m3selectionBackground, 1) || "transparent"
+    property color colBackgroundHover: Appearance.m3colors.m3selectionBackground
+    property color colBackgroundToggled: Appearance.m3colors.m3selectionBackground
+    property color colBackgroundToggledHover: Qt.lighter(Appearance.m3colors.m3selectionBackground, 1.1)
+    property color colRipple: Qt.lighter(Appearance.m3colors.m3selectionBackground, 1.2)
+    property color colRippleToggled: Qt.lighter(Appearance.m3colors.m3selectionBackground, 1.2)
 
     property color buttonColor: root.enabled ? (root.toggled ? (root.hovered ? colBackgroundToggledHover : colBackgroundToggled) : (root.hovered ? colBackgroundHover : colBackground)) : colBackground
     property color rippleColor: root.toggled ? colRippleToggled : colRipple
@@ -50,8 +50,8 @@ Button {
 
     component RippleAnim: NumberAnimation {
         duration: rippleDuration
-        easing.type: Appearance?.animation.elementMoveEnter.type
-        easing.bezierCurve: Appearance?.animationCurves.standardDecel
+        easing.type: Style.animation.elementMoveEnter.type
+        easing.bezierCurve: Style.animationCurves.standardDecel
     }
 
     MouseArea {
@@ -145,7 +145,7 @@ Button {
 
         color: root.buttonColor
         Behavior on color {
-            animation: Appearance?.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
 
         layer.enabled: true
@@ -167,7 +167,7 @@ Button {
             property real implicitHeight: 0
 
             Behavior on opacity {
-                animation: Appearance?.animation.elementMoveFast.colorAnimation.createObject(this)
+                animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
             }
 
             RadialGradient {

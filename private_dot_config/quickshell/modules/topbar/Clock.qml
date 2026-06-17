@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.modules.common
+import QsUtils
 
 Item {
     id: root
@@ -18,7 +19,7 @@ Item {
         color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
         font.pixelSize: 16
         font.weight: Font.Normal
-        font.family: Appearance.font.family.uiFont
+        font.family: Style.font.family.uiFont
         verticalAlignment: Text.AlignVCenter
 
         Timer {
@@ -40,7 +41,7 @@ Item {
 
         Behavior on color {
             ColorAnimation {
-                duration: Appearance.animation.elementMoveFast.duration
+                duration: Style.animation.elementMoveFast.duration
             }
         }
     }

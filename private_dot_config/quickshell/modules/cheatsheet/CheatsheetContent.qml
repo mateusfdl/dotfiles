@@ -217,7 +217,7 @@ Item {
 
             ColouredIcon {
                 source: "image://icon/preferences-desktop-keyboard"
-                colour: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                colour: Appearance.m3colors.m3accentPrimary
                 implicitSize: 28
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
@@ -228,7 +228,7 @@ Item {
                 font.family: root.fontFamily
                 font.pixelSize: 20
                 font.weight: Font.DemiBold
-                color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                color: Appearance.m3colors.m3primaryText
                 renderType: Text.NativeRendering
             }
 
@@ -240,7 +240,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: Colors.mix(Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7", Appearance.m3colors?.m3borderSecondary ?? "#292e42", 0.3)
+            color: Colors.mix(Appearance.m3colors.m3accentPrimary, Appearance.m3colors.m3borderSecondary, 0.3)
             opacity: 0.5
         }
 
@@ -267,7 +267,7 @@ Item {
                 contentItem: Rectangle {
                     implicitWidth: 3
                     radius: 2
-                    color: Appearance.m3colors?.m3secondaryText ?? "#565f89"
+                    color: Appearance.m3colors.m3secondaryText
                     opacity: parent.active ? 0.6 : 0.3
                 }
             }
@@ -312,7 +312,7 @@ Item {
                                     font.family: root.fontFamily
                                     font.pixelSize: 16
                                     font.weight: Font.DemiBold
-                                    color: Appearance.m3colors?.m3accentPrimary ?? "#7aa2f7"
+                                    color: Appearance.m3colors.m3accentPrimary
                                     renderType: Text.NativeRendering
                                 }
 
@@ -327,7 +327,7 @@ Item {
                                         text: root.formatKeyCombo(rowItem.modelData.mods, rowItem.modelData.key)
                                         font.family: root.fontFamily
                                         font.pixelSize: 15
-                                        color: Appearance.m3colors?.m3primaryText ?? "#c0caf5"
+                                        color: Appearance.m3colors.m3primaryText
                                         renderType: Text.NativeRendering
                                     }
 
@@ -339,7 +339,7 @@ Item {
                                         text: rowItem.modelData.description ?? ""
                                         font.family: root.fontFamily
                                         font.pixelSize: 15
-                                        color: Appearance.m3colors?.m3surfaceText ?? "#a9b1d6"
+                                        color: Appearance.m3colors.m3surfaceText
                                         renderType: Text.NativeRendering
                                         elide: Text.ElideRight
                                     }

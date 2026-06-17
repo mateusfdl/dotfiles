@@ -7,8 +7,14 @@ import qs.modules.common
 Singleton {
     id: root
 
-    property string recordScript: Directories.home + "/scripts/record_current_monitor.sh"
+    property string recordScript: Directories.home + "/scripts/record_current_monitor"
+    property string regionFile: "/tmp/screen_recording.geometry"
     property bool isRecording: false
+    property bool hasRegion: false
+    property int regionX: 0
+    property int regionY: 0
+    property int regionWidth: 0
+    property int regionHeight: 0
 
     function toggle() {
         toggleProcess.running = true;
@@ -18,8 +24,40 @@ Singleton {
         pidCheckProcess.running = true;
     }
 
+    function parseRegion(text) {
+        const match = text.trim().match(/^(-?\d+),(-?\d+)\s+(\d+)x(\d+)$/);
+        if (!match) {
+            root.hasRegion = false;
+            return;
+        }
+        root.regionX = parseInt(match[1], 10);
+        root.regionY = parseInt(match[2], 10);
+        root.regionWidth = parseInt(match[3], 10);
+        root.regionHeight = parseInt(match[4], 10);
+        root.hasRegion = true;
+    }
+
+    onIsRecordingChanged: {
+        if (isRecording) {
+            regionView.reload();
+        } else {
+            root.hasRegion = false;
+        }
+    }
+
     Component.onCompleted: {
         checkStatus();
+    }
+
+    FileView {
+        id: regionView
+
+        path: root.regionFile
+        watchChanges: true
+        printErrors: false
+        onLoaded: root.parseRegion(regionView.text())
+        onFileChanged: reload()
+        onLoadFailed: root.hasRegion = false
     }
 
     Process {

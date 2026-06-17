@@ -19,6 +19,8 @@ qt_add_qml_module(qsutils
         src/utils/files.hpp src/utils/files.cpp
         src/utils/levendist.hpp src/utils/levendist.cpp
         src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp
+        src/utils/jsonvalidator.hpp src/utils/jsonvalidator.cpp
+        src/config/appearance.hpp src/config/appearance.cpp
         src/obsidian/obsidiantodo.hpp src/obsidian/obsidiantodo.cpp
         src/audio/audiospectrum.hpp src/audio/audiospectrum.cpp
         src/hyprland/hyprlandworkspace.hpp src/hyprland/hyprlandworkspace.cpp
@@ -30,6 +32,7 @@ target_compile_options(qsutils PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
 
 target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/config
     ${CMAKE_CURRENT_SOURCE_DIR}/src/obsidian
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hyprland

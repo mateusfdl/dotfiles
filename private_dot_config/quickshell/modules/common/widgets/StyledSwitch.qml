@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
+import QsUtils
 
 /**
  * Material 3 switch. See https://m3.material.io/components/switch/overview
@@ -12,8 +13,8 @@ Switch {
     property real scale: 0.6 // Default in m3 spec is huge af
     implicitHeight: 32 * root.scale
     implicitWidth: 52 * root.scale
-    property color activeColor: Appearance?.colors.colPrimary ?? "#685496"
-    property color inactiveColor: Appearance?.colors.colSurfaceContainerHighest ?? "#45464F"
+    property color activeColor: Appearance.colors.colPrimary
+    property color inactiveColor: Appearance.colors.colSurfaceContainerHighest
 
     PointingHandInteraction {}
 
@@ -21,16 +22,16 @@ Switch {
     background: Rectangle {
         width: parent.width
         height: parent.height
-        radius: Appearance?.rounding.full ?? 9999
+        radius: Appearance.rounding.full
         color: root.checked ? root.activeColor : root.inactiveColor
         border.width: 2 * root.scale
         border.color: root.checked ? root.activeColor : Appearance.m3colors.m3outline
 
         Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
         Behavior on border.color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
     }
 
@@ -45,16 +46,16 @@ Switch {
         anchors.leftMargin: root.checked ? ((root.pressed || root.down) ? (22 * root.scale) : 24 * root.scale) : ((root.pressed || root.down) ? (2 * root.scale) : 8 * root.scale)
 
         Behavior on anchors.leftMargin {
-            animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+            animation: Style.animation.elementMove.numberAnimation.createObject(this)
         }
         Behavior on width {
-            animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+            animation: Style.animation.elementMove.numberAnimation.createObject(this)
         }
         Behavior on height {
-            animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+            animation: Style.animation.elementMove.numberAnimation.createObject(this)
         }
         Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
     }
 }

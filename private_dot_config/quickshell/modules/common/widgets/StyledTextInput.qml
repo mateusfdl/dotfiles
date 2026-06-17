@@ -1,6 +1,7 @@
 import qs.modules.common
 import QtQuick
 import QtQuick.Controls
+import QsUtils
 
 /**
  * Does not include visual layout, but includes the easily neglected colors.
@@ -11,8 +12,8 @@ TextInput {
     selectedTextColor: Appearance.m3colors.m3onSecondaryContainer
     selectionColor: Appearance.colors.colSecondaryContainer
     font {
-        family: Appearance?.font.family.main ?? "sans-serif"
-        pixelSize: Appearance?.font.pixelSize.textSmall ?? 15
+        family: Style.font.family.uiFont
+        pixelSize: Style.font.pixelSize.textSmall
         hintingPreference: Font.PreferFullHinting
     }
 }

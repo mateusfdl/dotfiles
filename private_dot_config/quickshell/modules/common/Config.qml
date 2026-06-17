@@ -7,6 +7,7 @@ import Quickshell.Io
 Singleton {
     id: root
     property string filePath: Directories.shellConfigPath
+    property string vaultPath: Quickshell.env("VAULT_PATH")
     property alias options: configOptionsJsonAdapter
     property bool ready: false
 

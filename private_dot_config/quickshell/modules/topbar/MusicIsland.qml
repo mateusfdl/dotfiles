@@ -21,9 +21,9 @@ Item {
 
     Behavior on implicitWidth {
         NumberAnimation {
-            duration: Appearance.animation.elementMoveFast.duration
+            duration: Style.animation.elementMoveFast.duration
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Appearance.animationCurves.expressiveEffects
+            easing.bezierCurve: Style.animationCurves.expressiveEffects
         }
     }
 

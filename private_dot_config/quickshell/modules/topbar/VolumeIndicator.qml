@@ -6,6 +6,7 @@ import Quickshell.Widgets
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 
 Item {
     id: root

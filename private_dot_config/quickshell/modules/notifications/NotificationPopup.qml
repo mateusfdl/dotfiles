@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.modules.common
 import qs.services
+import QsUtils
 
 Scope {
     id: notificationPopup
@@ -18,7 +19,10 @@ Scope {
 
             required property var modelData
 
-            visible: Notifications.popupList.length > 0
+            readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
+            readonly property bool isFocusedMonitor: Hyprland.focusedMonitor?.id === monitor?.id
+
+            visible: Notifications.popupList.length > 0 && isFocusedMonitor
             screen: modelData
             WlrLayershell.namespace: "quickshell:notificationPopup"
             WlrLayershell.layer: WlrLayer.Overlay

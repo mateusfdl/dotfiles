@@ -1,13 +1,15 @@
 import "root:/modules/common"
 import QtQuick
+import QsUtils
+import qs.modules.common
 
 Text {
     renderType: Text.NativeRendering
     verticalAlignment: Text.AlignVCenter
     font {
         hintingPreference: Font.PreferFullHinting
-        family: Appearance?.font.family.uiFont ?? "sans-serif"
-        pixelSize: Appearance?.font.pixelSize.textBase ?? 15
+        family: Style.font.family.uiFont
+        pixelSize: Style.font.pixelSize.textBase
     }
-    color: Appearance?.m3colors.m3primaryText ?? "black"
+    color: Appearance.m3colors.m3primaryText
 }

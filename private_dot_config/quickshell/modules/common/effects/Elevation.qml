@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Effects
 import "root:/modules/common"
+import QsUtils
+import qs.modules.common
 
 RectangularShadow {
     property int level
@@ -13,9 +15,9 @@ RectangularShadow {
 
     Behavior on dp {
         NumberAnimation {
-            duration: Appearance.animation.elementMove.duration
-            easing.type: Appearance.animation.elementMove.type
-            easing.bezierCurve: Appearance.animation.elementMove.bezierCurve
+            duration: Style.animation.elementMove.duration
+            easing.type: Style.animation.elementMove.type
+            easing.bezierCurve: Style.animation.elementMove.bezierCurve
         }
     }
 }

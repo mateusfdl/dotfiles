@@ -8,15 +8,12 @@ import Quickshell.Services.Pipewire
 Singleton {
     id: root
 
-    property bool ready: Pipewire.defaultAudioSink?.ready ?? false
-    property PwNode sink: Pipewire.defaultAudioSink
-    property PwNode source: Pipewire.defaultAudioSource
-    readonly property real hardMaxValue: 2.00 // People keep joking about setting volume to 5172% so...
+    readonly property PwNode sink: Pipewire.defaultAudioSink
 
     signal sinkProtectionTriggered(string reason)
 
     PwObjectTracker {
-        objects: [sink, source]
+        objects: [sink]
     }
 
     Connections {
@@ -38,12 +35,9 @@ Singleton {
             if (newVolume - lastVolume > maxAllowedIncrease) {
                 sink.audio.volume = lastVolume;
                 root.sinkProtectionTriggered("Illegal increment");
-            } else if (newVolume > maxAllowed || newVolume > root.hardMaxValue) {
-                root.sinkProtectionTriggered("Exceeded max allowed");
+            } else if (newVolume > maxAllowed) {
                 sink.audio.volume = Math.min(lastVolume, maxAllowed);
-            }
-            if (sink.ready && (isNaN(sink.audio.volume) || sink.audio.volume === undefined || sink.audio.volume === null)) {
-                sink.audio.volume = 0;
+                root.sinkProtectionTriggered("Exceeded max allowed");
             }
             lastVolume = sink.audio.volume;
         }

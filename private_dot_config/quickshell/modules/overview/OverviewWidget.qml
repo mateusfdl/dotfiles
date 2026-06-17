@@ -37,19 +37,38 @@ Item {
     property int draggingFromWorkspace: -1
     property int draggingTargetWorkspace: -1
 
+    property string backgroundImage: ""
+
+    function refreshWallpaper() {
+        wallpaperQuery.running = true;
+    }
+
+    Process {
+        id: wallpaperQuery
+        command: [Directories.currentWallpaperScriptPath]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                const path = data.trim();
+                if (path.length > 0)
+                    root.backgroundImage = path;
+            }
+        }
+    }
+
     implicitWidth: overviewBackground.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: overviewBackground.implicitHeight + Appearance.sizes.elevationMargin * 2
 
     // Refresh wallpaper path from swww when overview becomes visible
     onVisibleChanged: {
         if (visible)
-            Appearance.refreshWallpaper();
+            root.refreshWallpaper();
     }
 
     // Shared wallpaper image - loaded once and reused, only when visible
     Image {
         id: sharedWallpaper
-        source: root.visible ? (Appearance.background_image ? "file://" + Appearance.background_image : "") : ""
+        source: root.visible ? (root.backgroundImage ? "file://" + root.backgroundImage : "") : ""
         visible: false // Hidden as it's only used as a source
         cache: true
         asynchronous: true

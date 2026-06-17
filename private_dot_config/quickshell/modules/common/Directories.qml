@@ -14,7 +14,6 @@ Singleton {
 
     property string shellConfig: Files.trimFileProtocol(`${Directories.config}/quickshell`)
     property string shellConfigPath: `${Directories.shellConfig}/config.json`
-    property string generatedMaterialThemePath: `${Directories.shellConfig}/config/theme.json`
     property string currentWallpaperScriptPath: `${home}/scripts/current_wallpaper`
 
     Component.onCompleted: {

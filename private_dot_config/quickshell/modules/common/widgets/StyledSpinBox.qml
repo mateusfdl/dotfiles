@@ -30,7 +30,7 @@ SpinBox {
             anchors.centerIn: parent
             text: root.value // displayText would make the numbers weird like 1,000 instead of 1000
             color: Appearance.colors.colOnLayer2
-            font.pixelSize: Appearance.font.pixelSize.textSmall
+            font.pixelSize: Style.font.pixelSize.textSmall
             validator: root.validator
             onTextChanged: {
                 root.value = parseFloat(text);
@@ -52,7 +52,7 @@ SpinBox {
 
         color: root.down.pressed ? Appearance.colors.colLayer2Active : root.down.hovered ? Appearance.colors.colLayer2Hover : Colors.transparentize(Appearance.colors.colLayer2)
         Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
 
         MaterialSymbol {
@@ -77,7 +77,7 @@ SpinBox {
 
         color: root.up.pressed ? Appearance.colors.colLayer2Active : root.up.hovered ? Appearance.colors.colLayer2Hover : Colors.transparentize(Appearance.colors.colLayer2)
         Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            animation: Style.animation.elementMoveFast.colorAnimation.createObject(this)
         }
 
         MaterialSymbol {

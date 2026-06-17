@@ -6,6 +6,7 @@ import Quickshell.Services.Notifications
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import QsUtils
 
 Rectangle {
     id: root
@@ -108,7 +109,7 @@ Rectangle {
                     Layout.fillWidth: true
                     text: notificationObject.appName || "Notification"
                     color: Appearance.m3colors.m3secondaryText
-                    font.pixelSize: Appearance.font.pixelSize.textSmall
+                    font.pixelSize: Style.font.pixelSize.textSmall
                     font.weight: Font.Medium
                     elide: Text.ElideRight
                 }
@@ -144,7 +145,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: notificationObject.summary || ""
                 color: Appearance.m3colors.m3primaryText
-                font.pixelSize: Appearance.font.pixelSize.textBase
+                font.pixelSize: Style.font.pixelSize.textBase
                 font.weight: Font.Bold
                 wrapMode: Text.Wrap
                 maximumLineCount: 2
@@ -157,7 +158,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: notificationObject.body || ""
                 color: Appearance.m3colors.m3surfaceText
-                font.pixelSize: Appearance.font.pixelSize.textSmall
+                font.pixelSize: Style.font.pixelSize.textSmall
                 wrapMode: Text.Wrap
                 maximumLineCount: 4
                 elide: Text.ElideRight
@@ -193,7 +194,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text: modelData.text
                             color: Appearance.m3colors.m3primaryText
-                            font.pixelSize: Appearance.font.pixelSize.textSmall
+                            font.pixelSize: Style.font.pixelSize.textSmall
                             font.weight: Font.Medium
                         }
 
@@ -218,18 +219,18 @@ Rectangle {
 
         from: root.width
         to: 0
-        duration: Appearance.animation.elementMoveEnter.duration
-        easing.type: Appearance.animation.elementMoveEnter.type
-        easing.bezierCurve: Appearance.animation.elementMoveEnter.bezierCurve
+        duration: Style.animation.elementMoveEnter.duration
+        easing.type: Style.animation.elementMoveEnter.type
+        easing.bezierCurve: Style.animation.elementMoveEnter.bezierCurve
     }
 
     NumberAnimation on x {
         id: slideOutAnimation
 
         to: root.width + 20
-        duration: Appearance.animation.elementMoveExit.duration
-        easing.type: Appearance.animation.elementMoveExit.type
-        easing.bezierCurve: Appearance.animation.elementMoveExit.bezierCurve
+        duration: Style.animation.elementMoveExit.duration
+        easing.type: Style.animation.elementMoveExit.type
+        easing.bezierCurve: Style.animation.elementMoveExit.bezierCurve
         running: false
         onFinished: {
             Notifications.discardNotification(notificationObject.notificationId);

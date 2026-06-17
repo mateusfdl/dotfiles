@@ -3,6 +3,8 @@ import "root:/modules/common/widgets"
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QsUtils
+import qs.modules.common
 
 ToolTip {
     id: root
@@ -19,7 +21,7 @@ ToolTip {
     visible: opacity > 0
 
     Behavior on opacity {
-        animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
+        animation: Style.animation.elementMoveFast.numberAnimation.createObject(this)
     }
 
     background: null
@@ -33,26 +35,26 @@ ToolTip {
             id: backgroundRectangle
             anchors.bottom: contentItemBackground.bottom
             anchors.horizontalCenter: contentItemBackground.horizontalCenter
-            color: Appearance?.m3colors.colTooltip ?? "#3C4043"
-            radius: Appearance?.rounding.verysmall ?? 7
+            color: Appearance.m3colors.colTooltip
+            radius: Appearance.rounding.verysmall
             width: internalVisibleCondition ? (tooltipTextObject.width + 2 * padding) : 0
             height: internalVisibleCondition ? (tooltipTextObject.height + 2 * padding) : 0
             clip: true
 
             Behavior on width {
-                animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
+                animation: Style.animation.elementMoveFast.numberAnimation.createObject(this)
             }
             Behavior on height {
-                animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
+                animation: Style.animation.elementMoveFast.numberAnimation.createObject(this)
             }
 
             StyledText {
                 id: tooltipTextObject
                 anchors.centerIn: parent
                 text: content
-                font.pixelSize: Appearance?.font.pixelSize.textSmall ?? 14
+                font.pixelSize: Style.font.pixelSize.textSmall
                 font.hintingPreference: Font.PreferNoHinting // Prevent shaky text
-                color: Appearance?.m3colors.colOnTooltip ?? "#FFFFFF"
+                color: Appearance.m3colors.colOnTooltip
                 wrapMode: Text.Wrap
             }
         }

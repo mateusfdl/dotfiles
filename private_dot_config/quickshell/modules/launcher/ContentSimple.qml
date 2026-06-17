@@ -8,6 +8,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import QsUtils
 
 Item {
     id: root
@@ -111,7 +112,7 @@ Item {
                 placeholderTextColor: Qt.rgba(1, 1, 1, 0.35)
                 background: Item {}
                 color: Appearance.m3colors.m3primaryText
-                font.family: Appearance.font.family.uiFont
+                font.family: Style.font.family.uiFont
                 font.pixelSize: 18
 
                 // Enter launches selected app
@@ -237,16 +238,16 @@ Item {
                         StyledText {
                             text: qsTr("No results")
                             color: Appearance.m3colors.m3primaryText
-                            font.family: Appearance.font.family.uiFont
-                            font.pixelSize: Appearance.font.pixelSize.textLarge
+                            font.family: Style.font.family.uiFont
+                            font.pixelSize: Style.font.pixelSize.textLarge
                             font.weight: Font.Medium
                         }
 
                         StyledText {
                             text: qsTr("Try searching for something else")
                             color: Appearance.m3colors.m3surfaceText
-                            font.family: Appearance.font.family.uiFont
-                            font.pixelSize: Appearance.font.pixelSize.textBase
+                            font.family: Style.font.family.uiFont
+                            font.pixelSize: Style.font.pixelSize.textBase
                             font.weight: Font.Normal
                         }
                     }
@@ -273,7 +274,7 @@ Item {
                         StyledText {
                             text: list.hasSearchText ? qsTr("Applications") : qsTr("Suggestions")
                             color: Appearance.m3colors.m3secondaryText
-                            font.family: Appearance.font.family.uiFont
+                            font.family: Style.font.family.uiFont
                             font.pixelSize: 12
                             font.weight: Font.DemiBold
                             leftPadding: 16
