@@ -1,63 +1,38 @@
-{ inputs, ... }:
+{ ... }:
 {
   imports = [
-    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
-    ../../modules/common
-    ../../modules/optional/audio.nix
-    ../../modules/optional/blender.nix
-    ../../modules/optional/bluetooth.nix
-    ../../modules/optional/desktop-reliability.nix
-    ../../modules/optional/firewall.nix
-    ../../modules/optional/fonts.nix
-    ../../modules/optional/greetd.nix
-    ../../modules/optional/handy.nix
-    ../../modules/optional/hyprland.nix
-    ../../modules/optional/nautilus.nix
-    ../../modules/optional/nvidia.nix
-    ../../modules/optional/nix-ld.nix
-    ../../modules/optional/obs.nix
-    ../../modules/optional/pop.nix
+
+    ../../modules/nixos
+    ../../modules/nixos/optional/audio.nix
+    ../../modules/nixos/optional/blender.nix
+    ../../modules/nixos/optional/bluetooth.nix
+    ../../modules/nixos/optional/brave.nix
+    ../../modules/nixos/optional/desktop-reliability.nix
+    ../../modules/nixos/optional/firewall.nix
+    ../../modules/nixos/optional/fonts.nix
+    ../../modules/nixos/optional/greetd.nix
+    ../../modules/nixos/optional/handy.nix
+    ../../modules/nixos/optional/hyprland.nix
+    ../../modules/nixos/optional/nautilus.nix
+    ../../modules/nixos/optional/nvidia.nix
+    ../../modules/nixos/optional/nix-ld.nix
+    ../../modules/nixos/optional/obs.nix
+    ../../modules/nixos/optional/pop.nix
+    ../../modules/nixos/optional/portals.nix
+    ../../modules/nixos/optional/sshfs.nix
+    ../../modules/nixos/optional/steam.nix
+    ../../modules/nixos/optional/vscode.nix
+    ../../modules/nixos/optional/soundcloud.nix
+    ../../modules/nixos/optional/dev.nix
+    ../../modules/nixos/optional/zephyr.nix
+
     ../../pkgs/desktop.nix
-    ../../modules/optional/portals.nix
-    ../../modules/optional/sshfs.nix
-    ../../modules/optional/steam.nix
-    ../../modules/optional/vscode.nix
-    ../../modules/optional/soundcloud.nix
-    ../../modules/optional/dev
   ];
 
   networking.hostName = "desktop";
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
-    users.matheus = import ../../modules/home;
-  };
-
-  nixpkgs.overlays = [
-    (_: prev: {
-      brave = prev.brave.override {
-        commandLineArgs = builtins.concatStringsSep " " [
-          "--ignore-gpu-blocklist"
-          "--enable-gpu-rasterization"
-          "--enable-zero-copy"
-          "--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder"
-        ];
-      };
-    })
-  ];
-
-  environment.etc."brave/policies/managed/performance.json".text = builtins.toJSON {
-    BraveRewardsDisabled = true;
-    BraveWalletDisabled = true;
-    BraveVPNDisabled = true;
-    BraveAIChatEnabled = false;
-    BraveNewsDisabled = true;
-    TorDisabled = true;
-    BackgroundModeEnabled = false;
-  };
+  home-manager.users.matheus = import ../../home/matheus;
 
   programs.ssh.startAgent = true;
 

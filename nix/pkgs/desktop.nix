@@ -1,20 +1,17 @@
 { pkgs, inputs, system, ... }:
 let
   claude-desktop-pkg = inputs.claude-desktop.packages.${system}.claude-desktop;
-  hunk-pkg = inputs.hunk.packages.${system}.default;
   taskwarriorAsTaskw = pkgs.writeShellScriptBin "taskw" ''
-    exec ${pkgs.taskwarrior3}/bin/task "$@"
+    exec ${pkgs.taskwarrior3}/bin/task rc:/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskrc "$@"
   '';
 in
 {
   environment.systemPackages = with pkgs; [
     apple-cursor
-    brave
     brightnessctl
     bubblewrap
     cliphist
     ffmpeg
-    git
     glib
     gnupg
     grim
@@ -30,7 +27,6 @@ in
     nwg-displays
     papirus-icon-theme
     pavucontrol
-    python3
     qt6.qt5compat
     qt6.qtdeclarative
     qt6.qttools
@@ -39,8 +35,6 @@ in
     slurp
     awww
     taskwarriorAsTaskw
-    tmux
-    tree-sitter
     unzip
     vim
     wget
@@ -52,8 +46,6 @@ in
   users.users.matheus.packages = with pkgs; [
     claude-desktop-pkg
     discord
-    gh
-    hunk-pkg
     morgen
     obsidian
     spotify

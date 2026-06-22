@@ -1,5 +1,7 @@
-{ ... }:
+{ inputs, system, ... }:
 {
+  home.packages = [ inputs.hunk.packages.${system}.default ];
+
   xdg.configFile."hunk/config.toml".text = ''
     theme = "auto"
     mode = "auto"

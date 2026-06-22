@@ -6,6 +6,7 @@
     ./btop.nix
     ./chezmoi.nix
     ./cli.nix
+    ./dev.nix
     ./direnv.nix
     ./git.nix
     ./hunk.nix

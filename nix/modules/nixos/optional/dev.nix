@@ -1,36 +1,5 @@
 { pkgs, ... }:
 {
-  imports = [
-    ./ruby.nix
-    ./python.nix
-    ./mise.nix
-    ./jq.nix
-    ./yq.nix
-    ./entr.nix
-    ./pandoc.nix
-    ./tectonic.nix
-    ./graphviz.nix
-    ./flyctl.nix
-    ./railway.nix
-    ./revdiff.nix
-    ./lazydocker.nix
-    ./claude-code.nix
-    ./opencode.nix
-    ./cmakelint.nix
-    ./ripgrep.nix
-    ./eza.nix
-    ./tokei.nix
-    ./stylua.nix
-    ./hyperfine.nix
-    ./fd.nix
-    ./sd.nix
-    ./fzf.nix
-    ./neovim.nix
-    ./bubblewrap.nix
-    ./zephyr.nix
-    ./kata.nix
-  ];
-
   environment.sessionVariables = {
     LIBRARY_PATH = "${pkgs.zlib}/lib";
     GST_PLUGIN_PATH = pkgs.lib.makeSearchPath "lib/gstreamer-1.0" [
@@ -45,8 +14,17 @@
     gcc
     clang-tools
     gnumake
-    openssl.dev
+    meson
+    ninja
     pkg-config
+
+    openssl.dev
+    libcap
+    libcap.dev
+    libselinux
+    libselinux.dev
+    pcre2.dev
+
     webkitgtk_4_1
     webkitgtk_4_1.dev
     libsoup_3.dev

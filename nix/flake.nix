@@ -1,8 +1,13 @@
 {
-  description = "NixOS multi-host configuration";
+  description = "Multi-host, multi-platform Nix configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     zephyr-nix.url = "github:adisbladis/zephyr-nix";
 
@@ -31,19 +36,45 @@
   outputs =
     { nixpkgs, ... }@inputs:
     let
-      system = "x86_64-linux";
+      mkNixos =
+        system: modules:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs system; };
+          modules = modules ++ [
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.extraSpecialArgs = { inherit inputs system; };
+            }
+          ];
+        };
+
+      mkDarwin =
+        system: modules:
+        inputs.nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit inputs system; };
+          modules = modules ++ [
+            inputs.home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.extraSpecialArgs = { inherit inputs system; };
+            }
+          ];
+        };
     in
     {
-      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs system; };
-        modules = [ ./hosts/desktop ];
+      nixosConfigurations = {
+        desktop = mkNixos "x86_64-linux" [ ./hosts/desktop ];
+        server = mkNixos "x86_64-linux" [ ./hosts/server ];
       };
 
-      nixosConfigurations.server = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs system; };
-        modules = [ ./hosts/server ];
+      darwinConfigurations = {
       };
     };
 }

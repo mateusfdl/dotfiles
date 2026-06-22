@@ -3,14 +3,14 @@
   imports = [
     ./hardware-configuration.nix
 
-    ../../modules/common
-    ../../modules/optional/firewall.nix
-    ../../modules/optional/k3s.nix
-    ../../modules/optional/argocd.nix
-    ../../modules/optional/maintenance.nix
-    ../../modules/optional/openssh.nix
-    ../../modules/optional/alloy.nix
-    ../../modules/optional/conntrack-exporter.nix
+    ../../modules/nixos
+    ../../modules/nixos/optional/firewall.nix
+    ../../modules/nixos/optional/k3s.nix
+    ../../modules/nixos/optional/argocd.nix
+    ../../modules/nixos/optional/maintenance.nix
+    ../../modules/nixos/optional/openssh.nix
+    ../../modules/nixos/optional/alloy.nix
+    ../../modules/nixos/optional/conntrack-exporter.nix
     ../../pkgs/server.nix
   ];
 
