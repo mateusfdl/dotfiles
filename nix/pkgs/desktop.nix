@@ -9,7 +9,9 @@ in
     apple-cursor
     brave
     brightnessctl
+    bubblewrap
     cliphist
+    ffmpeg
     git
     glib
     gnupg
@@ -26,6 +28,7 @@ in
     nwg-displays
     papirus-icon-theme
     pavucontrol
+    python3
     qt6.qt5compat
     qt6.qtdeclarative
     qt6.qttools
