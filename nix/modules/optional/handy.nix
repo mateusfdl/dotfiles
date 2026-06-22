@@ -1,7 +1,7 @@
-{ pkgs, handy-pkg, ... }:
+{ pkgs, inputs, system, ... }:
 {
   environment.systemPackages = [
-    handy-pkg
+    inputs.handy.packages.${system}.default
     pkgs.wtype
   ];
 }

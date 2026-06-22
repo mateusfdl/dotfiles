@@ -29,55 +29,20 @@
   };
 
   outputs =
-    {
-      nixpkgs,
-      zephyr-nix,
-      nix-vscode-extensions,
-      claude-desktop,
-      handy,
-      hunk,
-      kata,
-      home-manager,
-      ...
-    }:
+    { nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-      zephyr = zephyr-nix.packages.${system};
-      handy-pkg = handy.packages.${system}.default;
-      claude-desktop-pkg = claude-desktop.packages.${system}.claude-desktop;
-      hunk-pkg = hunk.packages.${system}.default;
-      kata-pkg = kata.packages.${system}.default;
-      pkgsWithVscodeExts = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [ nix-vscode-extensions.overlays.default ];
-      };
-      vscode-marketplace = pkgsWithVscodeExts.nix-vscode-extensions.vscode-marketplace;
-      vscode-marketplace-universal =
-        pkgsWithVscodeExts.nix-vscode-extensions.vscode-marketplace-universal;
     in
     {
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = {
-          inherit
-            zephyr
-            vscode-marketplace
-            vscode-marketplace-universal
-            handy-pkg
-            claude-desktop-pkg
-            hunk-pkg
-            kata-pkg
-            ;
-        };
-        modules = [
-          ./hosts/desktop
-          home-manager.nixosModules.home-manager
-        ];
+        specialArgs = { inherit inputs system; };
+        modules = [ ./hosts/desktop ];
       };
 
       nixosConfigurations.server = nixpkgs.lib.nixosSystem {
         inherit system;
+        specialArgs = { inherit inputs system; };
         modules = [ ./hosts/server ];
       };
     };

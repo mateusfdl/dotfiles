@@ -1,6 +1,7 @@
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
+    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules/common
     ../../modules/optional/audio.nix

@@ -1,4 +1,7 @@
-{ pkgs, zephyr, ... }:
+{ pkgs, inputs, system, ... }:
+let
+  zephyr = inputs.zephyr-nix.packages.${system};
+in
 {
   environment.sessionVariables = {
     ZEPHYR_TOOLCHAIN_VARIANT = "zephyr";

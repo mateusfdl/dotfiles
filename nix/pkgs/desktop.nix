@@ -1,5 +1,7 @@
-{ pkgs, claude-desktop-pkg, hunk-pkg, ... }:
+{ pkgs, inputs, system, ... }:
 let
+  claude-desktop-pkg = inputs.claude-desktop.packages.${system}.claude-desktop;
+  hunk-pkg = inputs.hunk.packages.${system}.default;
   taskwarriorAsTaskw = pkgs.writeShellScriptBin "taskw" ''
     exec ${pkgs.taskwarrior3}/bin/task "$@"
   '';

@@ -1,9 +1,18 @@
 {
   pkgs,
-  vscode-marketplace,
-  vscode-marketplace-universal,
+  inputs,
+  system,
   ...
 }:
+let
+  vscodePkgs = import inputs.nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+    overlays = [ inputs.nix-vscode-extensions.overlays.default ];
+  };
+  vscode-marketplace = vscodePkgs.nix-vscode-extensions.vscode-marketplace;
+  vscode-marketplace-universal = vscodePkgs.nix-vscode-extensions.vscode-marketplace-universal;
+in
 {
   environment.systemPackages = [
     (pkgs.vscode-with-extensions.override {
