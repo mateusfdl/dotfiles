@@ -28,6 +28,7 @@
     ./neovim.nix
     ./bubblewrap.nix
     ./zephyr.nix
+    ./kata.nix
   ];
 
   environment.sessionVariables = {

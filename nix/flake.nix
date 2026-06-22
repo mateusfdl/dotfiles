@@ -17,6 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    kata = {
+      url = "github:mateusfdl/kata";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +36,7 @@
       claude-desktop,
       handy,
       hunk,
+      kata,
       home-manager,
       ...
     }:
@@ -40,6 +46,7 @@
       handy-pkg = handy.packages.${system}.default;
       claude-desktop-pkg = claude-desktop.packages.${system}.claude-desktop;
       hunk-pkg = hunk.packages.${system}.default;
+      kata-pkg = kata.packages.${system}.default;
       pkgsWithVscodeExts = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -60,6 +67,7 @@
             handy-pkg
             claude-desktop-pkg
             hunk-pkg
+            kata-pkg
             ;
         };
         modules = [
