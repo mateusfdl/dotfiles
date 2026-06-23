@@ -122,7 +122,6 @@ in
     pandoc
     railway
     sd
-    stylua
     tectonic
     tokei
     tree-sitter

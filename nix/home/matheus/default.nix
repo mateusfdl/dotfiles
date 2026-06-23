@@ -10,6 +10,7 @@
     ./direnv.nix
     ./git.nix
     ./hunk.nix
+    ./luarocks.nix
     ./pnpm.nix
   ];
 
