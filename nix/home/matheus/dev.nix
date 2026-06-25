@@ -1,6 +1,7 @@
 { pkgs, inputs, ... }:
 let
   zig = pkgs.zig;
+  flowZig = pkgs.zig_0_15;
 
   kata = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "kata";
@@ -30,6 +31,54 @@ let
       homepage = "https://github.com/mateusfdl/kata";
       license = pkgs.lib.licenses.mit;
       mainProgram = "kata";
+      platforms = pkgs.lib.platforms.unix;
+    };
+  });
+
+  flow = pkgs.stdenv.mkDerivation (finalAttrs: {
+    pname = "flow";
+    version = "0.7.2";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "neurocyte";
+      repo = "flow";
+      rev = "v${finalAttrs.version}";
+      hash = "sha256-5+F0DKb4LXtcMXNutUSJuIe7cdBoFUoJhCs8vbm20jg=";
+    };
+
+    zigDeps = pkgs.runCommand "flow-${finalAttrs.version}-zig-deps" {
+      inherit (finalAttrs) src;
+      nativeBuildInputs = [
+        flowZig
+        pkgs.cacert
+      ];
+      outputHashAlgo = null;
+      outputHashMode = "recursive";
+      outputHash = "sha256-HX7NGdOmYEqlncDlxU7zGSfLawtM+SNKMFvHjTkCE+Y=";
+      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+    } ''
+      export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)
+      runHook unpackPhase
+      cd "$sourceRoot"
+      zig build --fetch
+      mv "$ZIG_GLOBAL_CACHE_DIR/p" "$out"
+    '';
+
+    nativeBuildInputs = [ flowZig.hook ];
+
+    dontSetZigDefaultFlags = true;
+
+    postConfigure = ''
+      cp -r --no-preserve=mode ${finalAttrs.zigDeps} "$ZIG_GLOBAL_CACHE_DIR/p"
+    '';
+
+    zigBuildFlags = [ "-Doptimize=ReleaseSafe" ];
+
+    meta = {
+      description = "Programmer's text editor with multi-cursor, LSP, and syntax highlighting";
+      homepage = "https://github.com/neurocyte/flow";
+      license = pkgs.lib.licenses.mit;
+      mainProgram = "flow";
       platforms = pkgs.lib.platforms.unix;
     };
   });
@@ -94,13 +143,15 @@ let
       owner = "jnsahaj";
       repo = "lumen";
       rev = "v${version}";
-      hash = "sha256-ILAVTEo8t9+4QkIKJNPxMP7U3fSX2j3kqi9W99BdRB4=";
+      hash = "sha256-EoxMYlWHmuprjjhvj3GyCxGDIcT/d+JMda9j75pqs+k=";
     };
 
-    cargoHash = pkgs.lib.fakeHash;
+    cargoHash = "sha256-qTFRfy+Wutee5SbaMaqcYjXgr6xZKYYBIuyVA7jAGiY=";
 
     nativeBuildInputs = [ pkgs.pkg-config ];
     buildInputs = [ pkgs.openssl ];
+
+    OPENSSL_NO_VENDOR = 1;
 
     doCheck = false;
 
@@ -161,6 +212,7 @@ in
     pythonEnv
     rubyEnv
 
+    flow
     kata
     lumen
     revdiff
