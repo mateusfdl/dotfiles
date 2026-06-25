@@ -9,4 +9,6 @@
   services.upower.enable = true;
 
   zramSwap.enable = true;
+
+  boot.kernel.sysctl."vm.swappiness" = 180;
 }
