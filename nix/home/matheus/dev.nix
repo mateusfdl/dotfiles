@@ -86,6 +86,33 @@ let
     };
   };
 
+  lumen = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "lumen";
+    version = "2.30.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "jnsahaj";
+      repo = "lumen";
+      rev = "v${version}";
+      hash = "sha256-ILAVTEo8t9+4QkIKJNPxMP7U3fSX2j3kqi9W99BdRB4=";
+    };
+
+    cargoHash = pkgs.lib.fakeHash;
+
+    nativeBuildInputs = [ pkgs.pkg-config ];
+    buildInputs = [ pkgs.openssl ];
+
+    doCheck = false;
+
+    meta = {
+      description = "AI-powered CLI tool for git commit summaries";
+      homepage = "https://github.com/jnsahaj/lumen";
+      license = pkgs.lib.licenses.mit;
+      mainProgram = "lumen";
+      platforms = pkgs.lib.platforms.unix;
+    };
+  };
+
   pythonEnv = pkgs.python3.withPackages (
     ps: with ps; [
       pip
@@ -109,6 +136,7 @@ in
 
   home.packages = with pkgs; [
     claude-code
+    dust
     entr
     flyctl
     gh
@@ -128,11 +156,13 @@ in
     tmuxinator
     uv
     yq
+    zola
 
     pythonEnv
     rubyEnv
 
     kata
+    lumen
     revdiff
     cmakelint
   ];

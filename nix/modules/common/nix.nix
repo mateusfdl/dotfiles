@@ -19,8 +19,6 @@
     warn-dirty = false;
   };
 
-  nix.optimise.automatic = true;
-
   nix.gc = {
     automatic = true;
     dates = "weekly";
