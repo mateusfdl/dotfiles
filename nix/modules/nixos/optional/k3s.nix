@@ -6,7 +6,7 @@
 
     extraFlags = toString [
       "--disable=traefik"
-      "--write-kubeconfig-mode=0644"
+      "--write-kubeconfig-mode=0640"
       "--tls-san=${config.networking.hostName}"
     ];
   };
