@@ -1,1 +1,7 @@
 **/.git/
+{{- if ne .chezmoi.os "linux" }}
+.config/hypr
+.config/hypr/**
+.config/quickshell
+.config/quickshell/**
+{{- end }}
