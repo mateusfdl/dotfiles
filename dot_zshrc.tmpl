@@ -31,10 +31,10 @@ export PI_CODING_AGENT_DIR={{ .pi.path }}
 [ -f "$HOME/.alias" ] && . "$HOME/.alias"
 [ -f "$HOME/.scripts" ] && . "$HOME/.scripts"
 [ -f "$HOME/.tokens" ] && . "$HOME/.tokens"
-{{ if eq .chezmoi.os "linux" }}
+{{- if eq .chezmoi.os "linux" }}
 [ -f "$HOME/.wsl" ] && . "$HOME/.wsl"
 [ -f "$HOME/.wslpaths" ] && . "$HOME/.wslpaths"
-{{ end }}
+{{- end }}
 
 export PATH="/bin:/usr/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
@@ -46,16 +46,16 @@ export PATH="$HOME/.luarocks/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 
-{{ if eq .chezmoi.os "linux" }}
+{{- if eq .chezmoi.os "linux" }}
 export VCPKG_ROOT=$HOME/.local/share/vcpkg/
 export PATH=$VCPKG_ROOT:$PATH
 export QML2_IMPORT_PATH="$HOME/.config/quickshell/plugin/build/qml:${QML2_IMPORT_PATH:-}"
-{{ end }}
+{{- end }}
 
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 export PATH="/opt/homebrew/bin:$PATH"
 export TERM="xterm-256color"
-{{ end }}
+{{- end }}
 
 if [[ -z "${TMUX}" && -z "$ZSH_NO_TMUX"  ]] then;
   tmux attach || exec tmux new-session -s Personal; 
