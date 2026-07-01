@@ -15,7 +15,7 @@ zig = "latest"
 k6 = "latest"
 bun = "latest"
 "aqua:go-task/task" = "latest"
-"cargo:zola" = { git = "https://github.com/getzola/zola" }
+"cargo:zola" = { version = "ref:master", git = "https://github.com/getzola/zola" }
 
 
 {{ if eq .chezmoi.os "linux" }}
@@ -37,7 +37,7 @@ chezmoi = "latest"
 pnpm = "latest"
 lazygit = "latest"
 stylua = "latest"
-neovim = "latest"
+"aqua:neovim/neovim" = "latest"
 flutter = "latest"
 {{ end }}
 
