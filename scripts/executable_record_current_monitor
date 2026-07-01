@@ -6,9 +6,29 @@ mkdir -p "$RECORDING_DIR"
 PID_FILE="/tmp/screen_recording.pid"
 STATUS_FILE="/tmp/screen_recording.status"
 LOCK_FILE="/tmp/screen_recording.lock"
+GEOMETRY_FILE="/tmp/screen_recording.geometry"
 
 get_current_monitor_geometry() {
     hyprctl monitors -j | jq -r '.[] | select(.focused == true) | "\(.x),\(.y) \(.width)x\(.height)"'
+}
+
+select_geometry() {
+    if [ "$1" = "--area" ]; then
+        slurp
+    else
+        get_current_monitor_geometry
+    fi
+}
+
+publish_geometry() {
+    if [ "$1" = "--area" ]; then
+        local tmp
+        tmp=$(mktemp)
+        printf '%s' "$2" > "$tmp"
+        mv "$tmp" "$GEOMETRY_FILE"
+    else
+        rm -f "$GEOMETRY_FILE"
+    fi
 }
 
 start_recording() {
@@ -17,8 +37,16 @@ start_recording() {
         exit 1
     fi
 
+    local mode="${1:-}"
     local geometry
-    geometry=$(get_current_monitor_geometry)
+    geometry=$(select_geometry "$mode")
+
+    if [ -z "$geometry" ]; then
+        echo "Area selection cancelled"
+        exit 1
+    fi
+
+    publish_geometry "$mode" "$geometry"
 
     local timestamp
     timestamp=$(date +"%Y%m%d_%H%M%S")
@@ -54,6 +82,8 @@ stop_recording() {
         rm -f "$PID_FILE"
         echo "stopped" > "$STATUS_FILE"
     fi
+
+    rm -f "$GEOMETRY_FILE"
 }
 
 check_status() {
@@ -75,7 +105,7 @@ acquire_lock() {
 case "$1" in
     start)
         acquire_lock
-        start_recording
+        start_recording "${2:-}"
         ;;
     stop)
         acquire_lock
@@ -86,16 +116,17 @@ case "$1" in
         if [ -f "$PID_FILE" ] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
             stop_recording
         else
-            start_recording
+            start_recording "${2:-}"
         fi
         ;;
     status)
         check_status
         ;;
     *)
-        echo "Usage: $0 {start|stop|toggle|status}"
+        echo "Usage: $0 {start [--area]|stop|toggle [--area]|status}"
         exit 1
         ;;
 esac
 
 exit 0
+
