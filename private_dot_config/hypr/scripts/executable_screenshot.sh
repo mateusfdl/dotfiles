@@ -25,10 +25,6 @@ timestamp=$(date "+%d-%b_%H-%M-%S")
 readonly timestamp
 readonly filepath="${dir}/Screenshot_${timestamp}_${RANDOM}.png"
 
-readonly NOTIFY_SAVED=(notify-send -t 10000 -A action1=Open -A action2=Delete
-	-h string:x-canonical-private-synchronous:shot-notify -i camera-photo)
-readonly NOTIFY_FAILED=(notify-send -u low -i dialog-error)
-
 suspend_qs_grabs() {
 	qs ipc call launcher suspendGrab >/dev/null 2>&1 || true
 }
@@ -79,41 +75,16 @@ play_sound() {
 	pw-play "$sound_file" >/dev/null 2>&1 || pa-play "$sound_file" >/dev/null 2>&1 || true
 }
 
-notify_saved() {
-	local path="$1" summary="$2" body="$3" resp
-	play_sound screenshot
-	resp=$(timeout 5 "${NOTIFY_SAVED[@]}" "$summary" "$body") || resp=""
-	case "$resp" in
-		action1) xdg-open "$path" & ;;
-		action2) rm -f "$path" & ;;
-	esac
-}
-
-notify_failed() {
-	local summary="$1" body="$2"
-	"${NOTIFY_FAILED[@]}" "$summary" "$body"
-	play_sound error
-}
-
 capture_result() {
 	if [[ -e "$filepath" ]]; then
-		notify_saved "$filepath" " Screenshot" " Saved"
+		play_sound screenshot
 	else
-		notify_failed " Screenshot" " NOT Saved"
+		play_sound error
 	fi
 }
 
 active_geometry() {
 	hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"'
-}
-
-countdown() {
-	local sec
-	for sec in $(seq "$1" -1 1); do
-		notify-send -h string:x-canonical-private-synchronous:shot-notify \
-			-t 1000 -i camera-photo " Taking shot" " in: $sec secs"
-		sleep 1
-	done
 }
 
 shot_now() {
@@ -122,7 +93,7 @@ shot_now() {
 }
 
 shot_delayed() {
-	countdown "$1"
+	sleep "$1"
 	grim - | tee "$filepath" | wl-copy || true
 	capture_result
 }
@@ -138,10 +109,10 @@ shot_area() {
 	if grim -g "$(slurp)" - >"$tmp" && [[ -s "$tmp" ]]; then
 		wl-copy <"$tmp"
 		mv "$tmp" "$filepath"
-		notify_saved "$filepath" " Screenshot" " Saved"
+		play_sound screenshot
 	else
 		rm -f "$tmp"
-		notify_failed " Screenshot" " Cancelled"
+		play_sound error
 	fi
 }
 
@@ -151,26 +122,10 @@ shot_active() {
 	path="${dir}/Screenshot_${timestamp}_${class}.png"
 	geo=$(active_geometry)
 	if grim -g "$geo" "$path" && [[ -e "$path" ]]; then
-		notify_saved "$path" " Screenshot of:" " ${class} Saved."
+		play_sound screenshot
 	else
-		notify_failed " Screenshot of:" " ${class} NOT Saved."
+		play_sound error
 	fi
-}
-
-shot_swappy() {
-	local tmp resp
-	tmp=$(mktemp)
-	if ! grim -g "$(slurp)" - >"$tmp" || [[ ! -s "$tmp" ]]; then
-		rm -f "$tmp"
-		return 0
-	fi
-	wl-copy <"$tmp"
-	play_sound screenshot
-	resp=$(timeout 5 "${NOTIFY_SAVED[@]}" " Screenshot:" " Captured by Swappy") || resp=""
-	case "$resp" in
-		action1) swappy -f - <"$tmp" ;;
-	esac
-	rm -f "$tmp"
 }
 
 main() {
@@ -182,9 +137,8 @@ main() {
 		--win) shot_window ;;
 		--area) shot_area ;;
 		--active) shot_active ;;
-		--swappy) shot_swappy ;;
 		*)
-			printf 'Usage: %s {--now|--in5|--in10|--win|--area|--active|--swappy}\n' \
+			printf 'Usage: %s {--now|--in5|--in10|--win|--area|--active}\n' \
 				"${0##*/}" >&2
 			exit 2
 			;;
