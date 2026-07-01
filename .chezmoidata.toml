@@ -16,3 +16,7 @@ path = "~/.pi/"
 name = "Matheus Lima"
 email = "matheus.limastack@gmail.com"
 signingkey = "19604D1434714668F81161E1D25619C31A4270DE"
+
+[themes]
+light = "gruvbox-light"
+dark  = "silverado"

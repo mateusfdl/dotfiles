@@ -15,8 +15,8 @@ source $ZSH/oh-my-zsh.sh
 export LANG=en_US.UTF-8
 export EDITOR=nvim
 export GPG_TTY=$(tty)
-export LIGHT_THEME="onelight"
-export DARK_THEME="onedark"
+export LIGHT_THEME={{ .themes.light  }}
+export DARK_THEME={{ .themes.dark }}
 
 export OBSIDIAN_VAULT_PATH={{ .notes.vault.path }}
 export PI_CODING_AGENT_DIR={{ .pi.path }}
