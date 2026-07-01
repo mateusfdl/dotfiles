@@ -7,17 +7,18 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QProcess>
+#include <QSet>
 #include <QSettings>
 #include <QStandardPaths>
 
 #include <algorithm>
 #include <set>
 
-AppSearchBackend::AppSearchBackend(QObject *parent) : QObject(parent) {
+AppSearch::AppSearch(QObject *parent) : QObject(parent) {
   m_refreshDebounce.setSingleShot(true);
   m_refreshDebounce.setInterval(500);
   connect(&m_refreshDebounce, &QTimer::timeout, this,
-          &AppSearchBackend::refresh);
+          &AppSearch::refresh);
 
   connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this,
           [this]() { m_refreshDebounce.start(); });
@@ -25,20 +26,48 @@ AppSearchBackend::AppSearchBackend(QObject *parent) : QObject(parent) {
   scanApplications();
 }
 
-QVariantList AppSearchBackend::applications() const {
+QVariantList AppSearch::applications() const {
   return m_applicationsCache;
 }
 
-bool AppSearchBackend::sloppySearch() const { return m_sloppySearch; }
+bool AppSearch::sloppySearch() const { return m_sloppySearch; }
 
-void AppSearchBackend::setSloppySearch(bool value) {
+void AppSearch::setSloppySearch(bool value) {
   if (m_sloppySearch != value) {
     m_sloppySearch = value;
     emit sloppySearchChanged();
   }
 }
 
-QStringList AppSearchBackend::xdgDataDirs() {
+QVariantList AppSearch::quickshellApps() const {
+  const auto entry = [](const char *name, const char *icon, const char *comment,
+                        const char *field, const char *value) {
+    return QVariantMap{
+        {QStringLiteral("name"), QString::fromUtf8(name)},
+        {QStringLiteral("icon"), QString::fromUtf8(icon)},
+        {QStringLiteral("comment"), QString::fromUtf8(comment)},
+        {QString::fromUtf8(field), QString::fromUtf8(value)},
+    };
+  };
+
+  static const QVariantList apps = {
+      entry("Wallpaper Selector", "preferences-desktop-wallpaper",
+            "Change your wallpaper", "action", "wallpaperSelector"),
+      entry("Overview", "view-grid", "Open overview mode", "action",
+            "overview"),
+      entry("SoundCloud", "soundcloud", "Listen to music on SoundCloud", "exec",
+            "soundcloud"),
+      entry("Spotify", "spotify", "Music streaming", "exec", "spotify"),
+      entry("Obsidian", "obsidian", "Knowledge base and notes", "exec",
+            "obsidian"),
+      entry("Brave", "brave-browser", "Web browser", "exec", "brave"),
+      entry("Discord", "discord", "Chat and voice", "exec", "discord"),
+      entry("Morgen", "morgen", "Calendar and scheduling", "exec", "morgen"),
+  };
+  return apps;
+}
+
+QStringList AppSearch::xdgDataDirs() {
   QStringList dirs;
 
   const QString localShare =
@@ -80,8 +109,8 @@ QStringList AppSearchBackend::xdgDataDirs() {
   return dirs;
 }
 
-std::optional<AppSearchBackend::DesktopApp>
-AppSearchBackend::parseDesktopFile(const QString &filePath) {
+std::optional<AppSearch::DesktopApp>
+AppSearch::parseDesktopFile(const QString &filePath) {
   QSettings ini(filePath, QSettings::IniFormat);
   ini.beginGroup(QStringLiteral("Desktop Entry"));
 
@@ -148,7 +177,7 @@ AppSearchBackend::parseDesktopFile(const QString &filePath) {
   return app;
 }
 
-QString AppSearchBackend::processExecString(const QString &exec,
+QString AppSearch::processExecString(const QString &exec,
                                             const QString &name,
                                             const QString &icon,
                                             const QString &desktopFile) {
@@ -178,7 +207,7 @@ QString AppSearchBackend::processExecString(const QString &exec,
   return result.simplified();
 }
 
-bool AppSearchBackend::iconExists(const QString &iconName) const {
+bool AppSearch::iconExists(const QString &iconName) const {
   if (iconName.isEmpty() || iconName == QStringLiteral("image-missing")) {
     return false;
   }
@@ -190,7 +219,7 @@ bool AppSearchBackend::iconExists(const QString &iconName) const {
   return QIcon::hasThemeIcon(iconName);
 }
 
-const QHash<QString, QString> &AppSearchBackend::iconSubstitutions() {
+const QHash<QString, QString> &AppSearch::iconSubstitutions() {
   static const QHash<QString, QString> subs = {
       {QStringLiteral("code-url-handler"),
        QStringLiteral("visual-studio-code")},
@@ -206,8 +235,8 @@ const QHash<QString, QString> &AppSearchBackend::iconSubstitutions() {
   return subs;
 }
 
-const std::vector<AppSearchBackend::RegexSubstitution> &
-AppSearchBackend::regexSubstitutions() {
+const std::vector<AppSearch::RegexSubstitution> &
+AppSearch::regexSubstitutions() {
   static const std::vector<RegexSubstitution> subs = {
       {QRegularExpression(QStringLiteral("^steam_app_(\\d+)$")),
        QStringLiteral("steam_icon_\\1")},
@@ -221,7 +250,7 @@ AppSearchBackend::regexSubstitutions() {
   return subs;
 }
 
-QString AppSearchBackend::guessIcon(const QString &str) const {
+QString AppSearch::guessIcon(const QString &str) const {
   if (str.isEmpty()) {
     return QStringLiteral("image-missing");
   }
@@ -267,7 +296,7 @@ QString AppSearchBackend::guessIcon(const QString &str) const {
   }
 
   {
-    const auto results = search(str);
+    const auto results = searchApplications(str);
     if (!results.isEmpty()) {
       const auto first = results.first().toMap();
       const QString icon = first.value(QStringLiteral("icon")).toString();
@@ -280,7 +309,7 @@ QString AppSearchBackend::guessIcon(const QString &str) const {
   return str;
 }
 
-void AppSearchBackend::scanApplications() {
+void AppSearch::scanApplications() {
   m_apps.clear();
   m_applicationsCache.clear();
 
@@ -346,9 +375,36 @@ void AppSearchBackend::scanApplications() {
   emit applicationsChanged();
 }
 
-void AppSearchBackend::refresh() { scanApplications(); }
+void AppSearch::refresh() { scanApplications(); }
 
-QVariantList AppSearchBackend::search(const QString &query) const {
+QVariantList AppSearch::search(const QString &query) const {
+  const QString queryLower = query.toLower();
+
+  QVariantList quickshellMatches;
+  QSet<QString> matchedNames;
+  for (const auto &variant : quickshellApps()) {
+    const QVariantMap app = variant.toMap();
+    const QString name = app.value(QStringLiteral("name")).toString();
+    const QString comment = app.value(QStringLiteral("comment")).toString();
+    if (name.toLower().contains(queryLower) ||
+        comment.toLower().contains(queryLower)) {
+      quickshellMatches.append(variant);
+      matchedNames.insert(name.toLower());
+    }
+  }
+
+  QVariantList results = quickshellMatches;
+  for (const auto &variant : searchApplications(query)) {
+    const QString name =
+        variant.toMap().value(QStringLiteral("name")).toString().toLower();
+    if (!matchedNames.contains(name)) {
+      results.append(variant);
+    }
+  }
+  return results;
+}
+
+QVariantList AppSearch::searchApplications(const QString &query) const {
   if (query.isEmpty()) {
     return m_applicationsCache;
   }
@@ -422,7 +478,13 @@ QVariantList AppSearchBackend::search(const QString &query) const {
   }
 }
 
-void AppSearchBackend::launch(const QVariantMap &entry) const {
+void AppSearch::launch(const QVariantMap &entry) {
+  const QString action = entry.value(QStringLiteral("action")).toString();
+  if (!action.isEmpty()) {
+    emit actionRequested(action);
+    return;
+  }
+
   const QString exec = entry.value(QStringLiteral("exec")).toString();
   if (exec.isEmpty()) {
     return;

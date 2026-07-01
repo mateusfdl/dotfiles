@@ -75,8 +75,8 @@ Scope {
                 width: 350
                 height: popupColumn.implicitHeight + 48  // 24 margin × 2
                 radius: 16
-                color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
-                border.color: Qt.rgba(1, 1, 1, 0.08)
+                color: Style.withAlpha(Style.pomodoro.surface, 0.78)
+                border.color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.08)
                 border.width: 1
                 z: 10
 
@@ -136,7 +136,7 @@ Scope {
                             text: "timer"
                             iconSize: 32
                             fill: 1
-                            color: Qt.rgba(1, 0.5, 0.5, 1)
+                            color: Style.pomodoro.workingAlt
                         }
 
                         ColumnLayout {
@@ -155,11 +155,11 @@ Scope {
                                 font.pixelSize: 12
                                 color: {
                                     if (Pomodoro.state === Pomodoro.State.Working)
-                                        return Qt.rgba(1, 0.4, 0.4, 0.9);
+                                        return Style.withAlpha(Style.pomodoro.working, 0.9);
                                     else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
-                                        return Qt.rgba(0.4, 0.8, 1, 0.9);
+                                        return Style.withAlpha(Style.pomodoro.breakColor, 0.9);
                                     else
-                                        return Qt.rgba(1, 1, 1, 0.6);
+                                        return Style.withAlpha(Appearance.m3colors.m3primaryText, 0.6);
                                 }
                             }
                         }
@@ -176,8 +176,8 @@ Scope {
                             Layout.fillWidth: true
                             Layout.preferredHeight: activeTodoRow.implicitHeight + 16
                             radius: 8
-                            color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.08) : "transparent"
-                            border.color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.25) : Appearance.m3colors.m3borderSecondary
+                            color: Pomodoro.currentTodo !== null ? Style.withAlpha(Style.pomodoro.working, 0.08) : "transparent"
+                            border.color: Pomodoro.currentTodo !== null ? Style.withAlpha(Style.pomodoro.working, 0.25) : Appearance.m3colors.m3borderSecondary
                             border.width: 1
                             visible: Pomodoro.currentTodo !== null || (!Pomodoro.isRunning && !Pomodoro.isPaused)
 
@@ -191,7 +191,7 @@ Scope {
                                     text: Pomodoro.currentTodo !== null ? "task_alt" : "add_task"
                                     iconSize: 18
                                     fill: Pomodoro.currentTodo !== null ? 1 : 0
-                                    color: Pomodoro.currentTodo !== null ? Qt.rgba(1, 0.4, 0.4, 0.9) : Appearance.m3colors.m3secondaryText
+                                    color: Pomodoro.currentTodo !== null ? Style.withAlpha(Style.pomodoro.working, 0.9) : Appearance.m3colors.m3secondaryText
                                 }
 
                                 StyledText {
@@ -272,7 +272,7 @@ Scope {
                                     width: todoListView.width
                                     height: todoDelegateRow.implicitHeight + 12
                                     radius: 6
-                                    color: todoDelegateMouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.06) : "transparent"
+                                    color: todoDelegateMouseArea.containsMouse ? Style.withAlpha(Appearance.m3colors.m3primaryText, 0.06) : "transparent"
 
                                     RowLayout {
                                         id: todoDelegateRow
@@ -313,7 +313,7 @@ Scope {
                                                         width: tagLabel.implicitWidth + 8
                                                         height: tagLabel.implicitHeight + 4
                                                         radius: 3
-                                                        color: Qt.rgba(1, 1, 1, 0.06)
+                                                        color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.06)
 
                                                         StyledText {
                                                             id: tagLabel
@@ -400,7 +400,7 @@ Scope {
                                 ctx.beginPath();
                                 ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + (progress * 2 * Math.PI), false);
                                 ctx.lineWidth = 8;
-                                ctx.strokeStyle = Pomodoro.state === Pomodoro.State.Working ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(0.4, 0.8, 1, 0.9);
+                                ctx.strokeStyle = Pomodoro.state === Pomodoro.State.Working ? Style.withAlpha(Style.pomodoro.working, 0.9) : Style.withAlpha(Style.pomodoro.breakColor, 0.9);
                                 ctx.lineCap = "round";
                                 ctx.stroke();
                             }
@@ -432,7 +432,7 @@ Scope {
                                         width: 8
                                         height: 8
                                         radius: 4
-                                        color: index < Pomodoro.currentCycle ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(1, 1, 1, 0.2)
+                                        color: index < Pomodoro.currentCycle ? Style.withAlpha(Style.pomodoro.working, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
 
                                         Behavior on color {
                                             ColorAnimation {
@@ -502,7 +502,7 @@ Scope {
                                     text: "pause"
                                     iconSize: 24
                                     fill: 1
-                                    color: Qt.rgba(1, 0.8, 0.4, 0.95)
+                                    color: Style.withAlpha(Style.pomodoro.warning, 0.95)
                                 }
 
                                 StyledText {
@@ -530,7 +530,7 @@ Scope {
                                     text: "play_arrow"
                                     iconSize: 24
                                     fill: 1
-                                    color: Qt.rgba(0.4, 1, 0.4, 0.95)
+                                    color: Style.withAlpha(Style.pomodoro.success, 0.95)
                                 }
 
                                 StyledText {
@@ -555,7 +555,7 @@ Scope {
                                 text: "stop"
                                 iconSize: 24
                                 fill: 1
-                                color: Qt.rgba(1, 0.4, 0.4, 0.95)
+                                color: Style.withAlpha(Style.pomodoro.working, 0.95)
                             }
                         }
 
@@ -572,7 +572,7 @@ Scope {
                                 text: "skip_next"
                                 iconSize: 24
                                 fill: 1
-                                color: Qt.rgba(0.7, 0.7, 1, 0.95)
+                                color: Style.withAlpha(Style.pomodoro.info, 0.95)
                             }
                         }
                     }
@@ -618,7 +618,7 @@ Scope {
                             text: Pomodoro.lockOnBreak ? "lock" : "lock_open"
                             iconSize: 14
                             fill: Pomodoro.lockOnBreak ? 1 : 0
-                            color: Pomodoro.lockOnBreak ? Qt.rgba(0.4, 0.8, 1, 0.9) : Appearance.m3colors.m3secondaryText
+                            color: Pomodoro.lockOnBreak ? Style.withAlpha(Style.pomodoro.breakColor, 0.9) : Appearance.m3colors.m3secondaryText
                         }
                     }
 
@@ -651,7 +651,7 @@ Scope {
                             MaterialSymbol {
                                 text: "target"
                                 iconSize: 18
-                                color: Qt.rgba(1, 0.4, 0.4, 0.8)
+                                color: Style.withAlpha(Style.pomodoro.working, 0.8)
                             }
 
                             StyledText {
@@ -685,7 +685,7 @@ Scope {
                             MaterialSymbol {
                                 text: "coffee"
                                 iconSize: 18
-                                color: Qt.rgba(0.4, 0.8, 1, 0.8)
+                                color: Style.withAlpha(Style.pomodoro.breakColor, 0.8)
                             }
 
                             StyledText {
@@ -719,7 +719,7 @@ Scope {
                             MaterialSymbol {
                                 text: "self_improvement"
                                 iconSize: 18
-                                color: Qt.rgba(0.6, 0.4, 1, 0.8)
+                                color: Style.withAlpha(Style.pomodoro.special, 0.8)
                             }
 
                             StyledText {
@@ -753,7 +753,7 @@ Scope {
                             MaterialSymbol {
                                 text: "lock"
                                 iconSize: 18
-                                color: Pomodoro.lockOnBreak ? Qt.rgba(0.4, 0.8, 1, 0.9) : Qt.rgba(1, 1, 1, 0.4)
+                                color: Pomodoro.lockOnBreak ? Style.withAlpha(Style.pomodoro.breakColor, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.4)
                             }
 
                             StyledText {

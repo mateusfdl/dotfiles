@@ -36,11 +36,11 @@ Item {
             fill: Pomodoro.isRunning ? 1 : 0
             color: {
                 if (Pomodoro.state === Pomodoro.State.Working)
-                    return Qt.rgba(1, 0.4, 0.4, 0.9);
+                    return Style.withAlpha(Style.pomodoro.working, 0.9);
                 else
                 // Red for work
                 if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
-                    return Qt.rgba(0.4, 0.8, 1, 0.9);
+                    return Style.withAlpha(Style.pomodoro.breakColor, 0.9);
                 else
                     // Blue for break
                     return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText;
@@ -59,9 +59,9 @@ Item {
             text: Pomodoro.displayTime
             color: {
                 if (Pomodoro.state === Pomodoro.State.Working)
-                    return Qt.rgba(1, 0.4, 0.4, 0.9);
+                    return Style.withAlpha(Style.pomodoro.working, 0.9);
                 else if (Pomodoro.state === Pomodoro.State.ShortBreak || Pomodoro.state === Pomodoro.State.LongBreak)
-                    return Qt.rgba(0.4, 0.8, 1, 0.9);
+                    return Style.withAlpha(Style.pomodoro.breakColor, 0.9);
                 else
                     return Config.options.bar.iconColor || Appearance.m3colors.m3primaryText;
             }
@@ -103,7 +103,7 @@ Item {
             width: 3
             height: 3
             radius: 1.5
-            color: Qt.rgba(1, 1, 1, 0.3)
+            color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.3)
             visible: (Pomodoro.isRunning || Pomodoro.isPaused) && Pomodoro.currentTodo !== null
         }
 
@@ -119,7 +119,7 @@ Item {
                     width: 4
                     height: 4
                     radius: 2
-                    color: index < Pomodoro.currentCycle ? Qt.rgba(1, 0.4, 0.4, 0.9) : Qt.rgba(Appearance.m3colors.m3primaryText.r, Appearance.m3colors.m3primaryText.g, Appearance.m3colors.m3primaryText.b, 0.3)
+                    color: index < Pomodoro.currentCycle ? Style.withAlpha(Style.pomodoro.working, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.3)
 
                     Behavior on color {
                         ColorAnimation {

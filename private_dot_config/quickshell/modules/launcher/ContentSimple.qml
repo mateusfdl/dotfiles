@@ -16,9 +16,9 @@ Item {
     required property real maxHeight
 
     readonly property int outerPadding: 16
-    readonly property int searchHeight: Math.max(searchIcon.implicitHeight, search.implicitHeight, clearIcon.implicitHeight) + 28
+    readonly property int searchHeight: Math.max(searchIcon.implicitHeight, search.implicitHeight, clearIcon.implicitHeight) + 40
     readonly property int actionBarHeight: 44
-    readonly property int contentAreaHeight: Math.min(root.maxHeight - searchHeight - actionBarHeight, 380)
+    readonly property int contentAreaHeight: Math.min(root.maxHeight - searchHeight - actionBarHeight, 500)
     readonly property int leftPanelWidth: 320
 
     implicitWidth: mainContainer.width
@@ -30,7 +30,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
 
-        width: 780
+        width: 1200
         height: searchHeight + horizontalSep.height + contentArea.height + actionBar.height
 
         Behavior on height {
@@ -59,6 +59,7 @@ Item {
                 border.width: 1
                 z: -1
             }
+
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: -3
@@ -68,6 +69,7 @@ Item {
                 border.width: 2
                 z: -2
             }
+
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: -7
@@ -113,7 +115,7 @@ Item {
                 background: Item {}
                 color: Appearance.m3colors.m3primaryText
                 font.family: Style.font.family.uiFont
-                font.pixelSize: 18
+                font.pixelSize: 20
 
                 // Enter launches selected app
                 Keys.onReturnPressed: event => {
@@ -275,10 +277,10 @@ Item {
                             text: list.hasSearchText ? qsTr("Applications") : qsTr("Suggestions")
                             color: Appearance.m3colors.m3secondaryText
                             font.family: Style.font.family.uiFont
-                            font.pixelSize: 12
+                            font.pixelSize: 20
                             font.weight: Font.DemiBold
                             leftPadding: 16
-                            bottomPadding: 4
+                            bottomPadding: 20
                         }
 
                         // App list

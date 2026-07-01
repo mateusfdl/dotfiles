@@ -71,8 +71,8 @@ Scope {
                 width: 400
                 height: cardContent.height + 40
                 radius: 24
-                color: Qt.rgba(0.08, 0.08, 0.10, 0.96)
-                border.color: Qt.rgba(1, 1, 1, 0.08)
+                color: Style.withAlpha(Style.music.surface, 0.96)
+                border.color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.08)
                 border.width: 1
                 z: 10
                 layer.enabled: true
@@ -105,7 +105,7 @@ Scope {
                             Layout.preferredWidth: 96
                             Layout.preferredHeight: 96
                             radius: 14
-                            color: Qt.rgba(0.15, 0.15, 0.18, 0.6)
+                            color: Style.withAlpha(Style.music.surfaceVariant, 0.6)
 
                             Image {
                                 id: albumArt
@@ -133,7 +133,7 @@ Scope {
                                 text: "album"
                                 iconSize: 44
                                 fill: 1
-                                color: Qt.rgba(1, 1, 1, 0.2)
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
                                 visible: albumArt.status !== Image.Ready
                             }
                         }
@@ -147,9 +147,9 @@ Scope {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: MediaPlayer.title || "No track playing"
-                                font.pixelSize: 15
+                                font.pixelSize: 22
                                 font.weight: Font.DemiBold
-                                color: Qt.rgba(1, 1, 1, 0.95)
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.95)
                                 wrapMode: Text.Wrap
                                 maximumLineCount: 2
                                 elide: Text.ElideRight
@@ -158,8 +158,8 @@ Scope {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: MediaPlayer.artist || "Unknown Artist"
-                                font.pixelSize: 13
-                                color: Qt.rgba(1, 1, 1, 0.6)
+                                font.pixelSize: 18
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.6)
                                 wrapMode: Text.Wrap
                                 maximumLineCount: 1
                                 elide: Text.ElideRight
@@ -168,8 +168,8 @@ Scope {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: MediaPlayer.album || ""
-                                font.pixelSize: 11
-                                color: Qt.rgba(1, 1, 1, 0.4)
+                                font.pixelSize: 14
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.4)
                                 wrapMode: Text.Wrap
                                 maximumLineCount: 1
                                 elide: Text.ElideRight
@@ -198,8 +198,8 @@ Scope {
                         barRadius: 1.5
                         minBarHeight: 2
                         maxBarHeight: 28
-                        barColor: Qt.rgba(1, 0.6, 0.8, 0.15)
-                        barColorActive: Qt.rgba(1, 0.6, 0.8, 0.5)
+                        barColor: Style.music.barColor
+                        barColorActive: Style.music.barColorActive
                         active: MediaPlayer.isPlaying
                         values: AudioSpectrum.bars
                         animationDuration: 100
@@ -214,13 +214,13 @@ Scope {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 3
                             radius: 1.5
-                            color: Qt.rgba(1, 1, 1, 0.08)
+                            color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.08)
 
                             Rectangle {
                                 width: parent.width * MediaPlayer.progress
                                 height: parent.height
                                 radius: parent.radius
-                                color: Qt.rgba(1, 0.6, 0.8, 0.8)
+                                color: Style.withAlpha(Style.music.spectrumGlow, 0.8)
 
                                 Behavior on width {
                                     NumberAnimation {
@@ -237,7 +237,7 @@ Scope {
                                 text: MediaPlayer.positionText
                                 font.pixelSize: 10
                                 font.family: Style.font.family.monospace
-                                color: Qt.rgba(1, 1, 1, 0.4)
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.4)
                             }
 
                             Item {
@@ -248,7 +248,7 @@ Scope {
                                 text: MediaPlayer.lengthText
                                 font.pixelSize: 10
                                 font.family: Style.font.family.monospace
-                                color: Qt.rgba(1, 1, 1, 0.4)
+                                color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.4)
                             }
                         }
                     }
@@ -275,7 +275,7 @@ Scope {
                                 text: "skip_previous"
                                 iconSize: 26
                                 fill: 1
-                                color: MediaPlayer.canGoPrevious ? Qt.rgba(1, 1, 1, 0.9) : Qt.rgba(1, 1, 1, 0.25)
+                                color: MediaPlayer.canGoPrevious ? Style.withAlpha(Appearance.m3colors.m3primaryText, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.25)
                             }
 
                             onClicked: MediaPlayer.previous()
@@ -292,7 +292,7 @@ Scope {
                                 text: MediaPlayer.isPlaying ? "pause" : "play_arrow"
                                 iconSize: 32
                                 fill: 1
-                                color: Qt.rgba(1, 0.6, 0.8, 1)
+                                color: Style.music.accent
                             }
 
                             onClicked: MediaPlayer.playPause()
@@ -310,7 +310,7 @@ Scope {
                                 text: "skip_next"
                                 iconSize: 26
                                 fill: 1
-                                color: MediaPlayer.canGoNext ? Qt.rgba(1, 1, 1, 0.9) : Qt.rgba(1, 1, 1, 0.25)
+                                color: MediaPlayer.canGoNext ? Style.withAlpha(Appearance.m3colors.m3primaryText, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.25)
                             }
 
                             onClicked: MediaPlayer.next()
@@ -335,7 +335,7 @@ Scope {
                 layer.effect: DropShadow {
                     radius: 28
                     samples: 57
-                    color: Qt.rgba(0, 0, 0, 0.65)
+                    color: Style.withAlpha(Appearance.m3colors.m3shadowColor, 0.65)
                     verticalOffset: 6
                     horizontalOffset: 0
                 }

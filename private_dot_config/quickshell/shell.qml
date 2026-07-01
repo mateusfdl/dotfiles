@@ -4,6 +4,7 @@
 
 import QtQuick
 import Quickshell
+import qs
 import qs.modules.common
 import qs.modules.launcher
 import qs.modules.notifications
@@ -12,10 +13,10 @@ import qs.modules.theme
 import qs.modules.topbar
 import qs.modules.wallpaper
 import qs.modules.windowswitcher
-import qs.modules.cheatsheet
 import qs.modules.obsidiantodo
 import qs.modules.dailytodos
 import qs.modules.lockscreen
+import QsUtils
 
 ShellRoot {
     property bool enableTopbar: Config.options.modules.topbar
@@ -24,17 +25,33 @@ ShellRoot {
     property bool enableLauncher: Config.options.modules.launcher
     property bool enableWallpaper: Config.options.modules.wallpaper
     property bool enableNotifications: Config.options.modules.notifications
-    property bool enableCheatsheet: Config.options.modules.cheatsheet
     property bool enableObsidianTodo: Config.options.modules.obsidianTodo
     property bool enableDailyTodos: Config.options.modules.dailyTodos
     property bool enableLockScreen: Config.options.modules.lockScreen
 
     ThemeIpc {}
 
+    Connections {
+        target: AppSearch
+
+        function onActionRequested(action) {
+            if (action === "wallpaperSelector")
+                GlobalStates.wallpaperSelectorOpen = true;
+            else if (action === "overview")
+                GlobalStates.overviewOpen = true;
+        }
+    }
+
     Loader {
         active: enableTopbar
 
         sourceComponent: Topbar {}
+    }
+
+    Loader {
+        active: enableTopbar
+
+        sourceComponent: LiveTopbar {}
     }
 
     Loader {
@@ -65,12 +82,6 @@ ShellRoot {
         active: enableNotifications
 
         sourceComponent: NotificationPopup {}
-    }
-
-    Loader {
-        active: enableCheatsheet
-
-        sourceComponent: Cheatsheet {}
     }
 
     Loader {

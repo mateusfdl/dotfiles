@@ -7,6 +7,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Widgets
 import Quickshell.Hyprland
 import qs
 import qs.modules.common
@@ -471,6 +472,143 @@ Scope {
                         }
                     }
 
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 160
+                        radius: 16
+                        color: Appearance.colors.colLayer2
+                        border.color: Appearance.m3colors.m3borderSecondary
+                        border.width: 1
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 16
+                            spacing: 12
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+
+                                MaterialSymbol {
+                                    text: "desktop_windows"
+                                    iconSize: 20
+                                    fill: 1
+                                    color: Appearance.m3colors.m3accentPrimary
+                                }
+
+                                StyledText {
+                                    text: "Monitors"
+                                    font.pixelSize: 14
+                                    font.weight: Font.Medium
+                                    color: Appearance.m3colors.m3surfaceText
+                                }
+
+                                Item {
+                                    Layout.fillWidth: true
+                                }
+
+                                StyledText {
+                                    text: Livestream.active ? ("Live · " + Livestream.monitor) : "Stream off"
+                                    font.pixelSize: 11
+                                    color: Livestream.active ? Style.recording.active : Appearance.m3colors.m3secondaryText
+                                }
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                spacing: 12
+
+                                Repeater {
+                                    model: Quickshell.screens
+
+                                    Rectangle {
+                                        id: monitorTile
+
+                                        required property var modelData
+                                        readonly property bool isLive: Livestream.monitor === modelData.name
+
+                                        Layout.fillWidth: true
+                                        Layout.fillHeight: true
+                                        radius: 10
+                                        clip: true
+                                        color: Appearance.colors.colLayer0
+                                        border.width: monitorTile.isLive ? 2 : 1
+                                        border.color: monitorTile.isLive ? Style.recording.active : Appearance.m3colors.m3borderSecondary
+
+                                        Behavior on border.color {
+                                            ColorAnimation {
+                                                duration: 200
+                                            }
+                                        }
+
+                                        ScreencopyView {
+                                            anchors.fill: parent
+                                            anchors.margins: 2
+                                            captureSource: monitorTile.modelData
+                                        }
+
+                                        Rectangle {
+                                            anchors.left: parent.left
+                                            anchors.bottom: parent.bottom
+                                            anchors.margins: 6
+                                            width: nameLabel.implicitWidth + 12
+                                            height: nameLabel.implicitHeight + 6
+                                            radius: 6
+                                            color: Colors.transparentize(Appearance.colors.colLayer0, 0.3)
+
+                                            StyledText {
+                                                id: nameLabel
+                                                anchors.centerIn: parent
+                                                text: monitorTile.modelData.name
+                                                font.pixelSize: 11
+                                                font.weight: Font.Medium
+                                                color: Appearance.colors.colOnLayer1
+                                            }
+                                        }
+
+                                        Rectangle {
+                                            anchors.top: parent.top
+                                            anchors.left: parent.left
+                                            anchors.margins: 6
+                                            visible: monitorTile.isLive
+                                            width: liveRow.implicitWidth + 12
+                                            height: liveRow.implicitHeight + 6
+                                            radius: 6
+                                            color: Style.withAlpha(Style.recording.active, 0.9)
+
+                                            RowLayout {
+                                                id: liveRow
+                                                anchors.centerIn: parent
+                                                spacing: 4
+
+                                                MaterialSymbol {
+                                                    text: "sensors"
+                                                    iconSize: 12
+                                                    fill: 1
+                                                    color: Appearance.m3colors.m3primaryText
+                                                }
+
+                                                StyledText {
+                                                    text: "LIVE"
+                                                    font.pixelSize: 10
+                                                    font.weight: Font.Bold
+                                                    color: Appearance.m3colors.m3primaryText
+                                                }
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: Livestream.toggle(monitorTile.modelData.name)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     Process {
                         id: themeSwitchProcess
 
@@ -602,13 +740,13 @@ Scope {
                             ]
 
                             Rectangle {
-                                property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.2, 0.2, 0.3) : Appearance.m3colors.m3selectionBackground
+                                property color baseColor: (modelData.action === "record" && ScreenRecorder.isRecording) ? Style.withAlpha(Style.recording.activeFill, 0.3) : Appearance.m3colors.m3selectionBackground
 
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 56
                                 radius: 14
                                 color: actionMouseArea.pressed ? Qt.darker(baseColor, 1.2) : baseColor
-                                border.color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 0.8) : Appearance.m3colors.m3borderSecondary
+                                border.color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Style.withAlpha(Style.recording.active, 0.8) : Appearance.m3colors.m3borderSecondary
                                 border.width: 1
                                 scale: actionMouseArea.pressed ? 0.95 : 1.0
 
@@ -639,7 +777,7 @@ Scope {
                                         text: (modelData.action === "record" && ScreenRecorder.isRecording) ? "stop_circle" : modelData.icon
                                         iconSize: 20
                                         fill: (modelData.action === "record" && ScreenRecorder.isRecording) ? 1 : 0
-                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3selectionText
+                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Style.recording.active : Appearance.m3colors.m3selectionText
 
                                         Behavior on color {
                                             ColorAnimation {
@@ -652,7 +790,7 @@ Scope {
                                         text: (modelData.action === "record" && ScreenRecorder.isRecording) ? "Stop" : modelData.label
                                         font.pixelSize: 13
                                         font.weight: Font.Medium
-                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Qt.rgba(1, 0.3, 0.3, 1) : Appearance.m3colors.m3selectionText
+                                        color: (modelData.action === "record" && ScreenRecorder.isRecording) ? Style.recording.active : Appearance.m3colors.m3selectionText
 
                                         Behavior on color {
                                             ColorAnimation {

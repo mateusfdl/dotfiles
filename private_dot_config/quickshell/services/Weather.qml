@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.modules.common
+import QsUtils
 
 Singleton {
     id: root

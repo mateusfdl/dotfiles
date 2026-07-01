@@ -162,7 +162,7 @@ Item {
                         // Dim overlay
                         Rectangle {
                             anchors.fill: parent
-                            color: hoveredWhileDragging ? Appearance.colors.colLayer1Hover : "black"
+                            color: hoveredWhileDragging ? Appearance.colors.colLayer1Hover : Appearance.m3colors.m3windowBackground
                             opacity: hoveredWhileDragging ? 0.4 : 0.2
 
                             Behavior on opacity {

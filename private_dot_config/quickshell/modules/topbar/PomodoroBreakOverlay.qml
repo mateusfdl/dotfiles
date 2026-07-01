@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import QsUtils
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
@@ -66,7 +67,7 @@ Scope {
             // Dark backdrop
             Rectangle {
                 anchors.fill: parent
-                color: "#000000"
+                color: Appearance.m3colors.m3shadowColor
                 opacity: overlayScope.shouldShow ? 0.88 : 0
 
                 Behavior on opacity {
@@ -100,14 +101,14 @@ Scope {
                         text: Pomodoro.state === Pomodoro.State.LongBreak ? "self_improvement" : "coffee"
                         iconSize: 64
                         fill: 1
-                        color: Qt.rgba(0.4, 0.8, 1, 0.9)
+                        color: Style.withAlpha(Style.pomodoro.breakColor, 0.9)
                     }
 
                     // Break label
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: Pomodoro.state === Pomodoro.State.LongBreak ? "Long Break" : "Short Break"
-                        color: Qt.rgba(1, 1, 1, 0.9)
+                        color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.9)
                         font.pixelSize: 28
                         font.family: Style.font.family.uiFont
                         font.weight: Font.Light
@@ -130,8 +131,8 @@ Scope {
                             width: 240
                             height: 240
                             radius: 120
-                            color: Qt.rgba(1, 1, 1, 0.05)
-                            border.color: Qt.rgba(1, 1, 1, 0.1)
+                            color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.05)
+                            border.color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.1)
                             border.width: 2
                         }
 
@@ -155,14 +156,14 @@ Scope {
                                 ctx.beginPath();
                                 ctx.arc(centerX, centerY, r, 0, 2 * Math.PI, false);
                                 ctx.lineWidth = 6;
-                                ctx.strokeStyle = Qt.rgba(1, 1, 1, 0.08);
+                                ctx.strokeStyle = Style.withAlpha(Appearance.m3colors.m3primaryText, 0.08);
                                 ctx.stroke();
                                 // Progress arc
                                 if (progress > 0) {
                                     ctx.beginPath();
                                     ctx.arc(centerX, centerY, r, -Math.PI / 2, -Math.PI / 2 + (progress * 2 * Math.PI), false);
                                     ctx.lineWidth = 6;
-                                    ctx.strokeStyle = Qt.rgba(0.4, 0.8, 1, 0.9);
+                                    ctx.strokeStyle = Style.withAlpha(Style.pomodoro.breakColor, 0.9);
                                     ctx.lineCap = "round";
                                     ctx.stroke();
                                 }
@@ -177,7 +178,7 @@ Scope {
                             Text {
                                 Layout.alignment: Qt.AlignHCenter
                                 text: Pomodoro.displayTime
-                                color: "#ffffff"
+                                color: Appearance.m3colors.m3primaryText
                                 font.pixelSize: 64
                                 font.weight: Font.Bold
                                 font.family: "monospace"
@@ -196,7 +197,7 @@ Scope {
                                         width: 10
                                         height: 10
                                         radius: 5
-                                        color: index < Pomodoro.currentCycle ? Qt.rgba(0.4, 0.8, 1, 0.9) : Qt.rgba(1, 1, 1, 0.2)
+                                        color: index < Pomodoro.currentCycle ? Style.withAlpha(Style.pomodoro.breakColor, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
 
                                         Behavior on color {
                                             ColorAnimation {
@@ -218,7 +219,7 @@ Scope {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Screen will unlock when break ends"
-                        color: Qt.rgba(1, 1, 1, 0.4)
+                        color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.4)
                         font.pixelSize: 14
                         font.family: Style.font.family.uiFont
                     }
@@ -227,7 +228,7 @@ Scope {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Completed: " + Pomodoro.completedPomodoros + " pomodoros"
-                        color: Qt.rgba(1, 1, 1, 0.3)
+                        color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.3)
                         font.pixelSize: 12
                         font.family: Style.font.family.uiFont
                     }

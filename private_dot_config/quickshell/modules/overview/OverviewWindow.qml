@@ -1,4 +1,3 @@
-import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 import Qt5Compat.GraphicalEffects
@@ -117,6 +116,13 @@ Rectangle { // Window
         anchors.margins: 1
         captureSource: root.toplevel
         visible: root.toplevel !== null
+    }
+
+    Timer {
+        running: windowPreview.visible && Config.options.overview.previewRefreshInterval > 0
+        interval: Config.options.overview.previewRefreshInterval
+        repeat: true
+        onTriggered: windowPreview.captureFrame()
     }
 
     // Hover overlay

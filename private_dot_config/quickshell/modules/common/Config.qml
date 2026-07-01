@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import QsUtils
 
 Singleton {
     id: root
@@ -32,15 +33,13 @@ Singleton {
             property JsonObject font: JsonObject {
                 property JsonObject family: JsonObject {
                     property string uiFont: "Open Sans"
-                    property string iconFont: "FiraConde Nerd Font"
+                    property string iconFont: "Maple Mono NF"
                     property string codeFont: "JetBrains Mono NF"
                 }
                 property JsonObject pixelSize: JsonObject {
                     property int textSmall: 13
                     property int textBase: 15
-                    property int textMedium: 16
                     property int textLarge: 19
-                    property int iconLarge: 22
                 }
             }
 
@@ -61,12 +60,6 @@ Singleton {
                     property int iconSize: 20
                     property int spacing: 14
                 }
-                property JsonObject workspaces: JsonObject {
-                    property int spacing: 4
-                    property int size: 24
-                    property int activeSize: 8
-                    property int inactiveSize: 8
-                }
             }
 
             property JsonObject lock: JsonObject {
@@ -85,7 +78,6 @@ Singleton {
                 property bool wallpaper: true
                 property bool notifications: true
                 property bool lockScreen: true
-                property bool cheatsheet: true
                 property bool obsidianTodo: true
                 property bool dailyTodos: true
             }
@@ -94,6 +86,7 @@ Singleton {
                 property real scale: 0.18
                 property real windowPadding: 6
                 property real workspaceNumberSize: 120
+                property int previewRefreshInterval: 500
             }
 
             property JsonObject launcher: JsonObject {
@@ -115,6 +108,12 @@ Singleton {
 
             property JsonObject hacks: JsonObject {
                 property int arbitraryRaceConditionDelay: 20
+            }
+
+            property JsonObject sqlite: JsonObject {
+                property string dbDir: "~/.local/state/quickshell"
+                property string dbName: "quickshell.db"
+                property string migrationsDir: "~/.config/quickshell/migrations"
             }
         }
     }

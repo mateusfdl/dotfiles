@@ -6,6 +6,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs
 import qs.modules.common
+import qs.services
 import QsUtils
 
 Scope {
@@ -16,9 +17,10 @@ Scope {
             id: panel
 
             required property var modelData
+            readonly property bool isLive: Livestream.active && Livestream.monitor === modelData.name
 
             screen: modelData
-            visible: !GlobalStates.screenLocked
+            visible: !GlobalStates.screenLocked && !panel.isLive
             implicitHeight: Appearance.sizes.barHeight
             color: Config.options.bar.showBackground ? Appearance.colors.colLayer0 : "transparent"
 
@@ -39,7 +41,6 @@ Scope {
                 anchors.bottomMargin: Config.options.bar.margins
                 spacing: 0
 
-                // Left section
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -49,11 +50,10 @@ Scope {
 
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        spacing: 8
+                        spacing: 0
 
                         Item {
-                            implicitWidth: 12
-                            implicitHeight: 1
+                            implicitWidth: 20
                         }
 
                         Topbar.AppDrawer {
@@ -61,7 +61,7 @@ Scope {
                         }
 
                         Topbar.ActiveWindow {
-                            Layout.leftMargin: 12
+                            Layout.leftMargin: 30
                             Layout.alignment: Qt.AlignVCenter
                             Layout.maximumWidth: 400
                         }
@@ -72,8 +72,24 @@ Scope {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Topbar.Workspaces {
-                        anchors.centerIn: parent
+                    RowLayout {
+                        id: centerContent
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.left: parent.left
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Topbar.MusicIsland {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
                     }
                 }
 
@@ -91,11 +107,6 @@ Scope {
                         Item {
                             implicitWidth: 1
                             implicitHeight: 1
-                        }
-
-                        Topbar.MusicIsland {
-                            Layout.alignment: Qt.AlignVCenter
-                            Layout.rightMargin: 16
                         }
 
                         Topbar.SysTray {

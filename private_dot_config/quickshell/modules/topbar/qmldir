@@ -8,7 +8,7 @@ singleton SessionMenu 1.0 SessionMenu.qml
 ActiveWindow 1.0 ActiveWindow.qml
 SysTray 1.0 SysTray.qml
 Topbar 1.0 Topbar.qml
-Workspaces 1.0 Workspaces.qml
+LiveTopbar 1.0 LiveTopbar.qml
 PomodoroIndicator 1.0 PomodoroIndicator.qml
 RecordingIndicator 1.0 RecordingIndicator.qml
 RecordingOverlay 1.0 RecordingOverlay.qml

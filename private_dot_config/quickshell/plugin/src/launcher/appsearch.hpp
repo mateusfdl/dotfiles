@@ -12,32 +12,35 @@
 
 #include <vector>
 
-class AppSearchBackend : public QObject {
+class AppSearch : public QObject {
   Q_OBJECT
   QML_ELEMENT
   QML_SINGLETON
 
   Q_PROPERTY(
       QVariantList applications READ applications NOTIFY applicationsChanged)
+  Q_PROPERTY(QVariantList quickshellApps READ quickshellApps CONSTANT)
   Q_PROPERTY(bool sloppySearch READ sloppySearch WRITE setSloppySearch NOTIFY
                  sloppySearchChanged)
 
 public:
-  explicit AppSearchBackend(QObject *parent = nullptr);
+  explicit AppSearch(QObject *parent = nullptr);
 
   [[nodiscard]] QVariantList applications() const;
+  [[nodiscard]] QVariantList quickshellApps() const;
   [[nodiscard]] bool sloppySearch() const;
 
   void setSloppySearch(bool value);
 
   Q_INVOKABLE QVariantList search(const QString &query) const;
-  Q_INVOKABLE void launch(const QVariantMap &entry) const;
+  Q_INVOKABLE void launch(const QVariantMap &entry);
   Q_INVOKABLE QString guessIcon(const QString &str) const;
   Q_INVOKABLE void refresh();
 
 signals:
   void applicationsChanged();
   void sloppySearchChanged();
+  void actionRequested(const QString &action);
 
 private:
   struct DesktopApp {
@@ -56,6 +59,7 @@ private:
   };
 
   void scanApplications();
+  [[nodiscard]] QVariantList searchApplications(const QString &query) const;
   [[nodiscard]] static QStringList xdgDataDirs();
   [[nodiscard]] static std::optional<DesktopApp>
   parseDesktopFile(const QString &filePath);

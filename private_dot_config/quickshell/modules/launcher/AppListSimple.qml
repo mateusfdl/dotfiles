@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.modules.common
-import qs.services
+import QsUtils
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -11,7 +11,7 @@ ListView {
 
     required property TextField search
 
-    readonly property int maxShown: Config.options.launcher.maxShown ?? 7
+    readonly property int maxShown: Config.options.launcher.maxShown
     property var selectedApp: null
 
     model: AppSearch.search(search.text).slice(0, maxShown)

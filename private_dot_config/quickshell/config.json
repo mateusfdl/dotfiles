@@ -14,12 +14,18 @@
             "iconSize": 20,
             "itemSize": 24,
             "spacing": 14
+        }
+    },
+    "font": {
+        "family": {
+            "codeFont": "JetBrains Mono NF",
+            "iconFont": "Maple Mono NF",
+            "uiFont": "Open Sans"
         },
-        "workspaces": {
-            "activeSize": 8,
-            "inactiveSize": 8,
-            "size": 24,
-            "spacing": 4
+        "pixelSize": {
+            "textBase": 15,
+            "textLarge": 19,
+            "textSmall": 13
         }
     },
     "hacks": {
@@ -38,7 +44,24 @@
         "launchOnStartup": false,
         "showLockedText": true
     },
+    "modules": {
+        "dailyTodos": true,
+        "launcher": true,
+        "lockScreen": true,
+        "notifications": true,
+        "obsidianTodo": true,
+        "overview": true,
+        "topbar": true,
+        "wallpaper": true,
+        "windowSwitcher": true
+    },
+    "sqlite": {
+        "dbDir": "~/.local/state/quickshell",
+        "dbName": "quickshell.db",
+        "migrationsDir": "~/.config/quickshell/migrations"
+    },
     "overview": {
+        "previewRefreshInterval": 500,
         "scale": 0.15,
         "windowPadding": 6,
         "workspaceNumberSize": 220
@@ -51,5 +74,8 @@
             "focus": 1500,
             "longBreak": 900
         }
+    },
+    "ui": {
+        "theme": "dark"
     }
 }

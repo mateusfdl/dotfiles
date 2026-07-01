@@ -159,7 +159,9 @@ void ObsidianTodo::fetchTags() {
 
 void ObsidianTodo::fetchTodos() {
   auto *proc = startTask(this, {QStringLiteral("status:pending"),
-                                QStringLiteral("or"),
+                                QStringLiteral("and"),
+                                QStringLiteral("due.after:yesterday"),
+                                QStringLiteral("and"),
                                 QStringLiteral("due.before:tomorrow"),
                                 QStringLiteral("export")});
 

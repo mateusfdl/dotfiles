@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Sql)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(PIPEWIRE REQUIRED libpipewire-0.3)
@@ -25,6 +25,11 @@ qt_add_qml_module(qsutils
         src/audio/audiospectrum.hpp src/audio/audiospectrum.cpp
         src/hyprland/hyprlandworkspace.hpp src/hyprland/hyprlandworkspace.cpp
         src/launcher/appsearch.hpp src/launcher/appsearch.cpp
+        src/system/systeminfo.hpp src/system/systeminfo.cpp
+        src/recorder/screenrecorder.hpp src/recorder/screenrecorder.cpp
+        src/common/directories.hpp src/common/directories.cpp
+        src/common/persistent.hpp src/common/persistent.cpp
+        src/db/sqlite.hpp src/db/sqlite.cpp
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/QsUtils"
 )
 
@@ -37,6 +42,10 @@ target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hyprland
     ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/system
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/recorder
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/db
 )
 
 # Mark external C library headers as SYSTEM to suppress their warnings
@@ -60,6 +69,7 @@ target_link_libraries(qsutils PRIVATE
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    Qt6::Sql
     ${PIPEWIRE_LIBRARIES}
     ${FFTW3_LIBRARIES}
 )

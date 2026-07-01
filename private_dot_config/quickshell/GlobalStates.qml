@@ -1,6 +1,7 @@
 import qs.modules.common
 import QtQuick
 import Quickshell
+import QsUtils
 pragma Singleton
 pragma ComponentBehavior: Bound
 
@@ -14,7 +15,6 @@ Singleton {
     property bool sessionOpen: false
     property bool superReleaseMightTrigger: true
     property bool windowSwitcherOpen: false
-    property bool cheatsheetOpen: false
     property bool obsidianTodoOpen: false
     property bool dailyTodosOpen: false
 

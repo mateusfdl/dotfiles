@@ -82,7 +82,7 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(0, 0, 0, 0.35)
+                color: Style.withAlpha(Appearance.m3colors.m3shadowColor, 0.35)
 
                 MouseArea {
                     anchors.fill: parent
@@ -170,7 +170,7 @@ Scope {
                         SessionButton {
                             icon: "power_settings_new"
                             label: "Shutdown"
-                            iconColor: "#ff5555"
+                            iconColor: Style.menu.danger
                             onClicked: sessionMenuScope.doShutdown()
                         }
                     }

@@ -9,14 +9,14 @@ import QsUtils
 Item {
     id: root
 
-    implicitWidth: icon.implicitWidth
-    implicitHeight: icon.implicitHeight
+    implicitWidth: icon.size
+    implicitHeight: icon.size
 
     NerdIconImage {
         id: icon
 
         anchors.centerIn: parent
-        icon: "󰣇"
+        icon: "󱄅"
         size: 28
         color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
 

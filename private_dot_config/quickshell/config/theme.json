@@ -38,6 +38,31 @@
     "content": 0.1,
     "workspace": 0.8
   },
+  "music": {
+    "barColor": "#40FFFFFF",
+    "barColorActive": "#D9FF8F40",
+    "accent": "#FF8F40",
+    "surface": "#14141A",
+    "surfaceVariant": "#26262E",
+    "spectrumGlow": "#FF99CC"
+  },
+  "pomodoro": {
+    "surface": "#141417",
+    "working": "#FF6666",
+    "workingAlt": "#FF8080",
+    "break": "#66CCFF",
+    "success": "#66FF66",
+    "warning": "#FFCC66",
+    "info": "#B3B3FF",
+    "special": "#9966FF"
+  },
+  "recording": {
+    "active": "#FF4D4D",
+    "activeFill": "#FF3333"
+  },
+  "menu": {
+    "danger": "#FF5555"
+  },
   "rounding": {
     "unsharpen": 2,
     "unsharpenmore": 0,

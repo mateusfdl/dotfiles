@@ -11,7 +11,7 @@ Item {
 
     required property ShellScreen screen
 
-    readonly property real maxHeight: screen.height * 0.8
+    readonly property real maxHeight: screen.height
     property int contentHeight: 0
 
     visible: height > 0

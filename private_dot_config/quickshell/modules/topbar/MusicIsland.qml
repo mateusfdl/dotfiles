@@ -13,11 +13,10 @@ import qs.services
 Item {
     id: root
 
-    // Only show when something is actively playing
     visible: MediaPlayer.isPlaying
 
     implicitWidth: visible ? collapsedContent.implicitWidth : 0
-    implicitHeight: contentRow.implicitHeight
+    implicitHeight: collapsedContent.implicitHeight
 
     Behavior on implicitWidth {
         NumberAnimation {
@@ -27,7 +26,6 @@ Item {
         }
     }
 
-    // Bind the AudioSpectrum singleton to media player state
     Connections {
         target: MediaPlayer
         function onIsPlayingChanged() {
@@ -43,67 +41,127 @@ Item {
         AudioSpectrum.active = MediaPlayer.isPlaying;
     }
 
-    // --- Collapsed inline content (spectrum bars + track name in topbar) ---
     Item {
         id: collapsedContent
 
         anchors.verticalCenter: parent.verticalCenter
-        implicitWidth: contentRow.implicitWidth
-        implicitHeight: contentRow.implicitHeight
+        implicitWidth: frame.implicitWidth
+        implicitHeight: frame.implicitHeight
 
-        Item {
-            id: contentRow
+        Rectangle {
+            id: frame
 
             anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: barsRow.width + 10 + titleText.implicitWidth
-            implicitHeight: barsRow.height
+            implicitWidth: contentRow.implicitWidth + 24
+            implicitHeight: contentRow.implicitHeight + 8
 
-            SpectrumBars {
-                id: barsRow
-
-                visible: MediaPlayer.isPlaying
-                barCount: 6
-                barWidth: 3
-                barSpacing: 2
-                barRadius: 1.5
-                minBarHeight: 3
-                maxBarHeight: 18
-                barColor: Qt.rgba(1, 1, 1, 0.25)
-                barColorActive: Qt.rgba(1, 0.6, 0.8, 0.85)
-                active: MediaPlayer.isPlaying
-                values: AudioSpectrum.bars
-                animationDuration: 100
-
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                width: 6 * 3 + 5 * 2  // barCount * barWidth + (barCount-1) * barSpacing
-                height: 18
-            }
-
-            StyledText {
-                id: titleText
-
-                text: MediaPlayer.title || ""
-                font.pixelSize: 13
-                color: Config.options.bar.iconColor || Appearance.m3colors.m3primaryText
-
-                anchors.left: barsRow.right
-                anchors.leftMargin: 10
-                anchors.bottom: parent.bottom
-            }
-        }
-
-        // Hover background
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: -4
-            color: hoverArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-            radius: 6
-            z: -1
+            radius: 11
+            color: hoverArea.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
 
             Behavior on color {
                 ColorAnimation {
                     duration: 150
+                }
+            }
+
+            Item {
+                id: contentRow
+
+                anchors.left: parent.left
+                anchors.leftMargin: 12
+                anchors.verticalCenter: parent.verticalCenter
+                implicitWidth: albumThumb.width + 26 + barsRow.width + 26 + titleText.implicitWidth + (artistText.visible ? 8 + artistText.implicitWidth : 0)
+                implicitHeight: Math.max(albumThumb.height, barsRow.height)
+
+                Rectangle {
+                    id: albumThumb
+
+                    width: 32
+                    height: 32
+                    radius: 9
+                    color: Style.withAlpha(Style.music.surfaceVariant, 0.6)
+
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Image {
+                        id: albumArt
+
+                        anchors.fill: parent
+                        source: MediaPlayer.artUrl
+                        fillMode: Image.PreserveAspectCrop
+                        smooth: true
+                        asynchronous: true
+                        visible: status === Image.Ready
+
+                        layer.enabled: true
+                        layer.effect: OpacityMask {
+                            maskSource: Rectangle {
+                                width: albumArt.width
+                                height: albumArt.height
+                                radius: 9
+                            }
+                        }
+                    }
+
+                    MaterialSymbol {
+                        anchors.centerIn: parent
+                        text: "album"
+                        iconSize: 20
+                        fill: 1
+                        color: Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
+                        visible: albumArt.status !== Image.Ready
+                    }
+                }
+
+                SpectrumBars {
+                    id: barsRow
+
+                    visible: MediaPlayer.isPlaying
+                    barCount: 8
+                    barWidth: 4
+                    barSpacing: 3
+                    barRadius: 1.5
+                    minBarHeight: 4
+                    maxBarHeight: 24
+                    barColor: Style.music.barColor
+                    barColorActive: Style.music.barColorActive
+                    active: MediaPlayer.isPlaying
+                    values: AudioSpectrum.bars
+                    animationDuration: 100
+
+                    anchors.left: albumThumb.right
+                    anchors.leftMargin: 26
+                    anchors.bottom: parent.bottom
+                    width: barCount * barWidth + (barCount - 1) * barSpacing
+                    height: 24
+                }
+
+                StyledText {
+                    id: titleText
+
+                    text: MediaPlayer.title || ""
+                    font.pixelSize: 16
+                    color: Appearance.m3colors.m3primaryText
+
+                    anchors.left: barsRow.right
+                    anchors.leftMargin: 26
+                    anchors.bottom: barsRow.bottom
+                    anchors.bottomMargin: -4
+                }
+
+                StyledText {
+                    id: artistText
+
+                    text: "- " + MediaPlayer.artist
+                    font.pixelSize: 16
+                    color: Appearance.m3colors.m3primaryText
+                    visible: MediaPlayer.artist.length > 0
+
+                    anchors.left: titleText.right
+                    anchors.leftMargin: 8
+                    anchors.bottom: barsRow.bottom
+                    anchors.bottomMargin: -4
                 }
             }
         }
@@ -111,8 +169,7 @@ Item {
         MouseArea {
             id: hoverArea
 
-            anchors.fill: parent
-            anchors.margins: -4
+            anchors.fill: frame
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
@@ -120,7 +177,7 @@ Item {
                 var pos = mapToItem(null, 0, 0);
                 var centerX = pos.x + root.width / 2;
                 var popupX = centerX - 200; // popup is 400px wide
-                var popupY = 2;
+                var popupY = 18;
                 Topbar.MusicIslandPopup.togglePopup(popupX, popupY);
             }
         }

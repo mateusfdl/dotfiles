@@ -121,7 +121,7 @@ Scope {
             layer.effect: DropShadow {
                 radius: 32
                 samples: 65
-                color: Qt.rgba(0, 0, 0, 0.7)
+                color: Style.withAlpha(Appearance.m3colors.m3shadowColor, 0.7)
                 verticalOffset: 8
                 horizontalOffset: 0
             }

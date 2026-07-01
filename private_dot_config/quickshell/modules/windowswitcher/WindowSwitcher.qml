@@ -303,7 +303,7 @@ Scope {
                                         verticalOffset: 2
                                         radius: 6
                                         samples: 13
-                                        color: Colors.transparentize("#000000", 0.6)
+                                        color: Colors.transparentize(Appearance.m3colors.m3shadowColor, 0.6)
                                     }
                                 }
                             }
