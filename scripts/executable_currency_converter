@@ -1,3 +1,0 @@
-#! /bin/bash
-
-curl -s -XGET "https://v6.exchangerate-api.com/v6/$EXCHANGE_RATE_TOKEN/latest/USD" | jq .conversion_rates.BRL | awk '{ printf("R$%.2f", $0) }' > $HOME/.cache/currency

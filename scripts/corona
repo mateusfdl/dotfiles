@@ -1,3 +1,0 @@
-#!/bin/sh
-
-curl https://corona-stats.online/$1
