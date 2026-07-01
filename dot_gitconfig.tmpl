@@ -9,6 +9,10 @@
 [commit]
   gpgsign = true
 
+[rerere]
+  enabled = true
+  autoupdate = true
+
 [color]
   ui = true
 
@@ -38,7 +42,14 @@
   defaultBranch = main
 
 [gpg]
+{{- if eq .chezmoi.os "darwin" }}
+  program = /opt/homebrew/bin/gpg
+{{- else }}
   program = gpg
+{{- end }}
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
 
 [credential]
   helper = store

@@ -10,9 +10,9 @@ family = "IosevkaSS04 Nerd Font Mono"
 path = ""
 
 [pi]
-path = ""
+path = "~/.pi/"
 
 [git]
 name = "Matheus Lima"
-email = ""
-signingkey = ""
+email = "matheus.limastack@gmail.com"
+signingkey = "19604D1434714668F81161E1D25619C31A4270DE"
