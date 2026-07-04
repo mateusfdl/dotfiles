@@ -5,7 +5,7 @@ let
 
   kata = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "kata";
-    version = "1.0.0";
+    version = "1.1.0";
     src = inputs.kata;
 
     zigDeps = zig.fetchDeps {
