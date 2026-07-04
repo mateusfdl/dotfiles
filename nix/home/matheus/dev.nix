@@ -1,8 +1,6 @@
-{ pkgs, inputs, system, ... }:
+{ pkgs, inputs, ... }:
 let
   flowZig = pkgs.zig_0_15;
-
-  kata = inputs.kata.packages.${system}.default;
 
   flow = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "flow";
@@ -182,7 +180,6 @@ in
     rubyEnv
 
     flow
-    kata
     lumen
     revdiff
     cmakelint
