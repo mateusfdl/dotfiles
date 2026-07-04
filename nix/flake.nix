@@ -69,6 +69,8 @@
         };
     in
     {
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+
       nixosConfigurations = {
         desktop = mkNixos "x86_64-linux" [ ./hosts/desktop ];
         server = mkNixos "x86_64-linux" [ ./hosts/server ];

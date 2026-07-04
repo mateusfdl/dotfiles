@@ -5,6 +5,17 @@
   ...
 }:
 let
+  vscode = pkgs.symlinkJoin {
+    name = pkgs.vscode.name;
+    paths = [ pkgs.vscode ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    passthru = pkgs.vscode.passthru // {
+      inherit (pkgs.vscode) executableName longName;
+    };
+    postBuild = ''
+      wrapProgram $out/bin/code --unset NIXOS_OZONE_WL
+    '';
+  };
   vscodePkgs = import inputs.nixpkgs {
     inherit system;
     config.allowUnfree = true;
@@ -16,10 +27,13 @@ in
 {
   environment.systemPackages = [
     (pkgs.vscode-with-extensions.override {
+      inherit vscode;
+
       vscodeExtensions =
         (with vscode-marketplace; [
           andreilucaci.everforest-pro
           enkia.tokyo-night
+          teabyii.ayu
           vscode-icons-team.vscode-icons
           vscodevim.vim
           evgeniypeshkov.syntax-highlighter
