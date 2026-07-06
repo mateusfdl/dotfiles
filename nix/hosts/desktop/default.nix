@@ -28,6 +28,7 @@
     ../../modules/nixos/optional/zephyr.nix
 
     ../../pkgs/desktop.nix
+    ../../modules/common/taskwarrior.nix
   ];
 
   networking.hostName = "desktop";

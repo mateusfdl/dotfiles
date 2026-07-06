@@ -12,9 +12,15 @@
   };
 
   networking.firewall = {
-    allowedTCPPorts = [ 6443 10250 ];
+    allowedTCPPorts = [
+      6443
+      10250
+    ];
     allowedUDPPorts = [ 8472 ];
-    trustedInterfaces = [ "cni0" "flannel.1" ];
+    trustedInterfaces = [
+      "cni0"
+      "flannel.1"
+    ];
   };
 
   boot.kernelModules = [
@@ -26,9 +32,9 @@
   ];
 
   boot.kernel.sysctl = {
-    "net.ipv4.ip_forward"                 = 1;
-    "net.ipv6.conf.all.forwarding"        = 1;
-    "net.bridge.bridge-nf-call-iptables"  = 1;
+    "net.ipv4.ip_forward" = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
+    "net.bridge.bridge-nf-call-iptables" = 1;
     "net.bridge.bridge-nf-call-ip6tables" = 1;
   };
 

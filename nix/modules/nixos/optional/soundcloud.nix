@@ -10,11 +10,17 @@ let
     comment = "SoundCloud Music Streaming";
     icon = "soundcloud";
     exec = "soundcloud";
-    categories = [ "AudioVideo" "Audio" ];
+    categories = [
+      "AudioVideo"
+      "Audio"
+    ];
     startupNotify = true;
     startupWMClass = "soundcloud.com";
   };
 in
 {
-  environment.systemPackages = [ soundcloudBin soundcloudDesktop ];
+  environment.systemPackages = [
+    soundcloudBin
+    soundcloudDesktop
+  ];
 }

@@ -1,4 +1,9 @@
-{ pkgs, inputs, system, ... }:
+{
+  pkgs,
+  inputs,
+  system,
+  ...
+}:
 let
   zephyr = inputs.zephyr-nix.packages.${system};
 in
@@ -67,6 +72,9 @@ in
     ATTRS{idVendor}=="0403", MODE="0666", GROUP="dialout"
   '';
 
-  users.groups.plugdev = {};
-  users.users.matheus.extraGroups = [ "dialout" "plugdev" ];
+  users.groups.plugdev = { };
+  users.users.matheus.extraGroups = [
+    "dialout"
+    "plugdev"
+  ];
 }

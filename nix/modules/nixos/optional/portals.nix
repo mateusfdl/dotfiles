@@ -9,7 +9,10 @@
     configPackages = [ pkgs.xdg-desktop-portal-hyprland ];
     config = {
       Hyprland = {
-        default = [ "hyprland" "gtk" ];
+        default = [
+          "hyprland"
+          "gtk"
+        ];
       };
     };
   };

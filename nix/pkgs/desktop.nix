@@ -1,9 +1,11 @@
-{ pkgs, inputs, system, ... }:
+{
+  pkgs,
+  inputs,
+  system,
+  ...
+}:
 let
   claude-desktop-pkg = inputs.claude-desktop.packages.${system}.claude-desktop;
-  taskwarriorAsTaskw = pkgs.writeShellScriptBin "taskw" ''
-    exec ${pkgs.taskwarrior3}/bin/task rc:/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskrc "$@"
-  '';
 in
 {
   environment.systemPackages = with pkgs; [
@@ -34,7 +36,6 @@ in
     quickshell
     slurp
     awww
-    taskwarriorAsTaskw
     unzip
     vim
     wget

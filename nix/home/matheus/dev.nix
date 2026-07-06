@@ -13,23 +13,26 @@ let
       hash = "sha256-5+F0DKb4LXtcMXNutUSJuIe7cdBoFUoJhCs8vbm20jg=";
     };
 
-    zigDeps = pkgs.runCommand "flow-${finalAttrs.version}-zig-deps" {
-      inherit (finalAttrs) src;
-      nativeBuildInputs = [
-        flowZig
-        pkgs.cacert
-      ];
-      outputHashAlgo = null;
-      outputHashMode = "recursive";
-      outputHash = "sha256-HX7NGdOmYEqlncDlxU7zGSfLawtM+SNKMFvHjTkCE+Y=";
-      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    } ''
-      export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)
-      runHook unpackPhase
-      cd "$sourceRoot"
-      zig build --fetch
-      mv "$ZIG_GLOBAL_CACHE_DIR/p" "$out"
-    '';
+    zigDeps =
+      pkgs.runCommand "flow-${finalAttrs.version}-zig-deps"
+        {
+          inherit (finalAttrs) src;
+          nativeBuildInputs = [
+            flowZig
+            pkgs.cacert
+          ];
+          outputHashAlgo = null;
+          outputHashMode = "recursive";
+          outputHash = "sha256-HX7NGdOmYEqlncDlxU7zGSfLawtM+SNKMFvHjTkCE+Y=";
+          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        }
+        ''
+          export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)
+          runHook unpackPhase
+          cd "$sourceRoot"
+          zig build --fetch
+          mv "$ZIG_GLOBAL_CACHE_DIR/p" "$out"
+        '';
 
     nativeBuildInputs = [ flowZig.hook ];
 
