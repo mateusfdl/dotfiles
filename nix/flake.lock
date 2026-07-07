@@ -162,11 +162,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783200748,
-        "narHash": "sha256-5vvbP5wsNzmiph5Bcnz+a3l5suxLesQq0PZWy03neIg=",
+        "lastModified": 1783389833,
+        "narHash": "sha256-gP9UrJw5lncsqwN3kFRZuClo6PDSGJZU7YrZRM86i5w=",
         "owner": "mateusfdl",
         "repo": "kata",
-        "rev": "82807f2a990c4122bed1531d58f48bd2ab0ac88b",
+        "rev": "cf6d0f2dd76f336c7bbdeae0d2afd878c8f4dd4e",
         "type": "github"
       },
       "original": {
