@@ -51,10 +51,6 @@ let
         "redis"
         "postgres"
         "searxng"
-        "vane"
-        "khoj"
-        "farfalle"
-        "sandboxed"
       ];
 
   certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''
