@@ -13,29 +13,43 @@ Rectangle {
 
     required property var notificationObject
 
+    readonly property bool isCritical: notificationObject.urgency === NotificationUrgency.Critical
+    readonly property bool hasImage: notificationObject.appIcon !== "" || notificationObject.image !== ""
+    readonly property string initial: {
+        const name = (notificationObject.appName || notificationObject.summary || "?").trim();
+        return name.length > 0 ? name.charAt(0).toUpperCase() : "?";
+    }
+    readonly property string timeText: {
+        if (!notificationObject.time)
+            return "";
+        return new Date(notificationObject.time).toLocaleTimeString(Qt.locale(), "hh:mm");
+    }
+
     function dismissNotification() {
         slideOutAnimation.start();
     }
 
-    implicitHeight: contentColumn.implicitHeight + 24
+    implicitHeight: contentRow.implicitHeight + 32
     implicitWidth: Appearance.sizes.notificationPopupWidth - 16
-    radius: Appearance.rounding.small
-    color: {
-        if (notificationObject.urgency === NotificationUrgency.Critical)
-            return Qt.rgba(1, 0.3, 0.3, 0.15);
-        else
-            return Appearance.colors.colLayer1;
-    }
-    border.color: {
-        if (notificationObject.urgency === NotificationUrgency.Critical)
-            return Qt.rgba(1, 0.4, 0.4, 0.8);
-        else
-            return Appearance.m3colors.m3borderSecondary;
-    }
+    radius: Appearance.rounding.normal
+    clip: true
+    color: isCritical ? Qt.rgba(1, 0.3, 0.3, 0.16) : Appearance.m3colors.m3selectionBackground
+    border.color: isCritical ? Qt.rgba(1, 0.4, 0.4, 0.8) : Appearance.m3colors.m3borderSecondary
     border.width: 1
     x: root.width
     Component.onCompleted: {
         slideInAnimation.start();
+    }
+
+    // Subtle top highlight so the card reads as lifted, not a flat block
+    Rectangle {
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: 1
+        color: Qt.rgba(1, 1, 1, 0.07)
     }
 
     MouseArea {
@@ -59,29 +73,28 @@ Rectangle {
     }
 
     RowLayout {
-        id: contentColumn
+        id: contentRow
 
         spacing: 12
 
         anchors {
             fill: parent
-            margins: 12
+            margins: 16
         }
 
+        // App icon (literal icon for real apps; initial-letter avatar as fallback)
         Rectangle {
             id: iconContainer
 
-            Layout.preferredWidth: 48
-            Layout.preferredHeight: 48
+            Layout.preferredWidth: 44
+            Layout.preferredHeight: 44
             Layout.alignment: Qt.AlignTop
-            radius: 24
-            color: Appearance.colors.colLayer2
-            visible: notificationObject.appIcon !== "" || notificationObject.image !== ""
+            radius: 11
+            color: root.hasImage ? "transparent" : Appearance.colors.colLayer2
 
             Image {
-                anchors.centerIn: parent
-                width: 32
-                height: 32
+                anchors.fill: parent
+                visible: root.hasImage
                 source: {
                     if (notificationObject.image !== "")
                         return notificationObject.image;
@@ -91,40 +104,66 @@ Rectangle {
                 }
                 fillMode: Image.PreserveAspectFit
                 smooth: true
+                mipmap: true
+            }
+
+            StyledText {
+                anchors.centerIn: parent
+                visible: !root.hasImage
+                text: root.initial
+                color: Appearance.m3colors.m3primaryText
+                font.pixelSize: 22
+                font.weight: Font.DemiBold
             }
         }
 
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 4
+            Layout.alignment: Qt.AlignVCenter
+            spacing: 3
 
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
 
                 StyledText {
-                    id: appNameText
+                    id: summaryText
 
                     Layout.fillWidth: true
-                    text: notificationObject.appName || "Notification"
-                    color: Appearance.m3colors.m3secondaryText
-                    font.pixelSize: Style.font.pixelSize.textSmall
-                    font.weight: Font.Medium
+                    text: notificationObject.summary || notificationObject.appName || "Notification"
+                    color: Appearance.m3colors.m3primaryText
+                    font.pixelSize: Style.font.pixelSize.textBase
+                    font.weight: Font.Bold
+                    wrapMode: Text.Wrap
+                    maximumLineCount: 2
                     elide: Text.ElideRight
                 }
 
+                StyledText {
+                    id: timeStamp
+
+                    Layout.alignment: Qt.AlignTop
+                    text: root.timeText
+                    color: Appearance.m3colors.m3secondaryText
+                    font.pixelSize: Style.font.pixelSize.textSmall
+                    visible: root.timeText !== "" && !mouseArea.containsMouse
+                }
+
+                // macOS-style close, revealed on hover in place of the timestamp
                 Rectangle {
-                    Layout.preferredWidth: 24
-                    Layout.preferredHeight: 24
-                    radius: 12
-                    color: closeMouseArea.containsMouse ? Appearance.colors.colLayer2Hover : "transparent"
+                    Layout.alignment: Qt.AlignTop
+                    Layout.preferredWidth: 22
+                    Layout.preferredHeight: 22
+                    radius: 11
+                    visible: mouseArea.containsMouse || closeMouseArea.containsMouse
+                    color: closeMouseArea.containsMouse ? Appearance.colors.colLayer2Hover : Appearance.colors.colLayer2
 
                     StyledText {
                         anchors.centerIn: parent
                         text: "×"
                         color: Appearance.m3colors.m3primaryText
-                        font.pixelSize: 20
+                        font.pixelSize: 18
                         font.bold: true
                     }
 
@@ -137,19 +176,6 @@ Rectangle {
                         onClicked: root.dismissNotification()
                     }
                 }
-            }
-
-            StyledText {
-                id: summaryText
-
-                Layout.fillWidth: true
-                text: notificationObject.summary || ""
-                color: Appearance.m3colors.m3primaryText
-                font.pixelSize: Style.font.pixelSize.textBase
-                font.weight: Font.Bold
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
-                elide: Text.ElideRight
             }
 
             StyledText {
@@ -172,6 +198,7 @@ Rectangle {
 
             Flow {
                 Layout.fillWidth: true
+                Layout.topMargin: 6
                 spacing: 6
                 visible: notificationObject.actions.length > 0
 

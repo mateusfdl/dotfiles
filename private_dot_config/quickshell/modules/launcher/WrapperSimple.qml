@@ -13,6 +13,7 @@ Item {
 
     readonly property real maxHeight: screen.height
     property int contentHeight: 0
+    readonly property int maxCardHeight: content.maxCardHeight
 
     visible: height > 0
     implicitHeight: GlobalStates.launcherOpen ? contentHeight : 0

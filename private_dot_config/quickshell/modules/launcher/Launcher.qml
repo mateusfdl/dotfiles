@@ -103,7 +103,8 @@ Scope {
                 visible: root.isActive
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
+                    top: parent.top
+                    topMargin: wrapper.item ? Math.max(0, Math.round((parent.height - wrapper.item.maxCardHeight) / 2)) : 0
                 }
 
                 implicitWidth: wrapper.implicitWidth

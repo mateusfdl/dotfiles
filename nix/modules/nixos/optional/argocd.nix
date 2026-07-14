@@ -51,6 +51,7 @@ let
         "redis"
         "postgres"
         "searxng"
+        "wakapi"
       ];
 
   certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''

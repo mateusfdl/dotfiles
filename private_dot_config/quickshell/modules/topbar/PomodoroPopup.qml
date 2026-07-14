@@ -25,7 +25,7 @@ Scope {
         popupX = x;
         popupY = y;
         popupVisible = true;
-        ObsidianTodo.fetchTodos();
+        Tasks.fetchTodos();
     }
 
     function hidePopup() {
@@ -239,7 +239,7 @@ Scope {
                                 onClicked: {
                                     pomodoroPopupScope.todoPickerExpanded = !pomodoroPopupScope.todoPickerExpanded;
                                     if (pomodoroPopupScope.todoPickerExpanded) {
-                                        ObsidianTodo.fetchTodos();
+                                        Tasks.fetchTodos();
                                     }
                                 }
                             }
@@ -260,7 +260,7 @@ Scope {
                                 id: todoListView
                                 anchors.fill: parent
                                 anchors.margins: 2
-                                model: ObsidianTodo.todos
+                                model: Tasks.todos
                                 spacing: 1
 
                                 delegate: Rectangle {
@@ -335,18 +335,7 @@ Scope {
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: {
                                             const todo = todoDelegate.modelData;
-                                            let noteId = todo.noteId || "";
-
-                                            // If no linked note, create one
-                                            if (noteId === "") {
-                                                noteId = ObsidianTodo.ensureNoteFile(todo.description, todo.tags || []);
-                                                if (noteId === "")
-                                                    return; // failed
-                                                // Refresh todos to get updated data
-                                                ObsidianTodo.fetchTodos();
-                                            }
-
-                                            Pomodoro.pickupTodo(todo.description, noteId, todo.tags || []);
+                                            Pomodoro.pickupTodo(todo.description, todo.uuid, todo.tags || []);
                                             pomodoroPopupScope.todoPickerExpanded = false;
                                         }
                                     }

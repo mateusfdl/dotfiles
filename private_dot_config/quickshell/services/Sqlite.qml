@@ -14,6 +14,7 @@ Singleton {
     readonly property string dbPath: `${root.dbDir}/${root.dbName}`
     readonly property string migrationsDir: Config.options.sqlite.migrationsDir
     readonly property bool ready: database.open
+    readonly property alias database: database
 
     function query(sql, bindings) {
         let resolvedBindings = bindings;

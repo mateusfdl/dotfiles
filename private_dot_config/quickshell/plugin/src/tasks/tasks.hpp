@@ -7,15 +7,19 @@
 #include <QVariantList>
 #include <QtQml/qqmlregistration.h>
 
-class ObsidianTodo : public QObject {
+class Tasks : public QObject {
   Q_OBJECT
   QML_ELEMENT
   QML_SINGLETON
+  Q_PROPERTY(QString binPath READ binPath WRITE setBinPath NOTIFY binPathChanged)
   Q_PROPERTY(QStringList tags READ tags NOTIFY tagsChanged)
   Q_PROPERTY(QVariantList todos READ todos NOTIFY todosChanged)
 
 public:
-  explicit ObsidianTodo(QObject *parent = nullptr);
+  explicit Tasks(QObject *parent = nullptr);
+
+  QString binPath() const;
+  void setBinPath(const QString &binPath);
 
   QStringList tags() const;
   QVariantList todos() const;
@@ -24,33 +28,30 @@ public:
   Q_INVOKABLE void fetchTodos();
   Q_INVOKABLE void saveTodo(const QString &description,
                             const QStringList &tags);
-  Q_INVOKABLE QString ensureNoteFile(const QString &description,
-                                     const QStringList &tags);
-  Q_INVOKABLE bool appendSessionLog(const QString &noteId, int focusMinutes,
+  Q_INVOKABLE void appendSessionLog(const QString &uuid, int focusMinutes,
                                     int breakMinutes,
                                     const QVariantList &events);
-  Q_INVOKABLE bool setTodoStatus(int index, const QString &marker);
-  Q_INVOKABLE bool annotateTodo(int index, const QString &note);
+  Q_INVOKABLE void setTodoStatus(int index, const QString &marker);
+  Q_INVOKABLE void annotateTodo(int index, const QString &note);
 
 signals:
+  void binPathChanged();
   void tagsChanged();
   void todosChanged();
   void saved();
   void saveFailed(const QString &error);
 
 private:
-  static QStringList taskArguments(const QStringList &arguments);
-  static QProcess *startTask(QObject *parent, const QStringList &arguments);
-  static QByteArray runTask(const QStringList &arguments, bool *ok);
+  QProcess *startTask(const QStringList &arguments);
+  void runMutation(const QStringList &arguments, const QString &label);
+  QString uuidAt(int index) const;
   static QString normalizeTag(const QString &tag);
   static QString markerFromTask(const QVariantMap &task);
   static QVariantList parseTodos(const QByteArray &data);
   static QStringList parseTags(const QByteArray &data);
-  static QString uuidForTodo(const QVariantMap &todo);
 
+  QString m_binPath = QStringLiteral(
+      "/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskw");
   QStringList m_tags;
   QVariantList m_todos;
-
-  static constexpr const char *TASKWARRIOR_BIN =
-      "/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskw";
 };

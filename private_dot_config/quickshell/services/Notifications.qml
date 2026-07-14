@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Notifications
 
 Singleton {
@@ -44,6 +45,23 @@ Singleton {
     readonly property var popupList: list.filter(notif => notif.popup)
     readonly property var popupGroupsByAppName: groupsForList(popupList)
     readonly property var popupAppNameList: appNameListForGroups(popupGroupsByAppName)
+
+    function notify(summary, body, opts) {
+        opts = opts ?? {};
+        const urgencyMap = {
+            "low": 0,
+            "normal": 1,
+            "critical": 2
+        };
+        const hints = opts.urgency !== undefined ? "{'urgency': <byte " + (urgencyMap[opts.urgency] ?? 1) + ">}" : "{}";
+        sender.running = false;
+        sender.command = ["gdbus", "call", "--session", "--dest", "org.freedesktop.Notifications", "--object-path", "/org/freedesktop/Notifications", "--method", "org.freedesktop.Notifications.Notify", opts.appName ?? "Reminders", String(opts.replaceId ?? 0), opts.icon ?? "", summary, body ?? "", "[]", hints, String(opts.timeout ?? -1)];
+        sender.running = true;
+    }
+
+    Process {
+        id: sender
+    }
 
     Component {
         id: notifComponent

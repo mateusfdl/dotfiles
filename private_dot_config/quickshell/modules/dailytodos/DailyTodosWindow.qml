@@ -20,21 +20,11 @@ Scope {
 
     onIsOpenChanged: {
         if (isOpen)
-            ObsidianTodo.fetchTodos();
+            Tasks.fetchTodos();
     }
 
     function closeWindow() {
         GlobalStates.dailyTodosOpen = false;
-    }
-
-    FileView {
-        path: `${Config.vaultPath}/Journal/todos/views/pending.md`
-        watchChanges: true
-        onFileChanged: {
-            reload();
-            if (dailyTodosScope.isOpen)
-                ObsidianTodo.fetchTodos();
-        }
     }
 
     Variants {

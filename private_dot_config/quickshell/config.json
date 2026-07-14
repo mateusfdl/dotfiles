@@ -32,9 +32,13 @@
         "arbitraryRaceConditionDelay": 20
     },
     "launcher": {
-        "maxShown": 7,
-        "sizes": {
-            "itemHeight": 36
+        "grid": {
+            "cardWidth": 1040,
+            "columns": 7,
+            "iconSize": 64,
+            "maxRows": 5,
+            "searchMaxShown": 105,
+            "tileHeight": 108
         }
     },
     "lock": {
@@ -49,22 +53,26 @@
         "launcher": true,
         "lockScreen": true,
         "notifications": true,
-        "obsidianTodo": true,
         "overview": true,
+        "tasks": true,
         "topbar": true,
         "wallpaper": true,
         "windowSwitcher": true
-    },
-    "sqlite": {
-        "dbDir": "~/.local/state/quickshell",
-        "dbName": "quickshell.db",
-        "migrationsDir": "~/.config/quickshell/migrations"
     },
     "overview": {
         "previewRefreshInterval": 500,
         "scale": 0.15,
         "windowPadding": 6,
         "workspaceNumberSize": 220
+    },
+    "reminders": {
+        "notify": true,
+        "rotateDelay": 300000
+    },
+    "sqlite": {
+        "dbDir": "~/.local/state/quickshell",
+        "dbName": "quickshell.db",
+        "migrationsDir": "~/.config/quickshell/migrations"
     },
     "time": {
         "format": "hh:mm",

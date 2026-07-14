@@ -1,6 +1,5 @@
 #include "appsearch.hpp"
 #include "fuzzysort.hpp"
-#include "levendist.hpp"
 
 #include <QDir>
 #include <QDirIterator>
@@ -30,39 +29,35 @@ QVariantList AppSearch::applications() const {
   return m_applicationsCache;
 }
 
-bool AppSearch::sloppySearch() const { return m_sloppySearch; }
-
-void AppSearch::setSloppySearch(bool value) {
-  if (m_sloppySearch != value) {
-    m_sloppySearch = value;
-    emit sloppySearchChanged();
-  }
-}
-
 QVariantList AppSearch::quickshellApps() const {
   const auto entry = [](const char *name, const char *icon, const char *comment,
-                        const char *field, const char *value) {
+                        const char *category, const char *field,
+                        const char *value) {
     return QVariantMap{
         {QStringLiteral("name"), QString::fromUtf8(name)},
         {QStringLiteral("icon"), QString::fromUtf8(icon)},
         {QStringLiteral("comment"), QString::fromUtf8(comment)},
+        {QStringLiteral("category"), QString::fromUtf8(category)},
         {QString::fromUtf8(field), QString::fromUtf8(value)},
     };
   };
 
   static const QVariantList apps = {
       entry("Wallpaper Selector", "preferences-desktop-wallpaper",
-            "Change your wallpaper", "action", "wallpaperSelector"),
-      entry("Overview", "view-grid", "Open overview mode", "action",
-            "overview"),
-      entry("SoundCloud", "soundcloud", "Listen to music on SoundCloud", "exec",
-            "soundcloud"),
-      entry("Spotify", "spotify", "Music streaming", "exec", "spotify"),
-      entry("Obsidian", "obsidian", "Knowledge base and notes", "exec",
-            "obsidian"),
-      entry("Brave", "brave-browser", "Web browser", "exec", "brave"),
-      entry("Discord", "discord", "Chat and voice", "exec", "discord"),
-      entry("Morgen", "morgen", "Calendar and scheduling", "exec", "morgen"),
+            "Change your wallpaper", "Utilities", "action", "wallpaperSelector"),
+      entry("Overview", "view-grid", "Open overview mode", "Utilities",
+            "action", "overview"),
+      entry("SoundCloud", "soundcloud", "Listen to music on SoundCloud",
+            "Entertainment", "exec", "soundcloud"),
+      entry("Spotify", "spotify", "Music streaming", "Entertainment", "exec",
+            "spotify"),
+      entry("Obsidian", "obsidian", "Knowledge base and notes",
+            "Productivity & Finance", "exec", "obsidian"),
+      entry("Brave", "brave-browser", "Web browser", "Social", "exec", "brave"),
+      entry("Discord", "discord", "Chat and voice", "Social", "exec",
+            "discord"),
+      entry("Morgen", "morgen", "Calendar and scheduling",
+            "Productivity & Finance", "exec", "morgen"),
   };
   return apps;
 }
@@ -173,8 +168,41 @@ AppSearch::parseDesktopFile(const QString &filePath) {
   app.exec = exec;
   app.path = ini.value(QStringLiteral("Path"), QString()).toString();
   app.terminal = ini.value(QStringLiteral("Terminal"), false).toBool();
+  app.category = bucketForCategories(
+      ini.value(QStringLiteral("Categories"), QString())
+          .toString()
+          .split(QLatin1Char(';'), Qt::SkipEmptyParts));
 
   return app;
+}
+
+QString AppSearch::bucketForCategories(const QStringList &cats) {
+  static const std::vector<std::pair<QString, QStringList>> buckets = {
+      {QStringLiteral("Developer Tools"), {QStringLiteral("Development")}},
+      {QStringLiteral("Productivity & Finance"),
+       {QStringLiteral("Office"), QStringLiteral("Finance")}},
+      {QStringLiteral("Utilities"),
+       {QStringLiteral("Utility"), QStringLiteral("System"),
+        QStringLiteral("Settings"), QStringLiteral("Accessibility")}},
+      {QStringLiteral("Entertainment"),
+       {QStringLiteral("AudioVideo"), QStringLiteral("Audio"),
+        QStringLiteral("Video"), QStringLiteral("Game"),
+        QStringLiteral("Player"), QStringLiteral("TV")}},
+      {QStringLiteral("Creativity"),
+       {QStringLiteral("Graphics"), QStringLiteral("Photography")}},
+      {QStringLiteral("Social"),
+       {QStringLiteral("Network"), QStringLiteral("InstantMessaging"),
+        QStringLiteral("Chat"), QStringLiteral("Email")}},
+  };
+
+  for (const auto &[label, matches] : buckets) {
+    for (const auto &cat : cats) {
+      if (matches.contains(cat, Qt::CaseInsensitive)) {
+        return label;
+      }
+    }
+  }
+  return QStringLiteral("Other");
 }
 
 QString AppSearch::processExecString(const QString &exec,
@@ -367,9 +395,21 @@ void AppSearch::scanApplications() {
     entry[QStringLiteral("comment")] = pa.app.comment;
     entry[QStringLiteral("exec")] = pa.app.exec;
     entry[QStringLiteral("path")] = pa.app.path;
+    entry[QStringLiteral("category")] = pa.app.category;
     entry[QStringLiteral("terminal")] = pa.app.terminal;
 
     m_applicationsCache.append(QVariant::fromValue(entry));
+  }
+
+  QSet<QString> desktopNames;
+  for (const auto &pa : m_apps)
+    desktopNames.insert(pa.app.name.toLower());
+
+  for (const auto &qsApp : quickshellApps()) {
+    const QString name =
+        qsApp.toMap().value(QStringLiteral("name")).toString().toLower();
+    if (!desktopNames.contains(name))
+      m_applicationsCache.append(qsApp);
   }
 
   emit applicationsChanged();
@@ -409,73 +449,40 @@ QVariantList AppSearch::searchApplications(const QString &query) const {
     return m_applicationsCache;
   }
 
-  const QString queryLower = query.toLower();
+  QVariantList targets;
+  targets.reserve(static_cast<int>(m_apps.size()));
 
-  if (m_sloppySearch) {
-    struct ScoredApp {
-      qreal score;
-      int index;
-    };
-
-    std::vector<ScoredApp> scored;
-    scored.reserve(m_apps.size());
-
-    for (int i = 0; i < static_cast<int>(m_apps.size()); ++i) {
-      const qreal score =
-          Levendist::computeScore(m_apps[i].app.name.toLower(), queryLower);
-      if (score > m_scoreThreshold) {
-        scored.push_back({score, i});
-      }
-    }
-
-    std::sort(scored.begin(), scored.end(),
-              [](const ScoredApp &a, const ScoredApp &b) {
-                return a.score > b.score;
-              });
-
-    QVariantList results;
-    results.reserve(static_cast<int>(scored.size()));
-    for (const auto &s : scored) {
-      results.append(m_applicationsCache.at(s.index));
-    }
-    return results;
-
-  } else {
-    QVariantList targets;
-    targets.reserve(static_cast<int>(m_apps.size()));
-
-    for (const auto &pa : m_apps) {
-      QVariantMap item;
-      item[QStringLiteral("name")] = pa.prepared;
-      item[QStringLiteral("entry")] = pa.app.id;
-      targets.append(QVariant::fromValue(item));
-    }
-
-    QVariantMap options;
-    options[QStringLiteral("all")] = true;
-    options[QStringLiteral("key")] = QStringLiteral("name");
-
-    const auto fuzzyResults = FuzzySort::go(query, targets, options);
-
-    QHash<QString, int> idToIndex;
-    idToIndex.reserve(static_cast<int>(m_apps.size()));
-    for (int i = 0; i < static_cast<int>(m_apps.size()); ++i) {
-      idToIndex[m_apps[i].app.id] = i;
-    }
-
-    QVariantList results;
-    results.reserve(fuzzyResults.size());
-    for (const auto &r : fuzzyResults) {
-      const auto rMap = r.toMap();
-      const auto obj = rMap.value(QStringLiteral("obj")).toMap();
-      const QString id = obj.value(QStringLiteral("entry")).toString();
-      auto idxIt = idToIndex.constFind(id);
-      if (idxIt != idToIndex.constEnd()) {
-        results.append(m_applicationsCache.at(idxIt.value()));
-      }
-    }
-    return results;
+  for (const auto &pa : m_apps) {
+    QVariantMap item;
+    item[QStringLiteral("name")] = pa.prepared;
+    item[QStringLiteral("entry")] = pa.app.id;
+    targets.append(QVariant::fromValue(item));
   }
+
+  QVariantMap options;
+  options[QStringLiteral("all")] = true;
+  options[QStringLiteral("key")] = QStringLiteral("name");
+
+  const auto fuzzyResults = FuzzySort::go(query, targets, options);
+
+  QHash<QString, int> idToIndex;
+  idToIndex.reserve(static_cast<int>(m_apps.size()));
+  for (int i = 0; i < static_cast<int>(m_apps.size()); ++i) {
+    idToIndex[m_apps[i].app.id] = i;
+  }
+
+  QVariantList results;
+  results.reserve(fuzzyResults.size());
+  for (const auto &r : fuzzyResults) {
+    const auto rMap = r.toMap();
+    const auto obj = rMap.value(QStringLiteral("obj")).toMap();
+    const QString id = obj.value(QStringLiteral("entry")).toString();
+    auto idxIt = idToIndex.constFind(id);
+    if (idxIt != idToIndex.constEnd()) {
+      results.append(m_applicationsCache.at(idxIt.value()));
+    }
+  }
+  return results;
 }
 
 void AppSearch::launch(const QVariantMap &entry) {

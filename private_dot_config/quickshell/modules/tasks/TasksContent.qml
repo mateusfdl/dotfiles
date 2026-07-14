@@ -22,7 +22,7 @@ FocusScope {
     property bool tagMode: false
 
     readonly property var preparedTags: {
-        const tags = ObsidianTodo.tags;
+        const tags = Tasks.tags;
         let result = [];
         for (let i = 0; i < tags.length; ++i) {
             result.push({
@@ -68,7 +68,7 @@ FocusScope {
             root.closeRequested();
             return;
         }
-        ObsidianTodo.saveTodo(desc, root.selectedTags);
+        Tasks.saveTodo(desc, root.selectedTags);
     }
 
     function resetState() {

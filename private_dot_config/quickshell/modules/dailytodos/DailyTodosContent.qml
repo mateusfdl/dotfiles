@@ -15,9 +15,14 @@ FocusScope {
 
     property bool isOpen: false
     property bool noteMode: false
+    property var expandedAnnotationIds: ({})
     property int currentIndex: 0
+    property string currentTagFilter: ""
     readonly property string fontFamily: "IosevkaSS04 Nerd Font Mono"
-    readonly property int todoCount: ObsidianTodo.todos.length
+    readonly property var availableTags: root.resolveAvailableTags()
+    readonly property var filteredTodos: root.resolveFilteredTodos()
+    readonly property var currentTodo: root.todoCount > 0 ? root.filteredTodos[root.currentIndex] : ({})
+    readonly property int todoCount: root.filteredTodos.length
 
     implicitHeight: outerColumn.implicitHeight + 64
 
@@ -60,7 +65,7 @@ FocusScope {
             root.closeNoteMode();
             return;
         }
-        ObsidianTodo.annotateTodo(root.currentIndex, text);
+        Tasks.annotateTodo(root.currentTodo.sourceIndex, text);
         root.closeNoteMode();
     }
 
@@ -75,8 +80,84 @@ FocusScope {
     function setStatus(marker: string) {
         if (root.todoCount === 0)
             return;
-        const idx = root.currentIndex;
-        ObsidianTodo.setTodoStatus(idx, marker);
+        Tasks.setTodoStatus(root.currentTodo.sourceIndex, marker);
+    }
+
+    function resolveAvailableTags() {
+        const tags = [];
+        for (let i = 0; i < Tasks.todos.length; ++i) {
+            const todoTags = Tasks.todos[i].tags || [];
+            for (let j = 0; j < todoTags.length; ++j) {
+                const tag = todoTags[j];
+                if (tags.indexOf(tag) === -1)
+                    tags.push(tag);
+            }
+        }
+        tags.sort();
+        return tags;
+    }
+
+    function resolveFilteredTodos() {
+        if (root.currentTagFilter.length === 0)
+            return Tasks.todos;
+        const result = [];
+        for (let i = 0; i < Tasks.todos.length; ++i) {
+            const todo = Tasks.todos[i];
+            const tags = todo.tags || [];
+            if (tags.indexOf(root.currentTagFilter) !== -1)
+                result.push(todo);
+        }
+        return result;
+    }
+
+    function rotateTagFilter() {
+        if (root.availableTags.length === 0) {
+            root.currentTagFilter = "";
+            root.currentIndex = 0;
+            return;
+        }
+
+        if (root.currentTagFilter.length === 0) {
+            root.currentTagFilter = root.availableTags[0];
+            root.currentIndex = 0;
+            return;
+        }
+
+        const currentTagIndex = root.availableTags.indexOf(root.currentTagFilter);
+        if (currentTagIndex < 0 || currentTagIndex === root.availableTags.length - 1) {
+            root.currentTagFilter = "";
+            root.currentIndex = 0;
+            return;
+        }
+
+        root.currentTagFilter = root.availableTags[currentTagIndex + 1];
+        root.currentIndex = 0;
+    }
+
+    function currentTodoId() {
+        if (root.todoCount === 0)
+            return "";
+        return root.currentTodo.uuid || "";
+    }
+
+    function isAnnotationsVisible(todo) {
+        const todoId = todo.uuid || "";
+        if (todoId.length === 0)
+            return false;
+        return root.expandedAnnotationIds[todoId] === true;
+    }
+
+    function toggleCurrentAnnotations() {
+        const todoId = root.currentTodoId();
+        if (todoId.length === 0)
+            return;
+
+        const nextExpandedAnnotationIds = Object.assign({}, root.expandedAnnotationIds);
+        if (nextExpandedAnnotationIds[todoId] === true)
+            delete nextExpandedAnnotationIds[todoId];
+        else
+            nextExpandedAnnotationIds[todoId] = true;
+        root.expandedAnnotationIds = nextExpandedAnnotationIds;
     }
 
     function iconForStatus(s: string): string {
@@ -100,13 +181,14 @@ FocusScope {
     }
 
     onTodoCountChanged: clampIndex()
+    onCurrentTagFilterChanged: clampIndex()
     onCurrentIndexChanged: todoListView.positionViewAtIndex(root.currentIndex, ListView.Contain)
 
     onIsOpenChanged: {
         if (isOpen) {
             root.currentIndex = 0;
             root.noteMode = false;
-            ObsidianTodo.fetchTodos();
+            Tasks.fetchTodos();
             focusTimer.restart();
         } else {
             root.noteMode = false;
@@ -131,8 +213,20 @@ FocusScope {
             return;
         }
 
+        if (event.key === Qt.Key_V) {
+            root.toggleCurrentAnnotations();
+            event.accepted = true;
+            return;
+        }
+
+        if (event.key === Qt.Key_T) {
+            root.rotateTagFilter();
+            event.accepted = true;
+            return;
+        }
+
         if (event.key === Qt.Key_R || event.key === Qt.Key_F5) {
-            ObsidianTodo.fetchTodos();
+            Tasks.fetchTodos();
             event.accepted = true;
             return;
         }
@@ -249,12 +343,12 @@ FocusScope {
             Layout.fillWidth: true
             Layout.topMargin: 16
             Layout.fillHeight: false
-            implicitHeight: ObsidianTodo.todos.length === 0 ? 200 : Math.min(todoListView.contentHeight, 640)
+            implicitHeight: root.todoCount === 0 ? 200 : Math.min(todoListView.contentHeight, 640)
 
             ColumnLayout {
                 anchors.centerIn: parent
                 spacing: 12
-                visible: ObsidianTodo.todos.length === 0
+                visible: root.todoCount === 0
 
                 Text {
                     text: "\uf058"
@@ -267,7 +361,7 @@ FocusScope {
                 }
 
                 Text {
-                    text: "No tasks for today"
+                    text: root.currentTagFilter.length === 0 ? "No tasks" : `No #${root.currentTagFilter} tasks`
                     font.family: root.fontFamily
                     font.pixelSize: 19
                     color: Appearance.m3colors.m3secondaryText
@@ -281,8 +375,8 @@ FocusScope {
                 anchors.fill: parent
                 spacing: 4
                 clip: true
-                model: ObsidianTodo.todos
-                visible: ObsidianTodo.todos.length > 0
+                model: root.filteredTodos
+                visible: root.todoCount > 0
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: contentHeight > height
                 currentIndex: root.currentIndex
@@ -375,6 +469,28 @@ FocusScope {
                                     }
                                 }
                             }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 6
+                                visible: root.isAnnotationsVisible(todoItem.modelData)
+
+                                Repeater {
+                                    model: todoItem.modelData.annotations || []
+
+                                    Text {
+                                        required property var modelData
+
+                                        Layout.fillWidth: true
+                                        text: modelData.description || ""
+                                        font.family: root.fontFamily
+                                        font.pixelSize: 14
+                                        color: Appearance.m3colors.m3secondaryText
+                                        wrapMode: Text.WordWrap
+                                        renderType: Text.NativeRendering
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -397,12 +513,22 @@ FocusScope {
             Layout.topMargin: 20
             spacing: 16
 
+            Text {
+                visible: root.currentTagFilter.length > 0
+                text: "#" + root.currentTagFilter
+                font.family: root.fontFamily
+                font.pixelSize: 13
+                color: Appearance.m3colors.m3accentPrimary
+                opacity: 0.8
+                renderType: Text.NativeRendering
+            }
+
             Item {
                 Layout.fillWidth: true
             }
 
             Text {
-                text: "j/k navigate · d done · p pending · n next day · u won't do · a note · r refresh · esc close"
+                text: "j/k navigate · t tags · v notes · d done · p pending · n next day · u won't do · a note · r refresh · esc close"
                 font.family: root.fontFamily
                 font.pixelSize: 13
                 color: Appearance.m3colors.m3secondaryText
@@ -466,7 +592,7 @@ FocusScope {
 
                     Text {
                         Layout.fillWidth: true
-                        text: root.currentIndex >= 0 && root.currentIndex < root.todoCount ? (ObsidianTodo.todos[root.currentIndex].description || "") : ""
+                        text: root.todoCount > 0 ? (root.currentTodo.description || "") : ""
                         font.family: root.fontFamily
                         font.pixelSize: 17
                         font.weight: Font.DemiBold

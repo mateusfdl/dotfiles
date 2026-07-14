@@ -78,7 +78,7 @@ Singleton {
                 property bool wallpaper: true
                 property bool notifications: true
                 property bool lockScreen: true
-                property bool obsidianTodo: true
+                property bool tasks: true
                 property bool dailyTodos: true
             }
 
@@ -90,9 +90,13 @@ Singleton {
             }
 
             property JsonObject launcher: JsonObject {
-                property int maxShown: 7
-                property JsonObject sizes: JsonObject {
-                    property int itemHeight: 57
+                property JsonObject grid: JsonObject {
+                    property int columns: 7
+                    property int maxRows: 5
+                    property int tileHeight: 108
+                    property int iconSize: 64
+                    property int cardWidth: 1040
+                    property int searchMaxShown: 105
                 }
             }
 
@@ -114,6 +118,15 @@ Singleton {
                 property string dbDir: "~/.local/state/quickshell"
                 property string dbName: "quickshell.db"
                 property string migrationsDir: "~/.config/quickshell/migrations"
+            }
+
+            property JsonObject reminders: JsonObject {
+                property int rotateDelay: 300000
+                property bool notify: true
+            }
+
+            property JsonObject tasks: JsonObject {
+                property string bin: "/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskw"
             }
         }
     }

@@ -13,7 +13,7 @@ import qs.modules.theme
 import qs.modules.topbar
 import qs.modules.wallpaper
 import qs.modules.windowswitcher
-import qs.modules.obsidiantodo
+import qs.modules.tasks
 import qs.modules.dailytodos
 import qs.modules.lockscreen
 import QsUtils
@@ -25,11 +25,17 @@ ShellRoot {
     property bool enableLauncher: Config.options.modules.launcher
     property bool enableWallpaper: Config.options.modules.wallpaper
     property bool enableNotifications: Config.options.modules.notifications
-    property bool enableObsidianTodo: Config.options.modules.obsidianTodo
+    property bool enableTasks: Config.options.modules.tasks
     property bool enableDailyTodos: Config.options.modules.dailyTodos
     property bool enableLockScreen: Config.options.modules.lockScreen
 
     ThemeIpc {}
+
+    Binding {
+        target: Tasks
+        property: "binPath"
+        value: Config.options.tasks.bin
+    }
 
     Connections {
         target: AppSearch
@@ -85,9 +91,9 @@ ShellRoot {
     }
 
     Loader {
-        active: enableObsidianTodo
+        active: enableTasks
 
-        sourceComponent: ObsidianTodoWindow {}
+        sourceComponent: TasksWindow {}
     }
 
     Loader {

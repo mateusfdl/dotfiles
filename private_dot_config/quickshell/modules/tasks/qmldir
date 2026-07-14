@@ -1,0 +1,4 @@
+module qs.modules.tasks
+
+TasksWindow 1.0 TasksWindow.qml
+TasksContent 1.0 TasksContent.qml

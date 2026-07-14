@@ -15,7 +15,7 @@ Singleton {
     property bool sessionOpen: false
     property bool superReleaseMightTrigger: true
     property bool windowSwitcherOpen: false
-    property bool obsidianTodoOpen: false
+    property bool tasksOpen: false
     property bool dailyTodosOpen: false
 
     Connections {

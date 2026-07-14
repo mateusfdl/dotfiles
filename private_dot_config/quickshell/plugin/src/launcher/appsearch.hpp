@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QString>
+#include <QStringList>
 #include <QTimer>
 #include <QVariantList>
 #include <QVariantMap>
@@ -20,17 +21,12 @@ class AppSearch : public QObject {
   Q_PROPERTY(
       QVariantList applications READ applications NOTIFY applicationsChanged)
   Q_PROPERTY(QVariantList quickshellApps READ quickshellApps CONSTANT)
-  Q_PROPERTY(bool sloppySearch READ sloppySearch WRITE setSloppySearch NOTIFY
-                 sloppySearchChanged)
 
 public:
   explicit AppSearch(QObject *parent = nullptr);
 
   [[nodiscard]] QVariantList applications() const;
   [[nodiscard]] QVariantList quickshellApps() const;
-  [[nodiscard]] bool sloppySearch() const;
-
-  void setSloppySearch(bool value);
 
   Q_INVOKABLE QVariantList search(const QString &query) const;
   Q_INVOKABLE void launch(const QVariantMap &entry);
@@ -39,7 +35,6 @@ public:
 
 signals:
   void applicationsChanged();
-  void sloppySearchChanged();
   void actionRequested(const QString &action);
 
 private:
@@ -50,6 +45,7 @@ private:
     QString comment;
     QString exec;
     QString path;
+    QString category;
     bool terminal{false};
   };
 
@@ -63,6 +59,7 @@ private:
   [[nodiscard]] static QStringList xdgDataDirs();
   [[nodiscard]] static std::optional<DesktopApp>
   parseDesktopFile(const QString &filePath);
+  [[nodiscard]] static QString bucketForCategories(const QStringList &cats);
   [[nodiscard]] static QString
   processExecString(const QString &exec, const QString &name = {},
                     const QString &icon = {}, const QString &desktopFile = {});
@@ -78,8 +75,6 @@ private:
 
   std::vector<PreparedApp> m_apps;
   QVariantList m_applicationsCache;
-  bool m_sloppySearch{false};
-  qreal m_scoreThreshold{0.2};
 
   QFileSystemWatcher m_watcher;
   QTimer m_refreshDebounce;

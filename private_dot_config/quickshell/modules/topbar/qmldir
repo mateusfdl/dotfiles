@@ -1,6 +1,7 @@
 singleton PopupManager 1.0 PopupManager.qml
 singleton VolumePopup 1.0 VolumePopup.qml
 singleton PomodoroPopup 1.0 PomodoroPopup.qml
+singleton RemindersPopup 1.0 RemindersPopup.qml
 PomodoroBreakOverlay 1.0 PomodoroBreakOverlay.qml
 singleton MusicIslandPopup 1.0 MusicIslandPopup.qml
 singleton ControlCenterPopup 1.0 ControlCenterPopup.qml
@@ -10,6 +11,8 @@ SysTray 1.0 SysTray.qml
 Topbar 1.0 Topbar.qml
 LiveTopbar 1.0 LiveTopbar.qml
 PomodoroIndicator 1.0 PomodoroIndicator.qml
+RemindersIndicator 1.0 RemindersIndicator.qml
+RemindersRotator 1.0 RemindersRotator.qml
 RecordingIndicator 1.0 RecordingIndicator.qml
 RecordingOverlay 1.0 RecordingOverlay.qml
 VolumeIndicator 1.0 VolumeIndicator.qml

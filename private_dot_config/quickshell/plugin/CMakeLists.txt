@@ -17,11 +17,10 @@ qt_add_qml_module(qsutils
     SOURCES
         src/utils/colors.hpp src/utils/colors.cpp
         src/utils/files.hpp src/utils/files.cpp
-        src/utils/levendist.hpp src/utils/levendist.cpp
         src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp
         src/utils/jsonvalidator.hpp src/utils/jsonvalidator.cpp
         src/config/appearance.hpp src/config/appearance.cpp
-        src/obsidian/obsidiantodo.hpp src/obsidian/obsidiantodo.cpp
+        src/tasks/tasks.hpp src/tasks/tasks.cpp
         src/audio/audiospectrum.hpp src/audio/audiospectrum.cpp
         src/hyprland/hyprlandworkspace.hpp src/hyprland/hyprlandworkspace.cpp
         src/launcher/appsearch.hpp src/launcher/appsearch.cpp
@@ -29,6 +28,7 @@ qt_add_qml_module(qsutils
         src/recorder/screenrecorder.hpp src/recorder/screenrecorder.cpp
         src/common/directories.hpp src/common/directories.cpp
         src/common/persistent.hpp src/common/persistent.cpp
+        src/db/keyvaluestore.hpp src/db/keyvaluestore.cpp
         src/db/sqlite.hpp src/db/sqlite.cpp
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/QsUtils"
 )
@@ -38,7 +38,7 @@ target_compile_options(qsutils PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
 target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
     ${CMAKE_CURRENT_SOURCE_DIR}/src/config
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/obsidian
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tasks
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hyprland
     ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher

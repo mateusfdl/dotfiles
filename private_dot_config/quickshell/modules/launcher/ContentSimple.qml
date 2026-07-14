@@ -3,11 +3,8 @@ pragma ComponentBehavior: Bound
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.services
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import Quickshell
 import QsUtils
 
 Item {
@@ -17,9 +14,16 @@ Item {
 
     readonly property int outerPadding: 16
     readonly property int searchHeight: Math.max(searchIcon.implicitHeight, search.implicitHeight, clearIcon.implicitHeight) + 40
-    readonly property int actionBarHeight: 44
-    readonly property int contentAreaHeight: Math.min(root.maxHeight - searchHeight - actionBarHeight, 500)
-    readonly property int leftPanelWidth: 320
+    readonly property int bottomPadding: 16
+    readonly property int cardWidth: Config.options.launcher.grid.cardWidth
+
+    readonly property int chipsBlock: (appGrid.hasSearchText || chips.present.length === 0) ? 0 : chips.implicitHeight + 16
+    readonly property int chipsReserve: chips.present.length > 0 ? chips.implicitHeight + 16 : 0
+    readonly property int maxGridHeight: Config.options.launcher.grid.maxRows * Config.options.launcher.grid.tileHeight
+    readonly property int gridAreaHeight: Math.min(appGrid.implicitHeight, maxGridHeight, root.maxHeight - searchHeight - bottomPadding - chipsBlock - 24)
+    readonly property int browseGridHeight: Math.min(maxGridHeight, root.maxHeight - searchHeight - bottomPadding - chipsReserve - 24)
+    readonly property int maxCardHeight: searchHeight + 1 + chipsReserve + browseGridHeight + 12 + bottomPadding
+    readonly property int contentAreaHeight: appGrid.count === 0 ? 220 : (chipsBlock + gridAreaHeight + 12)
 
     implicitWidth: mainContainer.width
     implicitHeight: mainContainer.height
@@ -30,9 +34,25 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
 
-        width: 1200
-        height: searchHeight + horizontalSep.height + contentArea.height + actionBar.height
+        width: root.cardWidth
+        height: searchHeight + horizontalSep.height + contentArea.height + root.bottomPadding
 
+        transformOrigin: Item.Top
+        opacity: GlobalStates.launcherOpen ? 1 : 0
+        scale: GlobalStates.launcherOpen ? 1 : 0.96
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on scale {
+            NumberAnimation {
+                duration: 260
+                easing.type: Easing.OutBack
+            }
+        }
         Behavior on height {
             NumberAnimation {
                 duration: 250
@@ -40,7 +60,6 @@ Item {
             }
         }
 
-        // Card background — semi-transparent for compositor blur
         Rectangle {
             id: background
             anchors.fill: parent
@@ -49,7 +68,6 @@ Item {
             border.color: Qt.rgba(1, 1, 1, 0.08)
             border.width: 1
 
-            // Subtle outer glow
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: -1
@@ -81,9 +99,6 @@ Item {
             }
         }
 
-        // ============================================================
-        // 1. SEARCH BAR
-        // ============================================================
         Item {
             id: searchArea
             anchors.top: parent.top
@@ -117,32 +132,21 @@ Item {
                 font.family: Style.font.family.uiFont
                 font.pixelSize: 20
 
-                // Enter launches selected app
                 Keys.onReturnPressed: event => {
-                    if (!list.currentList)
-                        return;
-                    const listView = list.currentList;
-                    if (listView.count === 0)
-                        return;
-                    const currentItem = listView.currentItem;
-                    if (currentItem) {
-                        if (typeof currentItem.launchAndClose === "function")
-                            currentItem.launchAndClose();
-                        else if (currentItem.modelData)
-                            currentItem.clicked();
-                    }
+                    if (appGrid.currentItem)
+                        appGrid.currentItem.launchAndClose();
+                    event.accepted = true;
+                }
+                Keys.onEnterPressed: event => {
+                    if (appGrid.currentItem)
+                        appGrid.currentItem.launchAndClose();
                     event.accepted = true;
                 }
 
-                // Delegate Up/Down to list navigation
-                Keys.onUpPressed: {
-                    if (list.currentList)
-                        list.currentList.decrementCurrentIndex();
-                }
-                Keys.onDownPressed: {
-                    if (list.currentList)
-                        list.currentList.incrementCurrentIndex();
-                }
+                Keys.onUpPressed: appGrid.moveCurrentIndexUp()
+                Keys.onDownPressed: appGrid.moveCurrentIndexDown()
+                Keys.onLeftPressed: appGrid.moveCurrentIndexLeft()
+                Keys.onRightPressed: appGrid.moveCurrentIndexRight()
                 Keys.onEscapePressed: {
                     GlobalStates.launcherOpen = false;
                 }
@@ -188,9 +192,6 @@ Item {
             }
         }
 
-        // ============================================================
-        // 2. HORIZONTAL SEPARATOR
-        // ============================================================
         Rectangle {
             id: horizontalSep
             anchors.top: searchArea.bottom
@@ -203,9 +204,6 @@ Item {
             z: 1
         }
 
-        // ============================================================
-        // 3. CONTENT AREA (two-panel or empty state)
-        // ============================================================
         Item {
             id: contentArea
             anchors.top: horizontalSep.bottom
@@ -215,12 +213,9 @@ Item {
             z: 1
             clip: true
 
-            // Empty state — spans full width when no results
             Item {
-                id: emptyState
                 anchors.fill: parent
-                visible: list.currentList !== null && list.currentList.count === 0
-                z: 2
+                visible: appGrid.count === 0
 
                 Row {
                     anchors.centerIn: parent
@@ -256,69 +251,28 @@ Item {
                 }
             }
 
-            // Two-panel layout
-            Row {
+            Column {
                 anchors.fill: parent
-                visible: !emptyState.visible
+                anchors.leftMargin: root.outerPadding
+                anchors.rightMargin: root.outerPadding
+                anchors.topMargin: 12
+                spacing: 16
+                visible: appGrid.count > 0
 
-                // Left panel: section header + app list
-                Item {
-                    id: leftPanel
-                    width: root.leftPanelWidth
-                    height: parent.height
-
-                    Column {
-                        anchors.fill: parent
-                        anchors.topMargin: 12
-                        spacing: 4
-
-                        // Section header
-                        StyledText {
-                            text: list.hasSearchText ? qsTr("Applications") : qsTr("Suggestions")
-                            color: Appearance.m3colors.m3secondaryText
-                            font.family: Style.font.family.uiFont
-                            font.pixelSize: 20
-                            font.weight: Font.DemiBold
-                            leftPadding: 16
-                            bottomPadding: 20
-                        }
-
-                        // App list
-                        ContentListSimple {
-                            id: list
-                            width: parent.width
-                            maxHeight: leftPanel.height - 40
-                            search: search
-                            padding: root.outerPadding
-                        }
-                    }
+                CategoryChips {
+                    id: chips
+                    width: parent.width
+                    visible: !appGrid.hasSearchText && present.length > 0
                 }
 
-                // Vertical separator
-                Rectangle {
-                    width: 1
-                    height: parent.height
-                    color: Qt.rgba(1, 1, 1, 0.06)
-                }
-
-                // Right panel: app preview
-                AppPreview {
-                    width: parent.width - root.leftPanelWidth - 1
-                    height: parent.height
-                    selectedApp: list.selectedApp
+                AppGrid {
+                    id: appGrid
+                    width: parent.width
+                    height: root.gridAreaHeight
+                    search: search
+                    category: chips.selected
                 }
             }
-        }
-
-        // ============================================================
-        // 4. ACTION BAR
-        // ============================================================
-        ActionBar {
-            id: actionBar
-            anchors.top: contentArea.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            z: 1
         }
     }
 }

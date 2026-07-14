@@ -18,6 +18,9 @@ QtObject {
         if (exceptPopup !== "controlcenter") {
             Topbar.ControlCenterPopup.hidePopup();
         }
+        if (exceptPopup !== "reminders") {
+            Topbar.RemindersPopup.hidePopup();
+        }
         if (exceptPopup !== "systray") {
             closeSysTrayMenu();
         }
@@ -41,6 +44,8 @@ QtObject {
             Topbar.PomodoroPopup.showPopup(x, y);
         } else if (popupName === "controlcenter") {
             Topbar.ControlCenterPopup.showPopup(x, y);
+        } else if (popupName === "reminders") {
+            Topbar.RemindersPopup.showPopup(x, y);
         }
     }
 }

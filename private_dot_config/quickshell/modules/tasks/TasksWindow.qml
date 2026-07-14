@@ -14,27 +14,17 @@ import Quickshell.Hyprland
 import QsUtils
 
 Scope {
-    id: obsidianTodoScope
+    id: tasksScope
 
-    property bool isOpen: GlobalStates.obsidianTodoOpen
+    property bool isOpen: GlobalStates.tasksOpen
 
     onIsOpenChanged: {
         if (isOpen)
-            ObsidianTodo.fetchTags();
+            Tasks.fetchTags();
     }
 
     function closeWindow() {
-        GlobalStates.obsidianTodoOpen = false;
-    }
-
-    FileView {
-        path: `${Config.vaultPath}/Journal/todos/views/pending.md`
-        watchChanges: true
-        onFileChanged: {
-            reload();
-            if (obsidianTodoScope.isOpen)
-                ObsidianTodo.fetchTags();
-        }
+        GlobalStates.tasksOpen = false;
     }
 
     Variants {
@@ -43,9 +33,9 @@ Scope {
         FocusedMonitorPanel {
             id: todoWindow
 
-            requestVisible: GlobalStates.obsidianTodoOpen
+            requestVisible: GlobalStates.tasksOpen
 
-            WlrLayershell.namespace: "quickshell:obsidiantodo"
+            WlrLayershell.namespace: "quickshell:tasks"
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: todoWindow.isActive ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
@@ -58,7 +48,7 @@ Scope {
                     z: 0
                     enabled: todoWindow.isActive
                     onClicked: {
-                        obsidianTodoScope.closeWindow();
+                        tasksScope.closeWindow();
                     }
                 }
 
@@ -90,11 +80,11 @@ Scope {
                         z: -1
                     }
 
-                    ObsidianTodoContent {
+                    TasksContent {
                         id: todoContent
                         width: parent.width
-                        isOpen: GlobalStates.obsidianTodoOpen
-                        onCloseRequested: obsidianTodoScope.closeWindow()
+                        isOpen: GlobalStates.tasksOpen
+                        onCloseRequested: tasksScope.closeWindow()
                     }
 
                     Behavior on y {
@@ -110,43 +100,43 @@ Scope {
     }
 
     Connections {
-        target: ObsidianTodo
+        target: Tasks
         function onSaved() {
-            obsidianTodoScope.closeWindow();
+            tasksScope.closeWindow();
         }
         function onSaveFailed(error) {
-            console.warn("[ObsidianTodo] Save failed:", error);
-            obsidianTodoScope.closeWindow();
+            console.warn("[Tasks] Save failed:", error);
+            tasksScope.closeWindow();
         }
     }
 
     IpcHandler {
-        target: "obsidiantodo"
+        target: "tasks"
 
         function toggle() {
-            GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen;
+            GlobalStates.tasksOpen = !GlobalStates.tasksOpen;
         }
         function close() {
-            GlobalStates.obsidianTodoOpen = false;
+            GlobalStates.tasksOpen = false;
         }
         function open() {
-            GlobalStates.obsidianTodoOpen = true;
+            GlobalStates.tasksOpen = true;
         }
     }
 
     GlobalShortcut {
-        name: "obsidianTodoToggle"
-        description: qsTr("Toggles Obsidian TODO popup")
+        name: "tasksToggle"
+        description: qsTr("Toggles Tasks popup")
         onPressed: {
-            GlobalStates.obsidianTodoOpen = !GlobalStates.obsidianTodoOpen;
+            GlobalStates.tasksOpen = !GlobalStates.tasksOpen;
         }
     }
 
     GlobalShortcut {
-        name: "obsidianTodoClose"
-        description: qsTr("Closes Obsidian TODO popup")
+        name: "tasksClose"
+        description: qsTr("Closes Tasks popup")
         onPressed: {
-            GlobalStates.obsidianTodoOpen = false;
+            GlobalStates.tasksOpen = false;
         }
     }
 }

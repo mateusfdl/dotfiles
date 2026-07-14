@@ -73,10 +73,8 @@ static void pwOnStreamStateChanged(void * /*userdata*/,
                << (error ? error : "unknown");
     break;
   case PW_STREAM_STATE_STREAMING:
-    qDebug() << "[AudioSpectrum] Streaming started";
     break;
   case PW_STREAM_STATE_PAUSED:
-    qDebug() << "[AudioSpectrum] Stream paused";
     break;
   default:
     break;
@@ -303,8 +301,6 @@ void AudioSpectrum::startCapture() {
   m_processTimer.setInterval(1000 / m_fps);
   m_processTimer.start();
 
-  qDebug() << "[AudioSpectrum] Capture started, barCount=" << m_barCount
-           << "fps=" << m_fps;
 }
 
 void AudioSpectrum::stopCapture() {
@@ -329,7 +325,6 @@ void AudioSpectrum::stopCapture() {
   initBars();
   emit barsChanged();
 
-  qDebug() << "[AudioSpectrum] Capture stopped";
 }
 
 void AudioSpectrum::processFFT() {

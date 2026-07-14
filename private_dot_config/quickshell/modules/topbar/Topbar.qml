@@ -109,11 +109,19 @@ Scope {
                             implicitHeight: 1
                         }
 
+                        Topbar.RemindersRotator {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
                         Topbar.SysTray {
                             visible: true
                             Layout.fillWidth: false
                             Layout.fillHeight: true
                             invertSide: false
+                        }
+
+                        Topbar.RemindersIndicator {
+                            Layout.alignment: Qt.AlignVCenter
                         }
 
                         Topbar.RecordingIndicator {
