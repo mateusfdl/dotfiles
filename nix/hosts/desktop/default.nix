@@ -8,6 +8,7 @@
     ../../modules/nixos/optional/blender.nix
     ../../modules/nixos/optional/bluetooth.nix
     ../../modules/nixos/optional/brave.nix
+    ../../modules/nixos/optional/computeruse.nix
     ../../modules/nixos/optional/desktop-reliability.nix
     ../../modules/nixos/optional/firewall.nix
     ../../modules/nixos/optional/fonts.nix
@@ -26,9 +27,8 @@
     ../../modules/nixos/optional/soundcloud.nix
     ../../modules/nixos/optional/dev.nix
     ../../modules/nixos/optional/zephyr.nix
-
-    ../../pkgs/desktop.nix
     ../../modules/common/taskwarrior.nix
+    ../../pkgs/desktop.nix
   ];
 
   networking.hostName = "desktop";
