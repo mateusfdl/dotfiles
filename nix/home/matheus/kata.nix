@@ -1,4 +1,10 @@
 { inputs, ... }:
+let
+  error = {
+    enabled = true;
+    severity = "error";
+  };
+in
 {
   imports = [ inputs.kata.homeModules.default ];
 
@@ -6,40 +12,34 @@
     enable = true;
     settings = {
       ratchet = true;
-      enabled = [
-        "go/context-first-param"
-        "go/error-strings"
-        "go/max-complexity"
-        "ts/max-complexity"
-        "tsx/max-complexity"
-        "go/max-function-length"
-        "ts/max-function-length"
-        "tsx/max-function-length"
-        "go/max-nesting"
-        "ts/max-nesting"
-        "tsx/max-nesting"
-        "ts/no-any"
-        "tsx/no-any"
-        "ts/no-as-any"
-        "tsx/no-as-any"
-        "go/no-builtin-print"
-        "ts/no-comments"
-        "tsx/no-comments"
-        "ts/no-console"
-        "tsx/no-console"
-        "go/no-defer-in-loop"
-        "go/no-empty-interface"
-        "ts/no-generic-error"
-        "tsx/no-generic-error"
-        "go/no-init-func"
-        "go/no-panic"
-        "go/no-swallowed-errors"
-        "ts/no-weak-assertions"
-        "tsx/no-weak-assertions"
-        "go/simple-repositories"
-        "ts/simple-repositories"
-        "tsx/simple-repositories"
-      ];
+      rules = {
+        go = {
+          context-first-param = error;
+          error-strings = error;
+          max-complexity = error;
+          max-function-length = error;
+          max-nesting = error;
+          no-builtin-print = error;
+          no-defer-in-loop = error;
+          no-empty-interface = error;
+          no-init-func = error;
+          no-panic = error;
+          no-swallowed-errors = error;
+          simple-repositories = error;
+        };
+        typescript = {
+          max-complexity = error;
+          max-function-length = error;
+          max-nesting = error;
+          no-any = error;
+          no-as-any = error;
+          no-comments = error;
+          no-console = error;
+          no-generic-error = error;
+          no-weak-assertions = error;
+          simple-repositories = error;
+        };
+      };
     };
   };
 }
