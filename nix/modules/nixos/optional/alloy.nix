@@ -5,10 +5,32 @@
   environment.etc."alloy/config.alloy" = {
     text = ''
       prometheus.exporter.unix "node" {
-        set_collectors     = ["cpu", "diskstats", "filesystem", "loadavg", "meminfo", "netdev", "netstat", "sockstat", "stat", "uname", "vmstat", "hwmon", "pressure", "filefd", "conntrack", "textfile"]
+        set_collectors     = ["cpu", "diskstats", "filesystem", "loadavg", "meminfo", "netdev", "netstat", "sockstat", "stat", "uname", "vmstat", "hwmon", "pressure", "filefd", "conntrack", "textfile", "systemd"]
         textfile {
           directory = "/var/lib/prometheus-textfile"
         }
+      }
+
+      prometheus.exporter.process "host" {
+        matcher {
+          name    = "{{.Comm}}"
+          cmdline = [".+"]
+        }
+      }
+
+      prometheus.scrape "process" {
+        targets         = prometheus.exporter.process.host.targets
+        scrape_interval = "15s"
+        forward_to      = [prometheus.relabel.process_job.receiver]
+      }
+
+      prometheus.relabel "process_job" {
+        rule {
+          target_label = "job"
+          replacement  = "process"
+        }
+
+        forward_to = [prometheus.remote_write.default.receiver]
       }
 
       prometheus.scrape "node" {
