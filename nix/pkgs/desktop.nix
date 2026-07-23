@@ -26,6 +26,7 @@ in
     libsForQt5.qt5ct
     mpv
     networkmanagerapplet
+    nftables
     nwg-displays
     papirus-icon-theme
     pavucontrol
