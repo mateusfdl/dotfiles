@@ -23,6 +23,7 @@
     ../../modules/nixos/optional/portals.nix
     ../../modules/nixos/optional/sshfs.nix
     ../../modules/nixos/optional/steam.nix
+    ../../modules/nixos/optional/vikunja-cli.nix
     ../../modules/nixos/optional/vscode.nix
     ../../modules/nixos/optional/soundcloud.nix
     ../../modules/nixos/optional/dev.nix
