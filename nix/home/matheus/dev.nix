@@ -171,6 +171,7 @@ in
     pandoc
     railway
     sd
+    sqlite
     tectonic
     tokei
     tree-sitter

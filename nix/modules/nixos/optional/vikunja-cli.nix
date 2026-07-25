@@ -29,5 +29,4 @@ let
 in
 {
   environment.systemPackages = [ vikunja-cli ];
-  environment.variables.VIKUNJA_URL = "https://vikunja.matheusfdl.dev";
 }

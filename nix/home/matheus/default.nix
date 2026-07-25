@@ -13,6 +13,7 @@
     ./kata.nix
     ./luarocks.nix
     ./pnpm.nix
+    ./vikunja-cli.nix
   ];
 
   home.stateVersion = "25.11";

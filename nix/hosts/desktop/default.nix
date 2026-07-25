@@ -28,6 +28,7 @@
     ../../modules/nixos/optional/soundcloud.nix
     ../../modules/nixos/optional/dev.nix
     ../../modules/nixos/optional/zephyr.nix
+    ../../modules/nixos/games/dofus.nix
     ../../modules/common/taskwarrior.nix
     ../../pkgs/desktop.nix
   ];
