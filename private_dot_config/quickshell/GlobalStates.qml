@@ -16,7 +16,7 @@ Singleton {
     property bool superReleaseMightTrigger: true
     property bool windowSwitcherOpen: false
     property bool tasksOpen: false
-    property bool dailyTodosOpen: false
+    property bool dailyTasksOpen: false
 
     Connections {
         target: Config

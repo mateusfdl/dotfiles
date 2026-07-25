@@ -246,12 +246,12 @@ Singleton {
         }
     }
 
-    function pickupTodo(description: string, uuid: string, tags: list<string>) {
+    function pickupTodo(description: string, noteId: string, tags: list<string>) {
         if (state !== Pomodoro.State.Idle)
             return;
         currentTodo = {
             description: description,
-            uuid: uuid,
+            noteId: noteId,
             tags: tags
         };
         _resetSession();
@@ -276,11 +276,11 @@ Singleton {
     }
 
     function _flushSessionToTodo() {
-        if (!currentTodo || !currentTodo.uuid || _sessionEvents.length === 0)
+        if (!currentTodo || !currentTodo.noteId || _sessionEvents.length === 0)
             return;
         const focusMin = Math.round(_totalFocusSeconds / 60);
         const breakMin = Math.round(_totalBreakSeconds / 60);
-        Tasks.appendSessionLog(currentTodo.uuid, focusMin, breakMin, _sessionEvents.slice());
+        Tasks.appendSessionLog(currentTodo.noteId, focusMin, breakMin, _sessionEvents.slice());
         _resetSession();
     }
 

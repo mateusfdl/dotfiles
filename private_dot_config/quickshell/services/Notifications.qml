@@ -46,6 +46,11 @@ Singleton {
     readonly property var popupGroupsByAppName: groupsForList(popupList)
     readonly property var popupAppNameList: appNameListForGroups(popupGroupsByAppName)
 
+    // Dispatches a notification over the freedesktop D-Bus interface (via
+    // gdbus, since notify-send is not installed). The shell's own
+    // NotificationServer receives it and renders it through the popup UI.
+    // opts: { appName, urgency ("low"|"normal"|"critical"), timeout (ms),
+    //         replaceId (int, for replace-in-place), icon }
     function notify(summary, body, opts) {
         opts = opts ?? {};
         const urgencyMap = {

@@ -1,11 +1,10 @@
 pragma Singleton
+pragma ComponentBehavior: Bound
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.modules.common
@@ -19,17 +18,17 @@ Scope {
     property bool popupVisible: false
     property real popupX: 0
     property real popupY: 0
-    property string outputDeviceName: "Speaker"
+    property bool devicePickerExpanded: false
 
     function showPopup(x, y) {
         popupX = x;
         popupY = y;
         popupVisible = true;
-        updateOutputDevice();
     }
 
     function hidePopup() {
         popupVisible = false;
+        devicePickerExpanded = false;
     }
 
     function togglePopup(x, y) {
@@ -39,10 +38,6 @@ Scope {
             Topbar.PopupManager.closeAllExcept("volume");
             showPopup(x, y);
         }
-    }
-
-    function updateOutputDevice() {
-        deviceNameProcess.running = true;
     }
 
     property bool protectionTriggered: false
@@ -55,6 +50,10 @@ Scope {
             volumePopupScope.protectionReason = reason;
             protectionResetTimer.restart();
         }
+        function onSinksChanged() {
+            if (Audio.sinks.length === 0)
+                volumePopupScope.devicePickerExpanded = false;
+        }
     }
 
     Timer {
@@ -62,20 +61,6 @@ Scope {
         interval: 2000
         onTriggered: {
             volumePopupScope.protectionTriggered = false;
-        }
-    }
-
-    Process {
-        id: deviceNameProcess
-
-        running: false
-        command: ["sh", "-c", "pactl list sinks | grep -A 1 'State: RUNNING' | grep 'Description:' | cut -d':' -f2 | xargs"]
-        onExited: (exitCode, stdout, stderr) => {
-            if (exitCode === 0 && stdout) {
-                var device = stdout.trim();
-                if (device)
-                    volumePopupScope.outputDeviceName = device;
-            }
         }
     }
 
@@ -88,6 +73,7 @@ Scope {
             requestVisible: volumePopupScope.popupVisible
 
             WlrLayershell.namespace: "quickshell:volume"
+            WlrLayershell.layer: WlrLayer.Overlay
 
             HyprlandWindow.visibleMask: Region {
                 item: popup.isActive ? popupBackground : null
@@ -108,7 +94,7 @@ Scope {
                 x: volumePopupScope.popupX
                 y: volumePopupScope.popupY
                 width: 280
-                height: volumePopupScope.protectionTriggered ? 130 : 100
+                height: 112 + (volumePopupScope.protectionTriggered ? 36 : 0) + (volumePopupScope.devicePickerExpanded ? Math.min(deviceListView.contentHeight + 4, 180) + 12 : 0)
                 radius: 12
                 color: Qt.rgba(0.08, 0.08, 0.09, 0.78)
                 border.color: Qt.rgba(1, 1, 1, 0.08)
@@ -241,24 +227,135 @@ Scope {
                                 }
                             }
 
-                            // Output device info
-                            RowLayout {
+                            // Output device picker
+                            Rectangle {
                                 Layout.fillWidth: true
-                                spacing: 8
+                                Layout.preferredHeight: 32
+                                radius: 8
+                                color: devicePickerMouseArea.containsMouse ? Style.withAlpha(Appearance.m3colors.m3primaryText, 0.08) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.04)
+                                opacity: Audio.sinks.length > 0 ? 1 : 0.6
 
-                                MaterialSymbol {
-                                    text: "speaker"
-                                    iconSize: 16
-                                    fill: 1
-                                    color: Appearance.m3colors.m3secondaryText
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8
+                                    anchors.rightMargin: 8
+                                    spacing: 8
+
+                                    MaterialSymbol {
+                                        text: "speaker"
+                                        iconSize: 16
+                                        fill: 1
+                                        color: Appearance.m3colors.m3secondaryText
+                                    }
+
+                                    StyledText {
+                                        Layout.fillWidth: true
+                                        text: Audio.sinkName
+                                        font.family: Style.font.family.uiFont
+                                        font.pixelSize: Style.font.pixelSize.textSmall
+                                        font.weight: Font.Medium
+                                        color: Appearance.m3colors.m3primaryText
+                                        elide: Text.ElideRight
+                                    }
+
+                                    MaterialSymbol {
+                                        text: volumePopupScope.devicePickerExpanded ? "expand_less" : "expand_more"
+                                        iconSize: 16
+                                        color: Appearance.m3colors.m3secondaryText
+                                    }
                                 }
 
-                                StyledText {
-                                    text: volumePopupScope.outputDeviceName
-                                    font.pixelSize: 12
-                                    color: Appearance.m3colors.m3secondaryText
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
+                                MouseArea {
+                                    id: devicePickerMouseArea
+
+                                    anchors.fill: parent
+                                    enabled: Audio.sinks.length > 0
+                                    hoverEnabled: true
+                                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                    onClicked: {
+                                        volumePopupScope.devicePickerExpanded = !volumePopupScope.devicePickerExpanded;
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: Math.min(deviceListView.contentHeight + 4, 180)
+                                radius: 8
+                                color: Appearance.colors.colLayer2
+                                border.color: Appearance.m3colors.m3borderSecondary
+                                border.width: 1
+                                visible: volumePopupScope.devicePickerExpanded
+                                clip: true
+
+                                ListView {
+                                    id: deviceListView
+
+                                    anchors.fill: parent
+                                    anchors.margins: 2
+                                    spacing: 1
+                                    model: ScriptModel {
+                                        values: [...Audio.sinks]
+                                    }
+
+                                    delegate: Rectangle {
+                                        id: deviceOption
+
+                                        required property var modelData
+                                        readonly property bool selected: deviceOption.modelData === Audio.sink
+
+                                        width: deviceListView.width
+                                        height: Style.font.pixelSize.textSmall + 20
+                                        radius: Appearance.rounding.small
+                                        color: {
+                                            if (deviceOption.selected)
+                                                return Appearance.m3colors.m3selectionBackground;
+
+                                            if (deviceOptionMouseArea.containsMouse)
+                                                return Style.withAlpha(Appearance.m3colors.m3primaryText, 0.06);
+
+                                            return "transparent";
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 10
+                                            anchors.rightMargin: 10
+                                            spacing: 8
+
+                                            MaterialSymbol {
+                                                Layout.preferredWidth: Style.font.pixelSize.textSmall
+                                                text: "check"
+                                                iconSize: Style.font.pixelSize.textSmall
+                                                fill: 1
+                                                color: deviceOption.selected ? Appearance.m3colors.m3selectionText : "transparent"
+                                            }
+
+                                            StyledText {
+                                                Layout.fillWidth: true
+                                                text: Audio.displayName(deviceOption.modelData)
+                                                font.family: Style.font.family.uiFont
+                                                font.pixelSize: Style.font.pixelSize.textSmall
+                                                font.weight: Font.Medium
+                                                color: deviceOption.selected ? Appearance.m3colors.m3selectionText : Appearance.m3colors.m3primaryText
+                                                elide: Text.ElideRight
+                                                maximumLineCount: 1
+                                                wrapMode: Text.NoWrap
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: deviceOptionMouseArea
+
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                Audio.setDefaultSink(deviceOption.modelData);
+                                                volumePopupScope.devicePickerExpanded = false;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

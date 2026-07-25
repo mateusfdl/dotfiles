@@ -2,3 +2,5 @@ module qs.modules.tasks
 
 TasksWindow 1.0 TasksWindow.qml
 TasksContent 1.0 TasksContent.qml
+DailyTasksWindow 1.0 DailyTasksWindow.qml
+DailyTasksContent 1.0 DailyTasksContent.qml

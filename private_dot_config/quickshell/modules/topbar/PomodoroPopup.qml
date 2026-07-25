@@ -1,4 +1,6 @@
 pragma Singleton
+pragma ComponentBehavior: Bound
+
 import "." as Topbar
 import Qt5Compat.GraphicalEffects
 import QtQuick
@@ -335,7 +337,7 @@ Scope {
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: {
                                             const todo = todoDelegate.modelData;
-                                            Pomodoro.pickupTodo(todo.description, todo.uuid, todo.tags || []);
+                                            Pomodoro.pickupTodo(todo.description, todo.noteId, todo.tags || []);
                                             pomodoroPopupScope.todoPickerExpanded = false;
                                         }
                                     }
@@ -418,10 +420,14 @@ Scope {
                                     model: Pomodoro.pomodorosUntilLongBreak
 
                                     Rectangle {
+                                        id: cycleDot
+
+                                        required property int index
+
                                         width: 8
                                         height: 8
                                         radius: 4
-                                        color: index < Pomodoro.currentCycle ? Style.withAlpha(Style.pomodoro.working, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
+                                        color: cycleDot.index < Pomodoro.currentCycle ? Style.withAlpha(Style.pomodoro.working, 0.9) : Style.withAlpha(Appearance.m3colors.m3primaryText, 0.2)
 
                                         Behavior on color {
                                             ColorAnimation {

@@ -16,11 +16,9 @@ Singleton {
         const states = store.values(root.namespaceName);
         const reminders = [];
         const activeReminders = [];
-        const liveUuids = new Set();
 
         for (let index = 0; index < QsUtilsPlugin.Tasks.todos.length; index++) {
             const todo = Object.assign({}, QsUtilsPlugin.Tasks.todos[index]);
-            liveUuids.add(todo.uuid);
             let isActive = true;
             if (states[todo.uuid] !== undefined)
                 isActive = states[todo.uuid];
@@ -29,11 +27,6 @@ Singleton {
             reminders.push(todo);
             if (isActive)
                 activeReminders.push(todo);
-        }
-
-        for (const key in states) {
-            if (!liveUuids.has(key))
-                store.removeValue(root.namespaceName, key);
         }
 
         root.reminders = reminders;
@@ -59,14 +52,6 @@ Singleton {
         target: QsUtilsPlugin.Tasks
         function onTodosChanged() {
             root.refresh();
-        }
-    }
-
-    Connections {
-        target: Sqlite
-        function onReadyChanged() {
-            if (Sqlite.ready)
-                root.refresh();
         }
     }
 

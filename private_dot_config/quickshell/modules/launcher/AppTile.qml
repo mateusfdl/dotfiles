@@ -19,7 +19,10 @@ Item {
     height: GridView.view.cellHeight
 
     function launchAndClose(): void {
-        AppSearch.launch(root.modelData);
+        if (typeof root.modelData.launch === "function")
+            root.modelData.launch();
+        else
+            AppSearch.launch(root.modelData);
         GlobalStates.launcherOpen = false;
     }
 

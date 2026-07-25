@@ -79,7 +79,11 @@ Singleton {
                 property bool notifications: true
                 property bool lockScreen: true
                 property bool tasks: true
-                property bool dailyTodos: true
+                property bool dailyTasks: true
+            }
+
+            property JsonObject tasks: JsonObject {
+                property int projectId: 1
             }
 
             property JsonObject overview: JsonObject {
@@ -121,12 +125,8 @@ Singleton {
             }
 
             property JsonObject reminders: JsonObject {
-                property int rotateDelay: 300000
+                property int rotateDelay: 5000
                 property bool notify: true
-            }
-
-            property JsonObject tasks: JsonObject {
-                property string bin: "/home/matheus/Documents/personal-org-mode/Personal/Journal/todos/taskw"
             }
         }
     }

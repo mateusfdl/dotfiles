@@ -31,33 +31,34 @@ QVariantList AppSearch::applications() const {
 
 QVariantList AppSearch::quickshellApps() const {
   const auto entry = [](const char *name, const char *icon, const char *comment,
-                        const char *category, const char *field,
-                        const char *value) {
+                        const char *field, const char *value) {
     return QVariantMap{
         {QStringLiteral("name"), QString::fromUtf8(name)},
         {QStringLiteral("icon"), QString::fromUtf8(icon)},
         {QStringLiteral("comment"), QString::fromUtf8(comment)},
-        {QStringLiteral("category"), QString::fromUtf8(category)},
         {QString::fromUtf8(field), QString::fromUtf8(value)},
     };
   };
 
   static const QVariantList apps = {
       entry("Wallpaper Selector", "preferences-desktop-wallpaper",
-            "Change your wallpaper", "Utilities", "action", "wallpaperSelector"),
-      entry("Overview", "view-grid", "Open overview mode", "Utilities",
-            "action", "overview"),
-      entry("SoundCloud", "soundcloud", "Listen to music on SoundCloud",
-            "Entertainment", "exec", "soundcloud"),
-      entry("Spotify", "spotify", "Music streaming", "Entertainment", "exec",
-            "spotify"),
-      entry("Obsidian", "obsidian", "Knowledge base and notes",
-            "Productivity & Finance", "exec", "obsidian"),
-      entry("Brave", "brave-browser", "Web browser", "Social", "exec", "brave"),
-      entry("Discord", "discord", "Chat and voice", "Social", "exec",
-            "discord"),
-      entry("Morgen", "morgen", "Calendar and scheduling",
-            "Productivity & Finance", "exec", "morgen"),
+            "Change your wallpaper", "action", "wallpaperSelector"),
+      entry("Overview", "view-grid", "Open overview mode", "action",
+            "overview"),
+      entry("SoundCloud", "soundcloud", "Listen to music on SoundCloud", "exec",
+            "soundcloud"),
+      entry("Spotify", "spotify", "Music streaming", "exec", "spotify"),
+      entry("Obsidian", "obsidian", "Knowledge base and notes", "exec",
+            "obsidian"),
+      entry("Brave", "brave-browser", "Web browser", "exec", "brave"),
+      entry("Discord", "discord", "Chat and voice", "exec", "discord"),
+      entry("Morgen", "morgen", "Calendar and scheduling", "exec", "morgen"),
+      entry("Dofus", "zaap", "Play Dofus through Ankama Launcher", "exec",
+            "ankama-launcher"),
+      entry("Ankama Launcher", "zaap", "Ankama portal and game launcher",
+            "exec", "ankama-launcher"),
+      entry("Unity Hub", "unityhub", "Unity editor and project manager", "exec",
+            "unityhub"),
   };
   return apps;
 }
@@ -399,17 +400,6 @@ void AppSearch::scanApplications() {
     entry[QStringLiteral("terminal")] = pa.app.terminal;
 
     m_applicationsCache.append(QVariant::fromValue(entry));
-  }
-
-  QSet<QString> desktopNames;
-  for (const auto &pa : m_apps)
-    desktopNames.insert(pa.app.name.toLower());
-
-  for (const auto &qsApp : quickshellApps()) {
-    const QString name =
-        qsApp.toMap().value(QStringLiteral("name")).toString().toLower();
-    if (!desktopNames.contains(name))
-      m_applicationsCache.append(qsApp);
   }
 
   emit applicationsChanged();

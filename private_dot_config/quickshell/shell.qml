@@ -14,7 +14,6 @@ import qs.modules.topbar
 import qs.modules.wallpaper
 import qs.modules.windowswitcher
 import qs.modules.tasks
-import qs.modules.dailytodos
 import qs.modules.lockscreen
 import QsUtils
 
@@ -26,15 +25,15 @@ ShellRoot {
     property bool enableWallpaper: Config.options.modules.wallpaper
     property bool enableNotifications: Config.options.modules.notifications
     property bool enableTasks: Config.options.modules.tasks
-    property bool enableDailyTodos: Config.options.modules.dailyTodos
+    property bool enableDailyTasks: Config.options.modules.dailyTasks
     property bool enableLockScreen: Config.options.modules.lockScreen
 
     ThemeIpc {}
 
     Binding {
         target: Tasks
-        property: "binPath"
-        value: Config.options.tasks.bin
+        property: "projectId"
+        value: Config.options.tasks.projectId
     }
 
     Connections {
@@ -97,9 +96,9 @@ ShellRoot {
     }
 
     Loader {
-        active: enableDailyTodos
+        active: enableDailyTasks
 
-        sourceComponent: DailyTodosWindow {}
+        sourceComponent: DailyTasksWindow {}
     }
 
     Loader {

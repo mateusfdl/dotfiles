@@ -49,7 +49,7 @@
         "showLockedText": true
     },
     "modules": {
-        "dailyTodos": true,
+        "dailyTasks": true,
         "launcher": true,
         "lockScreen": true,
         "notifications": true,
@@ -73,6 +73,9 @@
         "dbDir": "~/.local/state/quickshell",
         "dbName": "quickshell.db",
         "migrationsDir": "~/.config/quickshell/migrations"
+    },
+    "tasks": {
+        "projectId": 1
     },
     "time": {
         "format": "hh:mm",

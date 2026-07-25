@@ -8,6 +8,8 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Sql)
 find_package(PkgConfig REQUIRED)
 
+include(CTest)
+
 pkg_check_modules(PIPEWIRE REQUIRED libpipewire-0.3)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
 
@@ -30,6 +32,8 @@ qt_add_qml_module(qsutils
         src/common/persistent.hpp src/common/persistent.cpp
         src/db/keyvaluestore.hpp src/db/keyvaluestore.cpp
         src/db/sqlite.hpp src/db/sqlite.cpp
+        src/reminder/reminder.hpp src/reminder/reminder.cpp
+        src/reminder/reminderstore.hpp src/reminder/reminderstore.cpp
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/QsUtils"
 )
 
@@ -46,6 +50,7 @@ target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/recorder
     ${CMAKE_CURRENT_SOURCE_DIR}/src/common
     ${CMAKE_CURRENT_SOURCE_DIR}/src/db
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/reminder
 )
 
 # Mark external C library headers as SYSTEM to suppress their warnings
@@ -73,3 +78,26 @@ target_link_libraries(qsutils PRIVATE
     ${PIPEWIRE_LIBRARIES}
     ${FFTW3_LIBRARIES}
 )
+
+if(BUILD_TESTING)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+
+    qt_add_executable(tasks_test
+        tests/tasks_test.cpp
+        src/tasks/tasks.hpp src/tasks/tasks.cpp
+    )
+
+    target_include_directories(tasks_test PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/tasks
+    )
+
+    target_compile_options(tasks_test PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
+
+    target_link_libraries(tasks_test PRIVATE
+        Qt6::Core
+        Qt6::Qml
+        Qt6::Test
+    )
+
+    add_test(NAME tasks_test COMMAND tasks_test)
+endif()
