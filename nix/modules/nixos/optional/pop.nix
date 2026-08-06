@@ -1,5 +1,10 @@
 { pkgs, ... }:
 let
+  fontsConf = pkgs.makeFontsConf {
+    fontDirectories = [ "/run/current-system/sw/share/X11/fonts" ];
+    includes = [ ];
+  };
+
   pop = pkgs.stdenv.mkDerivation rec {
     pname = "pop";
     version = "8.0.21";
@@ -109,6 +114,7 @@ let
           "''${gappsWrapperArgs[@]}" \
           --unset WAYLAND_DISPLAY \
           --set DISPLAY ":0" \
+          --set FONTCONFIG_FILE "${fontsConf}" \
           --add-flags "--ozone-platform=x11" \
           --prefix XDG_DATA_DIRS : "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}/" \
           --prefix LD_LIBRARY_PATH : $libPath:$out/opt/pop

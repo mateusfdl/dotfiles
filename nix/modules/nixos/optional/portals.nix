@@ -17,6 +17,16 @@
     };
   };
 
+  systemd.user.services.xdg-desktop-portal-hyprland-rebind = {
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl --user try-restart xdg-desktop-portal-hyprland.service";
+    };
+  };
+
   xdg.mime.defaultApplications = {
     "video/mp4" = "vlc.desktop";
     "video/mkv" = "vlc.desktop";
