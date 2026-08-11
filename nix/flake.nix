@@ -17,11 +17,6 @@
 
     handy.url = "github:cjpais/Handy/15fbc47f5a8d1127826a9d3a930336d059f6bf0f";
 
-    hunk = {
-      url = "github:modem-dev/hunk";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     kata = {
       url = "github:mateusfdl/kata";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1,88 +1,5 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 let
-  flowZig = pkgs.zig_0_15;
-
-  flow = pkgs.stdenv.mkDerivation (finalAttrs: {
-    pname = "flow";
-    version = "0.7.2";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "neurocyte";
-      repo = "flow";
-      rev = "v${finalAttrs.version}";
-      hash = "sha256-5+F0DKb4LXtcMXNutUSJuIe7cdBoFUoJhCs8vbm20jg=";
-    };
-
-    zigDeps =
-      pkgs.runCommand "flow-${finalAttrs.version}-zig-deps"
-        {
-          inherit (finalAttrs) src;
-          nativeBuildInputs = [
-            flowZig
-            pkgs.cacert
-          ];
-          outputHashAlgo = null;
-          outputHashMode = "recursive";
-          outputHash = "sha256-HX7NGdOmYEqlncDlxU7zGSfLawtM+SNKMFvHjTkCE+Y=";
-          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-        }
-        ''
-          export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)
-          runHook unpackPhase
-          cd "$sourceRoot"
-          zig build --fetch
-          mv "$ZIG_GLOBAL_CACHE_DIR/p" "$out"
-        '';
-
-    nativeBuildInputs = [ flowZig.hook ];
-
-    dontSetZigDefaultFlags = true;
-
-    postConfigure = ''
-      cp -r --no-preserve=mode ${finalAttrs.zigDeps} "$ZIG_GLOBAL_CACHE_DIR/p"
-    '';
-
-    zigBuildFlags = [ "-Doptimize=ReleaseSafe" ];
-
-    meta = {
-      description = "Programmer's text editor with multi-cursor, LSP, and syntax highlighting";
-      homepage = "https://github.com/neurocyte/flow";
-      license = pkgs.lib.licenses.mit;
-      mainProgram = "flow";
-      platforms = pkgs.lib.platforms.unix;
-    };
-  });
-
-  revdiff = pkgs.buildGoModule rec {
-    pname = "revdiff";
-    version = "unstable-2026-05-24";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "umputun";
-      repo = "revdiff";
-      rev = "a80e92d998448c50e18a67bebda05f41939fd561";
-      hash = "sha256-M9dYe7VuUGa+6qYIMXXgQfCyUr/ZahBcxDU1tQogY9Y=";
-    };
-
-    vendorHash = null;
-
-    subPackages = [ "app" ];
-
-    doCheck = false;
-
-    postInstall = ''
-      mv $out/bin/app $out/bin/revdiff
-    '';
-
-    meta = {
-      description = "TUI for reviewing diffs, files, and documents with inline annotations";
-      homepage = "https://github.com/umputun/revdiff";
-      license = pkgs.lib.licenses.mit;
-      mainProgram = "revdiff";
-      platforms = pkgs.lib.platforms.unix;
-    };
-  };
-
   cmakelint = pkgs.python3Packages.buildPythonApplication rec {
     pname = "cmakelint";
     version = "1.4.3";
@@ -102,35 +19,6 @@ let
       homepage = "https://github.com/cmake-lint/cmake-lint";
       license = pkgs.lib.licenses.asl20;
       mainProgram = "cmakelint";
-    };
-  };
-
-  lumen = pkgs.rustPlatform.buildRustPackage rec {
-    pname = "lumen";
-    version = "2.30.0";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "jnsahaj";
-      repo = "lumen";
-      rev = "v${version}";
-      hash = "sha256-EoxMYlWHmuprjjhvj3GyCxGDIcT/d+JMda9j75pqs+k=";
-    };
-
-    cargoHash = "sha256-qTFRfy+Wutee5SbaMaqcYjXgr6xZKYYBIuyVA7jAGiY=";
-
-    nativeBuildInputs = [ pkgs.pkg-config ];
-    buildInputs = [ pkgs.openssl ];
-
-    OPENSSL_NO_VENDOR = 1;
-
-    doCheck = false;
-
-    meta = {
-      description = "AI-powered CLI tool for git commit summaries";
-      homepage = "https://github.com/jnsahaj/lumen";
-      license = pkgs.lib.licenses.mit;
-      mainProgram = "lumen";
-      platforms = pkgs.lib.platforms.unix;
     };
   };
 
@@ -183,9 +71,6 @@ in
     pythonEnv
     rubyEnv
 
-    flow
-    lumen
-    revdiff
     cmakelint
   ];
 }
