@@ -6,8 +6,13 @@
       theme = "selected";
 
       fonts = {
+        size = 32;
+        hinting = false;
         family = "IosevkaSS04 Nerd Font Mono";
-        size = 24;
+        regular = {
+          weight = 500;
+          style = "Medium";
+        };
       };
     };
   };
