@@ -13,6 +13,7 @@
     ./luarocks.nix
     ./pnpm.nix
     ./vikunja-cli.nix
+    ./rio.nix
   ];
 
   home.stateVersion = "25.11";

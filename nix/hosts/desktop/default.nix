@@ -27,6 +27,7 @@
     ../../modules/nixos/optional/soundcloud.nix
     ../../modules/nixos/optional/dev.nix
     ../../modules/nixos/optional/zephyr.nix
+    ../../modules/nixos/games/dofus.nix
     ../../pkgs/desktop.nix
   ];
 
