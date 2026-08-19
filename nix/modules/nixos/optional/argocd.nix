@@ -50,9 +50,9 @@ let
         "vaultwarden"
         "redis"
         "postgres"
-        "searxng"
         "wakapi"
         "vikunja"
+        "penpot"
       ];
 
   certManagerApp = pkgs.writeText "argocd-cert-manager-app.yaml" ''
