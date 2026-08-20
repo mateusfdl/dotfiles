@@ -13,12 +13,6 @@ Then it uses `jq` to replace template placeholders and applies the rendered resu
 - Kitty: writes `~/.config/kitty/theme.conf`
 - Alacritty: writes `~/.config/alacritty/themes/.selected_theme.toml`
 - Ghostty: writes `~/.config/ghostty/themes/<theme>`, then points `~/.config/ghostty/switch-theme` at it (`theme=<theme>`) and reloads the config
-- Rio: writes `~/.config/rio/themes/selected.toml`, then writes the theme name to `~/.config/rio/.theme-reload`
-
-Rio notes: `~/.config/rio/config.toml` comes from Home Manager (`nix/home/matheus/rio.nix`) and
-holds `theme = "selected"`, so the rendered file always keeps the same name. Rio watches
-`~/.config/rio` without recursion, so a write inside `themes/` alone does not reload the config.
-The `.theme-reload` write happens in the watched directory and makes Rio read the theme file again.
 
 Ghostty notes: the rendered file is a Ghostty theme (one `palette = N=#hex` line per
 ANSI slot plus `background`/`foreground`/`cursor-color`/`selection-*`). Ghostty resolves

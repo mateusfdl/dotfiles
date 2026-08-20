@@ -11,8 +11,6 @@ ALACRITTY_THEME_FILE="$HOME/.config/alacritty/themes/.selected_theme.toml"
 KITTY_THEME_FILE="$HOME/.config/kitty/theme.conf"
 PI_THEME_FILE="$HOME/.pi/agent/themes/pi.json"
 GHOSTTY_THEMES_DIR="$HOME/.config/ghostty/themes"
-RIO_THEME_FILE="$HOME/.config/rio/themes/selected.toml"
-RIO_RELOAD_FILE="$HOME/.config/rio/.theme-reload"
 
 GHOSTTY_FILE_TOGGLER="$HOME/.config/ghostty/switch-theme"
 TMP_MODE_FILE="$HOME/.cache/theme-mode"
@@ -341,7 +339,6 @@ apply_terminal_templates() {
     render_template "$TEMPLATE_DIR/kitty.template" "$theme_file" "$KITTY_THEME_FILE"
     render_template "$TEMPLATE_DIR/pi.template" "$theme_file" "$PI_THEME_FILE"
     render_template "$TEMPLATE_DIR/ghostty.template" "$theme_file" "$GHOSTTY_THEMES_DIR/$theme"
-    render_template "$TEMPLATE_DIR/rio.template" "$theme_file" "$RIO_THEME_FILE"
 }
 
 reload_terminal_apps() {
@@ -354,10 +351,6 @@ reload_terminal_apps() {
         if command -v osascript >/dev/null 2>&1; then
             osascript -e 'tell application "System Events" to tell process "Ghostty" to click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1'
         fi
-    fi
-
-    if [ -f "$RIO_THEME_FILE" ]; then
-        printf '%s\n' "$SELECTED_THEME" > "$RIO_RELOAD_FILE"
     fi
 
     if command -v pgrep >/dev/null 2>&1; then
