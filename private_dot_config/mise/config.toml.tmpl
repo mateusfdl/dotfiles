@@ -1,30 +1,29 @@
 [env]
 MISE_GO_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/go"
 MISE_LUA_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/lua"
-MISE_RUBY_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/ruby"
 MISE_NODE_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/node"
 MISE_RUST_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/rust"
+{{- if eq .chezmoi.os "darwin" }}
+MISE_RUBY_DEFAULT_PACKAGES_FILE = "~/.config/mise/default-packages/ruby"
+{{- end }}
 
 [tools]
 go = "latest"
 node = "24.14.1"
 rust = "stable"
 lua = "latest"
-zig = "latest"
 k6 = "latest"
+chezmoi = "latest"
+pnpm = "latest"
+zig = "latest"
 bun = "latest"
-"aqua:go-task/task" = "latest"
-"cargo:zola" = { version = "ref:master", git = "https://github.com/getzola/zola" }
+{{- if eq .chezmoi.os "linux" }}
+opam = { version = "latest", asset_pattern = "opam-*-{gnu_arch}-{os}" }
+{{- end }}
 
-
-{{ if eq .chezmoi.os "linux" }}
-cmake = "latest"
-clang-format = "latest"
-java = "21"
-{{ end }}
-
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 swift = "latest"
+"aqua:go-task/task" = "latest"
 swiftformat = "latest"
 swiftgen = "latest"
 swiftlint = "latest"
@@ -32,13 +31,11 @@ tuist = "4.24.0"
 fzf = "latest"
 ruby = "latest"
 opam = "latest"
-chezmoi = "latest"
-pnpm = "latest"
 lazygit = "latest"
 stylua = "latest"
 "aqua:neovim/neovim" = "latest"
 flutter = "latest"
-{{ end }}
+{{- end }}
 
 [settings]
 go_set_gobin = true
