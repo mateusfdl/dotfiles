@@ -1,0 +1,122 @@
+#!/bin/sh
+
+unalias z 2> /dev/null
+
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+
+japad() {
+    if [ $# -lt 1 ]; then
+        echo "Usage: japad <directory_path>"
+        return 1
+    fi
+
+    directory_path="$1"
+    file_paths=$(find "$directory_path" -type f -name "*.spec.ts" -exec printf "%s," {} \;)
+
+    echo "$directory_path"
+
+    if [ -z "$file_paths" ]; then
+        echo "No .spec.ts files found in the specified directory."
+        return 1
+    fi
+
+    node --prof -r ts-node/register japa/test.ts --files="${file_paths%,}"
+}
+
+resize(){
+  tmux resize-pane -y $1 -t $2
+}
+
+
+grl() {
+  git log --graph --color=always \
+    --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index \
+    --prompt="git log > " \
+    --bind=ctrl-s:toggle-sort \
+    --preview='echo {} | grep -o "[a-f0-9]\{7\}" | head -1 | xargs -I % git show --color=always %' \
+    --preview-window=right:50% \
+    --tmux 80% |
+  grep -o '[a-f0-9]\{7\}' | head -1 | xargs git rev-parse
+}
+
+gdf() {
+  git diff --name-status "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index \
+    --prompt="git diff > " \
+    --bind=ctrl-s:toggle-sort \
+    --preview='echo {} | awk "{print \$2}" | xargs git diff --color=always "$@" --' \
+    --preview-window=right:50% \
+    --tmux 80% |
+  awk '{print $2}' | xargs -r nvim
+}
+
+on() {
+  nvim -c ":ObsidianNew $*" -c "ObsidianTemplate notes"
+}
+
+detect_os() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if [ -n "$(command -v wsl.exe)" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+            echo "wsl"
+        else
+            echo "linux"
+        fi
+    else
+        echo "unknown"
+    fi
+}
+
+is_arch() {
+  if [ "$(detect_os)" = "linux" ]; then
+    if [ -f /etc/arch-release ]; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+zlaude() {
+  export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
+  export ANTHROPIC_AUTH_TOKEN=$(echo $Z_AI_API_KEY)
+  claude "$@"
+}
+
+
+pclaude() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-personal/" claude "$@"
+}
+
+rsclaude() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-runsmith/" claude "$@"
+}
+
+{{- if eq .chezmoi.os "linux" }}
+open() {
+  if is_arch; then
+    if command -v nautilus >/dev/null 2>&1; then
+      nautilus "$@" &
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
+}
+{{- end }}
+
+scripts() {
+  echo "z - jump to a directory"
+  echo "japad - run japa tests for a directory"
+  echo "resize - resize a tmux pane"
+  echo "grl - git log with fzf"
+  echo "gdf - git diff files with fzf"
+  echo "on - create a new obsidian note"
+  echo "open - alias for nautilus in NixOS"
+  echo "zlaude - claude with Z"
+}

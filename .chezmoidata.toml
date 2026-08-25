@@ -10,7 +10,7 @@ family = "IosevkaSS04 Nerd Font Mono"
 path = ""
 
 [pi]
-path = "~/.pi/"
+path = "~/.pi/agent/"
 
 [git]
 name = "Matheus Lima"
