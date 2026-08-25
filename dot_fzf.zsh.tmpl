@@ -34,7 +34,7 @@ tmfz-widget() {
     --prompt="tmux sessions > " \
     --ansi \
     --reverse \
-    --bind "enter:execute(tmux switch-client -t {+} >/dev/null 2>&1)" \
+    --bind "enter:execute(tmux switch-client -t {+} >/dev/null 2>&1)+abort" \
     --bind "d:execute(tmux kill-session -t {+} >/dev/null 2>&1)+reload(tmux list-sessions -F \"#{session_name}\")" \
     --bind "r:execute(bash -c '
         read -rep \"New name: \" newn < /dev/tty &&

@@ -6,8 +6,13 @@ compinit
 
 ZSH_THEME="ohmymatheus"
 
-eval "$($HOME/.local/bin/mise activate zsh)"
-eval $(opam env --switch=default)
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
+if [[ -z "$__MISE_DIFF" ]]; then
+  eval "$(mise activate zsh)"
+fi
 
 source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 export ZSH=$HOME"/.oh-my-zsh"
@@ -34,32 +39,33 @@ export PI_CODING_AGENT_DIR={{ .pi.path }}
 {{- if eq .chezmoi.os "linux" }}
 [ -f "$HOME/.wsl" ] && . "$HOME/.wsl"
 [ -f "$HOME/.wslpaths" ] && . "$HOME/.wslpaths"
+[[ ! -r '/home/matheus/.opam/opam-init/init.zsh' ]] || source '/home/matheus/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 {{- end }}
 
-export PATH="/bin:/usr/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-export PATH="/usr/local/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.bin:$PATH"
-export PATH="$HOME/scripts:$PATH"
-export PATH="$HOME/.luarocks/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.emacs.d/bin:$PATH"
+path_prepend "$HOME/.local/bin"
+path_prepend "$HOME/.bin"
+path_prepend "/usr/local/bin"
+path_prepend "/usr/bin"
+path_prepend "/bin"
+path_prepend "$HOME/.emacs.d/bin"
+path_prepend "$HOME/.cargo/bin"
+path_prepend "$HOME/.luarocks/bin"
+path_prepend "$HOME/scripts"
 
 {{- if eq .chezmoi.os "linux" }}
-export VCPKG_ROOT=$HOME/.local/share/vcpkg/
-export PATH=$VCPKG_ROOT:$PATH
 export QML2_IMPORT_PATH="$HOME/.config/quickshell/plugin/build/qml:${QML2_IMPORT_PATH:-}"
+export FLYCTL_INSTALL="/home/matheus/.fly"
+export PNPM_HOME="/home/matheus/.local/share/pnpm"
+path_prepend "$PNPM_HOME"
 {{- end }}
 
 {{- if eq .chezmoi.os "darwin" }}
-export PATH="/opt/homebrew/bin:$PATH"
+path_prepend "/opt/homebrew/bin:$PATH"
 export TERM="xterm-256color"
 {{- end }}
 
-if [[ -z "${TMUX}" && -z "$ZSH_NO_TMUX"  ]] then;
-  tmux attach || exec tmux new-session -s Personal; 
+if [[ -z "${TMUX}" ]] then;
+  tmux attach || exec tmux new-session -s Personal;
 fi
-
 
 bindkey '^Z' autosuggest-accept
