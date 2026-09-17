@@ -112,7 +112,6 @@ let
 
       wrapProgramShell $out/opt/pop/Pop \
           "''${gappsWrapperArgs[@]}" \
-          --unset WAYLAND_DISPLAY \
           --set DISPLAY ":0" \
           --set FONTCONFIG_FILE "${fontsConf}" \
           --add-flags "--ozone-platform=x11" \
