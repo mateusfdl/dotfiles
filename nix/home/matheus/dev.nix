@@ -30,13 +30,7 @@ let
     ]
   );
 
-  rubyEnv = pkgs.ruby.withPackages (
-    ps: with ps; [
-      rspec
-      rubocop
-      solargraph
-    ]
-  );
+  rubyEnv = pkgs.ruby.withPackages (_: builtins.attrValues (pkgs.ruby.buildGems ./ruby/gemset.nix));
 in
 {
   home.sessionPath = [
