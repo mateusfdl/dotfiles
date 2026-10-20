@@ -15,8 +15,6 @@
 
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
 
-    handy.url = "github:cjpais/Handy/15fbc47f5a8d1127826a9d3a930336d059f6bf0f";
-
     kata = {
       url = "github:mateusfdl/kata";
       inputs.nixpkgs.follows = "nixpkgs";

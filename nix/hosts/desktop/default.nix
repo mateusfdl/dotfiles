@@ -12,7 +12,6 @@
     ../../modules/nixos/optional/firewall.nix
     ../../modules/nixos/optional/fonts.nix
     ../../modules/nixos/optional/greetd.nix
-    ../../modules/nixos/optional/handy.nix
     ../../modules/nixos/optional/hyprland.nix
     ../../modules/nixos/optional/nautilus.nix
     ../../modules/nixos/optional/nvidia.nix
