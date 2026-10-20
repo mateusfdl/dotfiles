@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  obs-shaderfilter = pkgs.obs-studio-plugins.obs-shaderfilter.overrideAttrs {
+  obs-shaderfilter = pkgs.obs-studio-plugins.obs-shaderfilter.overrideAttrs (prev: {
     version = "2.6.0-unstable-2026-05-21";
     src = pkgs.fetchFromGitHub {
       owner = "exeldro";
@@ -8,7 +8,11 @@ let
       rev = "851c61eb4e293704360068d7bb8c93a251bb5718";
       hash = "sha256-owQ8bQriyLrq4ekNUy7TPS3jnOzCXBNex5M5EHk2K6M=";
     };
-  };
+    env = (prev.env or { }) // {
+      NIX_CFLAGS_COMPILE =
+        ((prev.env or { }).NIX_CFLAGS_COMPILE or "") + " -Wno-error=discarded-qualifiers";
+    };
+  });
 in
 {
   environment.systemPackages = [
