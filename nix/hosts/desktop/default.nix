@@ -17,6 +17,7 @@
     ../../modules/nixos/optional/nvidia.nix
     ../../modules/nixos/optional/nix-ld.nix
     ../../modules/nixos/optional/obs.nix
+    ../../modules/nixos/optional/paseo.nix
     ../../modules/nixos/optional/pop.nix
     ../../modules/nixos/optional/portals.nix
     ../../modules/nixos/optional/sshfs.nix
