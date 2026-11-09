@@ -13,6 +13,8 @@ include(CTest)
 pkg_check_modules(PIPEWIRE REQUIRED libpipewire-0.3)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
 
+qt_policy(SET QTP0001 NEW)
+
 qt_add_qml_module(qsutils
     URI QsUtils
     VERSION 1.0
@@ -20,12 +22,17 @@ qt_add_qml_module(qsutils
         src/utils/colors.hpp src/utils/colors.cpp
         src/utils/files.hpp src/utils/files.cpp
         src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp
+        src/utils/watchpoints.hpp src/utils/watchpoints.cpp
+        src/utils/pathwatcher.hpp src/utils/pathwatcher.cpp
         src/utils/jsonvalidator.hpp src/utils/jsonvalidator.cpp
         src/config/appearance.hpp src/config/appearance.cpp
         src/tasks/tasks.hpp src/tasks/tasks.cpp
         src/audio/audiospectrum.hpp src/audio/audiospectrum.cpp
         src/hyprland/hyprlandworkspace.hpp src/hyprland/hyprlandworkspace.cpp
+        src/common/uniquefd.hpp
         src/launcher/appsearch.hpp src/launcher/appsearch.cpp
+        src/launcher/desktopentry.hpp src/launcher/desktopentry.cpp
+        src/launcher/desktopfiles.hpp src/launcher/desktopfiles.cpp
         src/system/systeminfo.hpp src/system/systeminfo.cpp
         src/recorder/screenrecorder.hpp src/recorder/screenrecorder.cpp
         src/common/directories.hpp src/common/directories.cpp
@@ -38,6 +45,7 @@ qt_add_qml_module(qsutils
 )
 
 target_compile_options(qsutils PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
+target_link_options(qsutils PRIVATE -Wl,--no-undefined)
 
 target_include_directories(qsutils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
@@ -79,25 +87,106 @@ target_link_libraries(qsutils PRIVATE
     ${FFTW3_LIBRARIES}
 )
 
+option(QS_SANITIZE "Build plugin tests with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+
+function(qs_add_test_executable name)
+    cmake_parse_arguments(ARG "" "" "SOURCES;INCLUDES;LIBS" ${ARGN})
+    qt_add_executable(${name} ${ARG_SOURCES})
+    target_include_directories(${name} PRIVATE ${ARG_INCLUDES})
+    target_compile_options(${name} PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
+    target_link_libraries(${name} PRIVATE Qt6::Core Qt6::Test ${ARG_LIBS})
+    if(QS_SANITIZE)
+        target_compile_options(${name} PRIVATE
+            -fsanitize=address,undefined
+            -fno-sanitize-recover=undefined
+            -fno-omit-frame-pointer
+        )
+        target_link_options(${name} PRIVATE -fsanitize=address,undefined)
+    endif()
+endfunction()
+
+function(qs_add_test name)
+    qs_add_test_executable(${name} ${ARGN})
+    add_test(NAME ${name} COMMAND ${name})
+    if(QS_SANITIZE)
+        set_tests_properties(${name} PROPERTIES ENVIRONMENT
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1;UBSAN_OPTIONS=print_stacktrace=1"
+        )
+    endif()
+endfunction()
+
 if(BUILD_TESTING)
     find_package(Qt6 REQUIRED COMPONENTS Test)
 
-    qt_add_executable(tasks_test
-        tests/tasks_test.cpp
-        src/tasks/tasks.hpp src/tasks/tasks.cpp
+    qs_add_test(tasks_test
+        SOURCES tests/tasks_test.cpp src/tasks/tasks.hpp src/tasks/tasks.cpp
+        INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/tasks
+        LIBS Qt6::Qml
     )
 
-    target_include_directories(tasks_test PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/tasks
+    qs_add_test(uniquefd_test
+        SOURCES tests/uniquefd_test.cpp src/common/uniquefd.hpp
+        INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/common
     )
 
-    target_compile_options(tasks_test PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
-
-    target_link_libraries(tasks_test PRIVATE
-        Qt6::Core
-        Qt6::Qml
-        Qt6::Test
+    qs_add_test(desktopentry_test
+        SOURCES tests/desktopentry_test.cpp
+            src/launcher/desktopentry.hpp src/launcher/desktopentry.cpp
+        INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
     )
 
-    add_test(NAME tasks_test COMMAND tasks_test)
+    qs_add_test(desktopfiles_test
+        SOURCES tests/desktopfiles_test.cpp
+            src/launcher/desktopfiles.hpp src/launcher/desktopfiles.cpp
+            src/common/uniquefd.hpp
+        INCLUDES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+    )
+
+    qs_add_test(watchpoints_test
+        SOURCES tests/watchpoints_test.cpp
+            src/utils/watchpoints.hpp src/utils/watchpoints.cpp
+        INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+    )
+
+    qs_add_test(pathwatcher_test
+        SOURCES tests/pathwatcher_test.cpp
+            src/utils/pathwatcher.hpp src/utils/pathwatcher.cpp
+            src/utils/watchpoints.hpp src/utils/watchpoints.cpp
+            src/common/uniquefd.hpp
+        INCLUDES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+    )
+
+    qs_add_test(appsearch_test
+        SOURCES tests/appsearch_test.cpp
+            src/launcher/appsearch.hpp src/launcher/appsearch.cpp
+            src/launcher/desktopentry.hpp src/launcher/desktopentry.cpp
+            src/launcher/desktopfiles.hpp src/launcher/desktopfiles.cpp
+            src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp
+            src/utils/pathwatcher.hpp src/utils/pathwatcher.cpp
+            src/utils/watchpoints.hpp src/utils/watchpoints.cpp
+        INCLUDES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+        LIBS Qt6::Gui Qt6::Qml
+    )
+
+    qs_add_test_executable(launcher_bench
+        SOURCES tests/launcher_bench.cpp
+            src/launcher/appsearch.hpp src/launcher/appsearch.cpp
+            src/launcher/desktopentry.hpp src/launcher/desktopentry.cpp
+            src/launcher/desktopfiles.hpp src/launcher/desktopfiles.cpp
+            src/utils/fuzzysort.hpp src/utils/fuzzysort.cpp
+            src/utils/pathwatcher.hpp src/utils/pathwatcher.cpp
+            src/utils/watchpoints.hpp src/utils/watchpoints.cpp
+        INCLUDES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/launcher
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+        LIBS Qt6::Gui Qt6::Qml
+    )
 endif()

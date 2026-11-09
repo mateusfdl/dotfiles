@@ -1,28 +1,51 @@
 #include "appsearch.hpp"
+#include "desktopentry.hpp"
+#include "desktopfiles.hpp"
 #include "fuzzysort.hpp"
 
 #include <QDir>
-#include <QDirIterator>
+#include <QFile>
 #include <QFileInfo>
 #include <QIcon>
 #include <QProcess>
 #include <QSet>
-#include <QSettings>
 #include <QStandardPaths>
 
 #include <algorithm>
-#include <set>
+#include <chrono>
+#include <span>
+#include <string_view>
+#include <utility>
 
-AppSearch::AppSearch(QObject *parent) : QObject(parent) {
-  m_refreshDebounce.setSingleShot(true);
-  m_refreshDebounce.setInterval(500);
-  connect(&m_refreshDebounce, &QTimer::timeout, this,
-          &AppSearch::refresh);
+namespace {
 
-  connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this,
-          [this]() { m_refreshDebounce.start(); });
+constexpr std::string_view NIX_STORE = "/nix/store";
+constexpr std::string_view DESKTOP_SUFFIX = ".desktop";
+constexpr PathWatcher::Timing WATCH_TIMING{
+    .quiet = std::chrono::milliseconds(100),
+    .maxWait = std::chrono::milliseconds(1000),
+};
 
-  scanApplications();
+std::vector<WatchPoint> resolveOutsideNixStore(
+    std::span<const std::string> paths) {
+  return resolveWatchPoints(paths, NIX_STORE);
+}
+
+} // namespace
+
+AppSearch::AppSearch(QObject *parent)
+    : AppSearch(xdgApplicationDirs(), resolveOutsideNixStore, WATCH_TIMING,
+                readDesktopFile, parent) {}
+
+AppSearch::AppSearch(std::vector<std::string> applicationDirs,
+                     PathWatcher::Resolver resolver, PathWatcher::Timing timing,
+                     Reader reader, QObject *parent)
+    : QObject(parent), m_applicationDirs(std::move(applicationDirs)),
+      m_currentDesktops(QString::fromUtf8(qgetenv("XDG_CURRENT_DESKTOP"))
+                            .split(QLatin1Char(':'), Qt::SkipEmptyParts)),
+      m_reader(std::move(reader)), m_watcher(std::move(resolver), timing) {
+  connect(&m_watcher, &PathWatcher::changed, this, &AppSearch::rewatchAndScan);
+  rewatchAndScan();
 }
 
 QVariantList AppSearch::applications() const {
@@ -63,13 +86,14 @@ QVariantList AppSearch::quickshellApps() const {
   return apps;
 }
 
-QStringList AppSearch::xdgDataDirs() {
-  QStringList dirs;
+std::vector<std::string> AppSearch::xdgApplicationDirs() {
+  std::vector<std::string> dirs;
 
   const QString localShare =
       QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
   if (!localShare.isEmpty()) {
-    dirs << localShare + QStringLiteral("/applications");
+    dirs.push_back(QFile::encodeName(localShare).toStdString() +
+                   "/applications");
   }
 
   QByteArray xdgDirs = qgetenv("XDG_DATA_DIRS");
@@ -77,104 +101,39 @@ QStringList AppSearch::xdgDataDirs() {
     xdgDirs = "/usr/local/share:/usr/share";
   }
 
-  const auto parts =
-      QString::fromUtf8(xdgDirs).split(QLatin1Char(':'), Qt::SkipEmptyParts);
-  for (const auto &dir : parts) {
-    dirs << dir + QStringLiteral("/applications");
+  for (const auto &dir : xdgDirs.split(':')) {
+    if (!dir.isEmpty()) {
+      dirs.push_back(dir.toStdString() + "/applications");
+    }
   }
 
-  const QString flatpakExports =
-      QDir::homePath() +
-      QStringLiteral("/.local/share/flatpak/exports/share/applications");
-  if (QDir(flatpakExports).exists()) {
-    dirs << flatpakExports;
-  }
-
-  const QString systemFlatpak =
-      QStringLiteral("/var/lib/flatpak/exports/share/applications");
-  if (QDir(systemFlatpak).exists()) {
-    dirs << systemFlatpak;
-  }
-
-  const QString snapApps =
-      QStringLiteral("/var/lib/snapd/desktop/applications");
-  if (QDir(snapApps).exists()) {
-    dirs << snapApps;
+  const std::string optionalDirs[] = {
+      QFile::encodeName(QDir::homePath()).toStdString() +
+          "/.local/share/flatpak/exports/share/applications",
+      "/var/lib/flatpak/exports/share/applications",
+      "/var/lib/snapd/desktop/applications",
+  };
+  for (const auto &dir : optionalDirs) {
+    if (QDir(QFile::decodeName(QByteArray::fromStdString(dir))).exists()) {
+      dirs.push_back(dir);
+    }
   }
 
   return dirs;
 }
 
-std::optional<AppSearch::DesktopApp>
-AppSearch::parseDesktopFile(const QString &filePath) {
-  QSettings ini(filePath, QSettings::IniFormat);
-  ini.beginGroup(QStringLiteral("Desktop Entry"));
-
-  const QString type = ini.value(QStringLiteral("Type"), QString()).toString();
-  if (type != QStringLiteral("Application")) {
-    return std::nullopt;
-  }
-
-  if (ini.value(QStringLiteral("Hidden"), false).toBool()) {
-    return std::nullopt;
-  }
-  if (ini.value(QStringLiteral("NoDisplay"), false).toBool()) {
-    return std::nullopt;
-  }
-
-  const QString name = ini.value(QStringLiteral("Name"), QString()).toString();
-  const QString exec = ini.value(QStringLiteral("Exec"), QString()).toString();
-
-  if (name.isEmpty() || exec.isEmpty()) {
-    return std::nullopt;
-  }
-
-  const QString currentDesktop =
-      QString::fromUtf8(qgetenv("XDG_CURRENT_DESKTOP"));
-  const QStringList currentDesktops =
-      currentDesktop.split(QLatin1Char(':'), Qt::SkipEmptyParts);
-
-  const QString onlyShowIn =
-      ini.value(QStringLiteral("OnlyShowIn"), QString()).toString();
-  if (!onlyShowIn.isEmpty()) {
-    const auto allowed = onlyShowIn.split(QLatin1Char(';'), Qt::SkipEmptyParts);
-    bool found = false;
-    for (const auto &de : currentDesktops) {
-      if (allowed.contains(de, Qt::CaseInsensitive)) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      return std::nullopt;
-    }
-  }
-
-  const QString notShowIn =
-      ini.value(QStringLiteral("NotShowIn"), QString()).toString();
-  if (!notShowIn.isEmpty()) {
-    const auto denied = notShowIn.split(QLatin1Char(';'), Qt::SkipEmptyParts);
-    for (const auto &de : currentDesktops) {
-      if (denied.contains(de, Qt::CaseInsensitive)) {
-        return std::nullopt;
-      }
-    }
-  }
-
-  DesktopApp app;
-  app.id = QFileInfo(filePath).completeBaseName();
-  app.name = name;
-  app.icon = ini.value(QStringLiteral("Icon"), QString()).toString();
-  app.comment = ini.value(QStringLiteral("Comment"), QString()).toString();
-  app.exec = exec;
-  app.path = ini.value(QStringLiteral("Path"), QString()).toString();
-  app.terminal = ini.value(QStringLiteral("Terminal"), false).toBool();
-  app.category = bucketForCategories(
-      ini.value(QStringLiteral("Categories"), QString())
-          .toString()
-          .split(QLatin1Char(';'), Qt::SkipEmptyParts));
-
-  return app;
+AppSearch::DesktopApp AppSearch::toDesktopApp(const QString &id,
+                                              const DesktopEntry &entry) {
+  return DesktopApp{
+      .id = id,
+      .name = entry.name,
+      .icon = entry.icon,
+      .comment = entry.comment,
+      .exec = entry.exec,
+      .path = entry.path,
+      .category = bucketForCategories(entry.categories),
+      .terminal = entry.terminal,
+  };
 }
 
 QString AppSearch::bucketForCategories(const QStringList &cats) {
@@ -339,73 +298,81 @@ QString AppSearch::guessIcon(const QString &str) const {
 }
 
 void AppSearch::scanApplications() {
-  m_apps.clear();
-  m_applicationsCache.clear();
-
-  const auto watched = m_watcher.directories();
-  if (!watched.isEmpty()) {
-    m_watcher.removePaths(watched);
+  auto apps = loadApplications(listDesktopFiles(m_applicationDirs));
+  std::ranges::stable_sort(apps, [](const DesktopApp &a, const DesktopApp &b) {
+    return QString::localeAwareCompare(a.name, b.name) < 0;
+  });
+  if (apps != m_apps) {
+    publish(std::move(apps));
   }
+}
 
-  std::set<QString> seenIds;
-  const auto dirs = xdgDataDirs();
-
-  for (const auto &dirPath : dirs) {
-    QDir dir(dirPath);
-    if (!dir.exists()) {
+std::vector<AppSearch::DesktopApp>
+AppSearch::loadApplications(const std::vector<DesktopFile> &files) {
+  std::vector<CachedEntry> nextCache;
+  nextCache.reserve(files.size());
+  std::vector<DesktopApp> apps;
+  apps.reserve(files.size());
+  for (const auto &file : files) {
+    const auto cached =
+        std::ranges::lower_bound(m_entryCache, file.key, {}, &CachedEntry::key);
+    const bool hit = cached != m_entryCache.end() && cached->key == file.key;
+    try {
+      nextCache.push_back({.key = file.key,
+                           .entry = hit ? cached->entry
+                                        : DesktopEntry::parse(m_reader(file.path))});
+    } catch (const DesktopFileReadError &error) {
+      qWarning() << "[AppSearch]" << error.what();
       continue;
     }
-
-    m_watcher.addPath(dirPath);
-
-    QDirIterator it(dirPath, {QStringLiteral("*.desktop")}, QDir::Files,
-                    QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-      const QString filePath = it.next();
-      auto maybeApp = parseDesktopFile(filePath);
-      if (!maybeApp.has_value()) {
-        continue;
-      }
-
-      auto &app = maybeApp.value();
-
-      if (seenIds.contains(app.id)) {
-        continue;
-      }
-      seenIds.insert(app.id);
-
-      m_apps.push_back(PreparedApp{
-          .app = std::move(app),
-          .prepared = {},
-      });
+    if (nextCache.back().entry.isShownIn(m_currentDesktops)) {
+      apps.push_back(toDesktopApp(file.id, nextCache.back().entry));
     }
   }
 
-  std::sort(m_apps.begin(), m_apps.end(),
-            [](const PreparedApp &a, const PreparedApp &b) {
-              return QString::localeAwareCompare(a.app.name, b.app.name) < 0;
-            });
+  std::ranges::sort(nextCache, {}, &CachedEntry::key);
+  const auto duplicates = std::ranges::unique(nextCache, {}, &CachedEntry::key);
+  nextCache.erase(duplicates.begin(), duplicates.end());
+  m_entryCache = std::move(nextCache);
+  return apps;
+}
 
-  for (auto &pa : m_apps) {
-    pa.prepared = FuzzySort::prepare(pa.app.name + QStringLiteral(" "));
-
-    QVariantMap entry;
-    entry[QStringLiteral("id")] = pa.app.id;
-    entry[QStringLiteral("name")] = pa.app.name;
-    entry[QStringLiteral("icon")] = pa.app.icon;
-    entry[QStringLiteral("comment")] = pa.app.comment;
-    entry[QStringLiteral("exec")] = pa.app.exec;
-    entry[QStringLiteral("path")] = pa.app.path;
-    entry[QStringLiteral("category")] = pa.app.category;
-    entry[QStringLiteral("terminal")] = pa.app.terminal;
-
-    m_applicationsCache.append(QVariant::fromValue(entry));
+void AppSearch::publish(std::vector<DesktopApp> apps) {
+  m_applicationsCache.clear();
+  m_searchTargets.clear();
+  m_applicationsCache.reserve(static_cast<qsizetype>(apps.size()));
+  m_searchTargets.reserve(static_cast<qsizetype>(apps.size()));
+  for (const auto &app : apps) {
+    m_applicationsCache.append(QVariantMap{
+        {QStringLiteral("id"), app.id},
+        {QStringLiteral("name"), app.name},
+        {QStringLiteral("icon"), app.icon},
+        {QStringLiteral("comment"), app.comment},
+        {QStringLiteral("exec"), app.exec},
+        {QStringLiteral("path"), app.path},
+        {QStringLiteral("category"), app.category},
+        {QStringLiteral("terminal"), app.terminal},
+    });
+    m_searchTargets.append(QVariantMap{
+        {QStringLiteral("name"),
+         FuzzySort::prepare(app.name + QStringLiteral(" "))},
+        {QStringLiteral("entry"), m_applicationsCache.size() - 1},
+    });
   }
-
+  m_apps = std::move(apps);
   emit applicationsChanged();
 }
 
-void AppSearch::refresh() { scanApplications(); }
+void AppSearch::refresh() { rewatchAndScan(); }
+
+void AppSearch::rewatchAndScan() {
+  try {
+    m_watcher.watch(m_applicationDirs, DESKTOP_SUFFIX);
+  } catch (const PathWatchError &error) {
+    qWarning() << "[AppSearch]" << error.what();
+  }
+  scanApplications();
+}
 
 QVariantList AppSearch::search(const QString &query) const {
   const QString queryLower = query.toLower();
@@ -439,38 +406,22 @@ QVariantList AppSearch::searchApplications(const QString &query) const {
     return m_applicationsCache;
   }
 
-  QVariantList targets;
-  targets.reserve(static_cast<int>(m_apps.size()));
+  static const QVariantMap options = {
+      {QStringLiteral("all"), true},
+      {QStringLiteral("key"), QStringLiteral("name")},
+  };
 
-  for (const auto &pa : m_apps) {
-    QVariantMap item;
-    item[QStringLiteral("name")] = pa.prepared;
-    item[QStringLiteral("entry")] = pa.app.id;
-    targets.append(QVariant::fromValue(item));
-  }
-
-  QVariantMap options;
-  options[QStringLiteral("all")] = true;
-  options[QStringLiteral("key")] = QStringLiteral("name");
-
-  const auto fuzzyResults = FuzzySort::go(query, targets, options);
-
-  QHash<QString, int> idToIndex;
-  idToIndex.reserve(static_cast<int>(m_apps.size()));
-  for (int i = 0; i < static_cast<int>(m_apps.size()); ++i) {
-    idToIndex[m_apps[i].app.id] = i;
-  }
+  const auto fuzzyResults = FuzzySort::go(query, m_searchTargets, options);
 
   QVariantList results;
   results.reserve(fuzzyResults.size());
-  for (const auto &r : fuzzyResults) {
-    const auto rMap = r.toMap();
-    const auto obj = rMap.value(QStringLiteral("obj")).toMap();
-    const QString id = obj.value(QStringLiteral("entry")).toString();
-    auto idxIt = idToIndex.constFind(id);
-    if (idxIt != idToIndex.constEnd()) {
-      results.append(m_applicationsCache.at(idxIt.value()));
-    }
+  for (const auto &result : fuzzyResults) {
+    const auto index = result.toMap()
+                           .value(QStringLiteral("obj"))
+                           .toMap()
+                           .value(QStringLiteral("entry"))
+                           .toInt();
+    results.append(m_applicationsCache.at(index));
   }
   return results;
 }

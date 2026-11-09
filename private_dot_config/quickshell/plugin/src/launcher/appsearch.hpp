@@ -1,16 +1,21 @@
 #pragma once
 
-#include <QFileSystemWatcher>
+#include "desktopentry.hpp"
+#include "desktopfiles.hpp"
+#include "pathwatcher.hpp"
+
+#include <QHash>
 #include <QIcon>
 #include <QObject>
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
-#include <QTimer>
 #include <QVariantList>
 #include <QVariantMap>
 #include <QtQml/qqmlregistration.h>
 
+#include <functional>
+#include <string>
 #include <vector>
 
 class AppSearch : public QObject {
@@ -23,7 +28,12 @@ class AppSearch : public QObject {
   Q_PROPERTY(QVariantList quickshellApps READ quickshellApps CONSTANT)
 
 public:
+  using Reader = std::function<std::string(const std::string &)>;
+
   explicit AppSearch(QObject *parent = nullptr);
+  explicit AppSearch(std::vector<std::string> applicationDirs,
+                     PathWatcher::Resolver resolver, PathWatcher::Timing timing,
+                     Reader reader, QObject *parent);
 
   [[nodiscard]] QVariantList applications() const;
   [[nodiscard]] QVariantList quickshellApps() const;
@@ -38,6 +48,8 @@ signals:
   void actionRequested(const QString &action);
 
 private:
+  friend class AppSearchTest;
+
   struct DesktopApp {
     QString id;
     QString name;
@@ -47,18 +59,24 @@ private:
     QString path;
     QString category;
     bool terminal{false};
+
+    friend bool operator==(const DesktopApp &, const DesktopApp &) = default;
   };
 
-  struct PreparedApp {
-    DesktopApp app;
-    QVariantMap prepared;
+  struct CachedEntry {
+    FileKey key;
+    DesktopEntry entry;
   };
 
+  void rewatchAndScan();
   void scanApplications();
+  [[nodiscard]] std::vector<DesktopApp>
+  loadApplications(const std::vector<DesktopFile> &files);
+  void publish(std::vector<DesktopApp> apps);
   [[nodiscard]] QVariantList searchApplications(const QString &query) const;
-  [[nodiscard]] static QStringList xdgDataDirs();
-  [[nodiscard]] static std::optional<DesktopApp>
-  parseDesktopFile(const QString &filePath);
+  [[nodiscard]] static std::vector<std::string> xdgApplicationDirs();
+  [[nodiscard]] static DesktopApp toDesktopApp(const QString &id,
+                                               const DesktopEntry &entry);
   [[nodiscard]] static QString bucketForCategories(const QStringList &cats);
   [[nodiscard]] static QString
   processExecString(const QString &exec, const QString &name = {},
@@ -73,9 +91,13 @@ private:
   [[nodiscard]] static const std::vector<RegexSubstitution> &
   regexSubstitutions();
 
-  std::vector<PreparedApp> m_apps;
+  std::vector<std::string> m_applicationDirs;
+  QStringList m_currentDesktops;
+  Reader m_reader;
+  std::vector<CachedEntry> m_entryCache;
+  std::vector<DesktopApp> m_apps;
   QVariantList m_applicationsCache;
+  QVariantList m_searchTargets;
 
-  QFileSystemWatcher m_watcher;
-  QTimer m_refreshDebounce;
+  PathWatcher m_watcher;
 };

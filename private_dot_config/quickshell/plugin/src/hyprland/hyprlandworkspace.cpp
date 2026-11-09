@@ -1,4 +1,5 @@
 #include "hyprlandworkspace.hpp"
+#include "uniquefd.hpp"
 
 #include <QFile>
 #include <QProcessEnvironment>
@@ -12,18 +13,6 @@
 #include <cstring>
 
 namespace {
-
-struct UniqueFd {
-  int fd = -1;
-  explicit UniqueFd(int descriptor) : fd(descriptor) {}
-  ~UniqueFd() {
-    if (fd >= 0)
-      ::close(fd);
-  }
-  UniqueFd(const UniqueFd &) = delete;
-  UniqueFd &operator=(const UniqueFd &) = delete;
-  explicit operator bool() const { return fd >= 0; }
-};
 
 QList<int> sortedCopy(const QList<int> &ids) {
   auto sorted = ids;
@@ -106,7 +95,7 @@ bool HyprlandWorkspace::hyprlandDispatch(const QString &command) {
   if (socketPath.isEmpty())
     return false;
 
-  UniqueFd sock(::socket(AF_UNIX, SOCK_STREAM, 0));
+  UniqueFd sock(::socket(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0));
   if (!sock)
     return false;
 
@@ -120,19 +109,19 @@ bool HyprlandWorkspace::hyprlandDispatch(const QString &command) {
   std::memcpy(addr.sun_path, pathBytes.constData(),
               static_cast<size_t>(pathBytes.size()));
 
-  if (::connect(sock.fd, reinterpret_cast<struct sockaddr *>(&addr),
+  if (::connect(sock.get(), reinterpret_cast<struct sockaddr *>(&addr),
                 sizeof(addr)) < 0)
     return false;
 
   const auto payload = QStringLiteral("dispatch %1").arg(command).toUtf8();
-  const auto written = ::write(sock.fd, payload.constData(),
+  const auto written = ::write(sock.get(), payload.constData(),
                                static_cast<size_t>(payload.size()));
 
   if (written < 0 || written != payload.size())
     return false;
 
   std::array<char, 256> buf{};
-  const auto bytesRead = ::read(sock.fd, buf.data(), buf.size() - 1);
+  const auto bytesRead = ::read(sock.get(), buf.data(), buf.size() - 1);
 
   if (bytesRead <= 0)
     return false;
