@@ -20,6 +20,7 @@
     ../../modules/nixos/optional/paseo.nix
     ../../modules/nixos/optional/pop.nix
     ../../modules/nixos/optional/portals.nix
+    ../../modules/nixos/optional/raddebugger.nix
     ../../modules/nixos/optional/sshfs.nix
     ../../modules/nixos/optional/steam.nix
     ../../modules/nixos/optional/vikunja-cli.nix
