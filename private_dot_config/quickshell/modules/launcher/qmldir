@@ -1,8 +1,0 @@
-module qs.modules.launcher
-
-Launcher 1.0 Launcher.qml
-WrapperSimple 1.0 WrapperSimple.qml
-ContentSimple 1.0 ContentSimple.qml
-AppGrid 1.0 AppGrid.qml
-AppTile 1.0 AppTile.qml
-CategoryChips 1.0 CategoryChips.qml

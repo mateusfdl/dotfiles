@@ -7,3 +7,8 @@
     type = "git-repo"
     url = "https://github.com/mateusfdl/nvim.git"
     refreshPeriod = "1h"
+
+[".config/quickshell"]
+    type = "git-repo"
+    url = "git@github.com:mateusfdl/qs.git"
+    refreshPeriod = "1h"
