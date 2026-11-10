@@ -2,11 +2,11 @@
 let
   paseo-desktop = pkgs.appimageTools.wrapType2 (finalAttrs: {
     pname = "paseo-desktop";
-    version = "0.12.0";
+    version = "0.15.4";
 
     src = pkgs.fetchurl {
       url = "https://github.com/getpaseo/paseo/releases/download/v${finalAttrs.version}/Paseo-x86_64.AppImage";
-      hash = "sha256-0JXX+u/wo7w+ECIMCib43TxpIUeh/rj0zU7LHW53clQ=";
+      hash = "sha256-o13hO7lkLnXkGMKQbvVKskxTZBQGRRmdLPLZ7z1cd5c=";
     };
 
     extraInstallCommands = ''
