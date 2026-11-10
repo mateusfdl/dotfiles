@@ -1,11 +1,11 @@
 {
   pkgs,
   inputs,
-  system,
   ...
 }:
 let
-  claude-desktop-pkg = inputs.claude-desktop.packages.${system}.claude-desktop;
+  claude-desktop-pkg =
+    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop;
 in
 {
   environment.systemPackages = with pkgs; [

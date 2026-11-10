@@ -1,11 +1,10 @@
 {
   pkgs,
   inputs,
-  system,
   ...
 }:
 let
-  zephyr = inputs.zephyr-nix.packages.${system};
+  zephyr = inputs.zephyr-nix.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   environment.sessionVariables = {

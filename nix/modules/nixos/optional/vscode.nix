@@ -1,7 +1,6 @@
 {
   pkgs,
   inputs,
-  system,
   ...
 }:
 let
@@ -17,7 +16,7 @@ let
     '';
   };
   vscodePkgs = import inputs.nixpkgs {
-    inherit system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
     overlays = [ inputs.nix-vscode-extensions.overlays.default ];
   };
