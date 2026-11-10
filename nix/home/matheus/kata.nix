@@ -1,7 +1,7 @@
 { inputs, ... }:
 let
   error = {
-    enabled = true;
+    enabled = false;
     severity = "error";
   };
 in
@@ -9,7 +9,7 @@ in
   imports = [ inputs.kata.homeModules.default ];
 
   programs.kata = {
-    enable = true;
+    enable = false;
     settings = {
       ratchet = true;
       rules = {

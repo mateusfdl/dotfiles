@@ -9,6 +9,7 @@
     ./dev.nix
     ./direnv.nix
     ./git.nix
+    ./kata.nix
     ./luarocks.nix
     ./pnpm.nix
     ./vikunja-cli.nix
