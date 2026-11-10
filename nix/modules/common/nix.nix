@@ -1,6 +1,7 @@
 { ... }:
 {
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ (final: prev: import ../../pkgs final) ];
 
   nix.settings = {
     auto-optimise-store = true;

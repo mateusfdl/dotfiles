@@ -72,6 +72,13 @@
         }
       );
 
+      packages.x86_64-linux = import ./pkgs (
+        import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        }
+      );
+
       nixosConfigurations = {
         desktop = mkNixos "x86_64-linux" [ ./hosts/desktop ];
         server = mkNixos "x86_64-linux" [ ./hosts/server ];
