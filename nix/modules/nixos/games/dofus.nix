@@ -34,4 +34,3 @@ in
 {
   environment.systemPackages = [ ankama-launcher ];
 }
-

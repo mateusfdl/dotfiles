@@ -4,9 +4,7 @@
     (pkgs.brave.overrideAttrs (old: {
       preFixup = (old.preFixup or "") + ''
         gappsWrapperArgs+=(
-          --add-flags ${
-            pkgs.lib.escapeShellArg "--enable-features=AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,WaylandWindowDecorations"
-          }
+          --add-flags ${pkgs.lib.escapeShellArg "--enable-features=AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,WaylandWindowDecorations"}
         )
       '';
     }))

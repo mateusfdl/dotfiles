@@ -59,8 +59,15 @@
         };
     in
     {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
-      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
+      formatter = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        nixpkgs.legacyPackages.${system}.nixfmt-tree.override {
+          settings = {
+            tree-root-file = "flake.nix";
+            formatter.nixfmt.excludes = [ "home/matheus/ruby/gemset.nix" ];
+          };
+        }
+      );
 
       nixosConfigurations = {
         desktop = mkNixos "x86_64-linux" [ ./hosts/desktop ];
