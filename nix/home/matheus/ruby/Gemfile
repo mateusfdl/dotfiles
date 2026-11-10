@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+
+gem "rspec"
+gem "rubocop-rails-omakase"
+gem "solargraph"
+gem "tty-reader"
+gem "tty-table"
