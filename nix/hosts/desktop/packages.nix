@@ -1,55 +1,13 @@
-{
-  pkgs,
-  inputs,
-  ...
-}:
-let
-  claude-desktop-pkg =
-    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop;
-in
+{ pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    apple-cursor
-    brightnessctl
     bubblewrap
-    cliphist
-    ffmpeg
     glib
-    gnupg
-    grim
-    hyprcursor
-    hypridle
-    hyprwayland-scanner
-    hyprwire
-    kdePackages.qt6ct
     kitty
-    libsForQt5.qt5ct
-    mpv
-    networkmanagerapplet
     nftables
-    nwg-displays
-    papirus-icon-theme
-    pavucontrol
-    qt6.qt5compat
-    qt6.qtdeclarative
-    qt6.qttools
-    qt6.qtwayland
-    quickshell
-    slurp
-    awww
     unzip
     vim
     wget
-    wf-recorder
-    wl-clipboard
     wireguard-tools
-  ];
-
-  users.users.matheus.packages = with pkgs; [
-    claude-desktop-pkg
-    discord
-    morgen
-    obsidian
-    spotify
   ];
 }

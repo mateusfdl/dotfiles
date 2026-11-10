@@ -1,5 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 {
+  home.packages = with pkgs; [
+    ffmpeg
+    gnupg
+  ];
+
   programs.eza = {
     enable = true;
     enableZshIntegration = true;

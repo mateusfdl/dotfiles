@@ -33,7 +33,10 @@
 
   networking.hostName = "desktop";
 
-  home-manager.users.matheus = import ../../home/matheus;
+  home-manager.users.matheus.imports = [
+    ../../home/matheus
+    ../../home/matheus/linux.nix
+  ];
 
   programs.ssh.startAgent = true;
 

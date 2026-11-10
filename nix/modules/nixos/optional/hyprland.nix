@@ -8,6 +8,32 @@
 
   security.pam.services.quickshell = { };
 
+  environment.systemPackages = with pkgs; [
+    apple-cursor
+    awww
+    brightnessctl
+    cliphist
+    grim
+    hyprcursor
+    hypridle
+    hyprwayland-scanner
+    hyprwire
+    kdePackages.qt6ct
+    libsForQt5.qt5ct
+    networkmanagerapplet
+    nwg-displays
+    papirus-icon-theme
+    pavucontrol
+    qt6.qt5compat
+    qt6.qtdeclarative
+    qt6.qttools
+    qt6.qtwayland
+    quickshell
+    slurp
+    wf-recorder
+    wl-clipboard
+  ];
+
   environment.sessionVariables = {
     CLUTTER_BACKEND = "wayland";
     NIXOS_OZONE_WL = "1";
