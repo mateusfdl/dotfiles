@@ -15,15 +15,12 @@ let
       wrapProgram $out/bin/code --unset NIXOS_OZONE_WL
     '';
   };
-  vscodePkgs = import inputs.nixpkgs {
-    system = pkgs.stdenv.hostPlatform.system;
-    config.allowUnfree = true;
-    overlays = [ inputs.nix-vscode-extensions.overlays.default ];
-  };
-  vscode-marketplace = vscodePkgs.nix-vscode-extensions.vscode-marketplace;
-  vscode-marketplace-universal = vscodePkgs.nix-vscode-extensions.vscode-marketplace-universal;
+  vscode-marketplace = pkgs.nix-vscode-extensions.vscode-marketplace;
+  vscode-marketplace-universal = pkgs.nix-vscode-extensions.vscode-marketplace-universal;
 in
 {
+  nixpkgs.overlays = [ inputs.nix-vscode-extensions.overlays.default ];
+
   environment.systemPackages = [
     (pkgs.vscode-with-extensions.override {
       inherit vscode;
