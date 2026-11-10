@@ -8,5 +8,5 @@
 
   home-manager.users.matheus = import ../../home/matheus;
 
-  system.stateVersion = 5;
+  system.stateVersion = 7;
 }
