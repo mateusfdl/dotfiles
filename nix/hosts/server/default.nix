@@ -11,7 +11,7 @@
     ../../modules/nixos/optional/openssh.nix
     ../../modules/nixos/optional/alloy.nix
     ../../modules/nixos/optional/conntrack-exporter.nix
-    ../../pkgs/server.nix
+    ./packages.nix
   ];
 
   networking.hostName = "beelink-n1";

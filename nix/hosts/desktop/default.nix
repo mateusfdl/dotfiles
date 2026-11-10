@@ -29,7 +29,7 @@
     ../../modules/nixos/optional/dev.nix
     ../../modules/nixos/optional/zephyr.nix
     ../../modules/nixos/games/dofus.nix
-    ../../pkgs/desktop.nix
+    ./packages.nix
   ];
 
   networking.hostName = "desktop";
