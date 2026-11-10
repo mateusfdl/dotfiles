@@ -5,4 +5,5 @@ pkgs: {
   pop = pkgs.callPackage ./pop/package.nix { };
   raddebugger = pkgs.callPackage ./raddebugger/package.nix { };
   sf-pro-fonts = pkgs.callPackage ./sf-pro-fonts/package.nix { };
+  vikunja-cli = pkgs.callPackage ./vikunja-cli/package.nix { };
 }
