@@ -1,6 +1,11 @@
-{ ... }:
+{ config, ... }:
+let
+  tailscaleDebugAddress = "localhost:41112";
+in
 {
   services.alloy.enable = true;
+
+  services.tailscale.extraDaemonFlags = [ "--debug=${tailscaleDebugAddress}" ];
 
   environment.etc."alloy/config.alloy" = {
     text = ''
@@ -50,7 +55,7 @@
 
       prometheus.scrape "tailscale" {
         targets = [
-          {"__address__" = "localhost:41112"},
+          {"__address__" = "${tailscaleDebugAddress}"},
         ]
         metrics_path    = "/debug/metrics"
         scrape_interval = "30s"
@@ -68,7 +73,7 @@
 
       prometheus.remote_write "default" {
         external_labels = {
-          instance = "beelink-n1",
+          instance = "${config.networking.hostName}",
         }
 
         endpoint {

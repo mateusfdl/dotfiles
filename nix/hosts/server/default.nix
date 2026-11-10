@@ -16,10 +16,6 @@
 
   networking.hostName = "beelink-n1";
 
-  services.tailscale.extraDaemonFlags = [
-    "--debug=localhost:41112"
-  ];
-
   virtualisation.docker.autoPrune.enable = true;
   users.users.matheus.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOKp5xAxoqTYtxvBcT6W+FMkVb0Bd7qE9Xk2IbHIRFh"
