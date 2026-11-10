@@ -29,6 +29,13 @@
   outputs =
     { nixpkgs, ... }@inputs:
     let
+      homeManagerSettings = system: {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.backupFileExtension = "backup";
+        home-manager.extraSpecialArgs = { inherit inputs system; };
+      };
+
       mkNixos =
         system: modules:
         nixpkgs.lib.nixosSystem {
@@ -36,12 +43,7 @@
           specialArgs = { inherit inputs system; };
           modules = modules ++ [
             inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit inputs system; };
-            }
+            (homeManagerSettings system)
           ];
         };
 
@@ -52,12 +54,7 @@
           specialArgs = { inherit inputs system; };
           modules = modules ++ [
             inputs.home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit inputs system; };
-            }
+            (homeManagerSettings system)
           ];
         };
     in
