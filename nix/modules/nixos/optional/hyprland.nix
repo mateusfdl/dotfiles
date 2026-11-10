@@ -45,6 +45,5 @@
     ];
     XCURSOR_THEME = "macOS";
     XCURSOR_SIZE = "24";
-    WLR_NO_HARDWARE_CURSORS = "1";
   };
 }
