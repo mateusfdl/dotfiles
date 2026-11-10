@@ -11,7 +11,10 @@
 
     zephyr-nix.url = "github:adisbladis/zephyr-nix";
 
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
 
