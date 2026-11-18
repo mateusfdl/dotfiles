@@ -16,7 +16,6 @@ in
   ];
 
   home.packages = with pkgs; [
-    claude-code
     dust
     entr
     flyctl
