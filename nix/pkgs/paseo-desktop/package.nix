@@ -6,11 +6,11 @@
 }:
 appimageTools.wrapType2 (finalAttrs: {
   pname = "paseo-desktop";
-  version = "0.15.4";
+  version = "0.16.1";
 
   src = fetchurl {
     url = "https://github.com/getpaseo/paseo/releases/download/v${finalAttrs.version}/Paseo-x86_64.AppImage";
-    hash = "sha256-o13hO7lkLnXkGMKQbvVKskxTZBQGRRmdLPLZ7z1cd5c=";
+    hash = "sha256-oYDhuC3btcxzRAMYWLAL9g43gxuLPSKre68xJYij4aM=";
   };
 
   extraInstallCommands = ''
