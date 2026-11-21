@@ -18,7 +18,6 @@ python3Packages.buildPythonApplication rec {
   pythonImportsCheck = [ "cmakelint" ];
 
   meta = {
-    description = "Linter for CMake files";
     homepage = "https://github.com/cmake-lint/cmake-lint";
     license = lib.licenses.asl20;
     mainProgram = "cmakelint";

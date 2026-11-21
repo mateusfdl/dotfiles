@@ -7,7 +7,6 @@
     ../../modules/nixos/optional/audio.nix
     ../../modules/nixos/optional/bluetooth.nix
     ../../modules/nixos/optional/brave.nix
-    ../../modules/nixos/optional/computeruse.nix
     ../../modules/nixos/optional/desktop-reliability.nix
     ../../modules/nixos/optional/firewall.nix
     ../../modules/nixos/optional/fonts.nix
@@ -18,7 +17,6 @@
     ../../modules/nixos/optional/nix-ld.nix
     ../../modules/nixos/optional/obs.nix
     ../../modules/nixos/optional/paseo.nix
-    ../../modules/nixos/optional/pop.nix
     ../../modules/nixos/optional/portals.nix
     ../../modules/nixos/optional/raddebugger.nix
     ../../modules/nixos/optional/sshfs.nix
