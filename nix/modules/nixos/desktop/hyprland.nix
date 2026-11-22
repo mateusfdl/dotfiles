@@ -16,6 +16,7 @@
     grim
     hyprcursor
     hypridle
+    hyprlandPlugins.hyprbars
     hyprwayland-scanner
     hyprwire
     kdePackages.qt6ct

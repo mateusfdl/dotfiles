@@ -1,10 +1,6 @@
-{ pkgs, inputs, ... }:
-let
-  claude-desktop = inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop;
-in
+{ pkgs, ... }:
 {
   home.packages = with pkgs; [
-    claude-desktop
     discord
     morgen
     mpv

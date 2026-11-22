@@ -16,8 +16,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
-
     kata = {
       url = "github:mateusfdl/kata";
       inputs.nixpkgs.follows = "nixpkgs";

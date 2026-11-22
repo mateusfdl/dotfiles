@@ -2,8 +2,8 @@
 {
   environment.systemPackages = with pkgs; [
     bubblewrap
+    ghostty
     glib
-    kitty
     nftables
     unzip
     vim
