@@ -37,7 +37,6 @@ resize(){
   tmux resize-pane -y $1 -t $2
 }
 
-
 grl() {
   git log --graph --color=always \
     --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
@@ -65,55 +64,22 @@ on() {
   nvim -c ":ObsidianNew $*" -c "ObsidianTemplate notes"
 }
 
-detect_os() {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "macos"
-    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        if [ -n "$(command -v wsl.exe)" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
-            echo "wsl"
-        else
-            echo "linux"
-        fi
-    else
-        echo "unknown"
-    fi
-}
-
-is_arch() {
-  if [ "$(detect_os)" = "linux" ]; then
-    if [ -f /etc/arch-release ]; then
-      return 0
-    fi
-  fi
-  return 1
-}
-
-zlaude() {
-  export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
-  export ANTHROPIC_AUTH_TOKEN=$(echo $Z_AI_API_KEY)
-  claude "$@"
-}
-
-
-pclaude() {
-  CLAUDE_CONFIG_DIR="$HOME/.claude-personal/" claude "$@"
-}
-
-rsclaude() {
-  CLAUDE_CONFIG_DIR="$HOME/.claude-runsmith/" claude "$@"
-}
-
 {{- if eq .chezmoi.os "linux" }}
 open() {
-  if is_arch; then
-    if command -v nautilus >/dev/null 2>&1; then
-      nautilus "$@" &
-    else
-      return 1
-    fi
-  else
-    return 1
+ nautilus "$@" &
+}
+
+bclaude() {
+  local d=/tmp/.claude-clean
+  mkdir -p "$d"
+  cp ~/.claude/.credentials.json "$d/"
+
+  if [ ! -f "$d/.claude.json" ]; then
+    jq '{oauthAccount, hasCompletedOnboarding: true, lastOnboardingVersion, theme}' \
+      ~/.claude.json > "$d/.claude.json"
   fi
+
+  CLAUDE_CONFIG_DIR="$d" claude "$@"
 }
 {{- end }}
 
@@ -124,6 +90,5 @@ scripts() {
   echo "grl - git log with fzf"
   echo "gdf - git diff files with fzf"
   echo "on - create a new obsidian note"
-  echo "open - alias for nautilus in NixOS"
-  echo "zlaude - claude with Z"
+  echo "open - alias for File Manager in NixOS"
 }

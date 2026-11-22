@@ -12,9 +12,11 @@ alias dcd='docker compose down'
 alias tns='tmux new'
 alias t5:1='tmux resize pane -y 5 -t 1'
 
+{{- if eq .chezmoi.os "darwin" }}
 #homebrew
 alias abrew='/opt/homebrew/bin/brew'
 alias ibrew='arch -x86_64 /usr/local/bin/brew'
+{{- end}}
 
 #asdf nvim
 alias update-nvim-stable='asdf uninstall neovim stable && asdf install neovim stable'
