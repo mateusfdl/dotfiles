@@ -1,1 +1,10 @@
 du-dust
+create-tauri-app
+bat
+fd-find
+git-delta
+hyperfine
+ripgrep
+stylua
+tauri-cli
+tokei
