@@ -1,234 +1,94 @@
-tap "bufbuild/buf"
-tap "clojure/tools"
-tap "cue-lang/tap"
-tap "d12frosted/emacs-plus"
-tap "golangci/tap"
-tap "hashicorp/tap"
-tap "helix-editor/helix"
-tap "heroku/brew"
-tap "homebrew/bundle"
-tap "homebrew/services"
-tap "jason0x43/neovim-nightly"
-tap "joaofnds/tap"
-tap "koekeishiya/formulae"
-tap "mongodb/brew"
-tap "railwaycat/emacsmacport"
-tap "stripe/stripe-cli"
-tap "zackelia/formulae"
-brew "act"
-brew "xz"
-brew "libtiff"
-brew "webp"
-brew "jpeg-xl"
-brew "aom"
-brew "libunistring"
-brew "gettext"
-brew "mpdecimal"
-brew "openssl@3"
-brew "readline"
-brew "glib"
-brew "at-spi2-core"
-brew "automake"
-brew "pycparser"
-brew "cffi"
-brew "awscli"
-brew "libssh2"
-brew "bat"
-brew "gmp"
-brew "coreutils"
-brew "bats-core"
-brew "bdw-gc"
-brew "libevent"
-brew "libidn2"
-brew "libtasn1"
-brew "nettle"
-brew "p11-kit"
-brew "unbound"
-brew "gnutls"
-brew "libgpg-error"
-brew "libassuan"
-brew "libgcrypt"
-brew "libksba"
-brew "libusb"
-brew "npth"
-brew "pinentry"
-brew "gnupg"
-brew "blackbox"
-brew "c-ares"
-brew "cairo"
-brew "chezmoi"
-brew "cmake"
-brew "docker"
-brew "docutils"
-brew "dust"
-brew "efm-langserver"
-brew "entr"
-brew "exercism"
-brew "fd"
-brew "harfbuzz"
-brew "leptonica"
-brew "libass"
-brew "librist"
-brew "pango"
-brew "srt"
-brew "tesseract"
-brew "ffmpeg@4"
-brew "flyctl"
-brew "freealut"
-brew "fswatch"
-brew "fzf"
-brew "mpfr"
-brew "gawk"
-brew "gcc"
-brew "gdbm"
-brew "gh"
-brew "ghostscript"
-brew "git"
-brew "gitleaks"
-brew "glow"
-brew "gobject-introspection"
-brew "gotop"
-brew "gpgme"
-brew "librsvg"
-brew "libtool"
-brew "graphviz"
-brew "grip"
-brew "gtk+3"
-brew "libuv"
-brew "gtop"
-brew "guile"
-brew "hadolint"
-brew "helix"
-brew "helm"
-brew "htop"
-brew "hyperfine"
-brew "libheif"
-brew "imagemagick"
-brew "imagemagick@6"
-brew "ispell"
-brew "jemalloc"
-brew "jless"
-brew "jq"
-brew "k6"
-brew "kubeseal"
-brew "lazygit", link: false
-brew "openjdk"
-brew "leiningen"
-brew "libev"
-brew "libffi"
-brew "libgit2"
-brew "unibilium"
-brew "libtermkey"
-brew "libvterm"
-brew "libxml2"
-brew "libyaml"
-brew "lima"
-brew "llvm"
-brew "lolcat"
-brew "lua"
-brew "lua-language-server"
-brew "luajit", args: ["HEAD"]
-brew "luarocks"
-brew "luv"
-brew "mongosh"
-brew "msgpack"
-brew "screenresolution"
-brew "neofetch"
-brew "nghttp2"
-brew "ninja"
-brew "openssl@1.1"
-brew "pandoc"
-brew "pcre"
-brew "postgresql@11"
-brew "postgresql@14"
-brew "protobuf"
-brew "python@3.10"
-brew "python@3.11"
-brew "python@3.9"
-brew "qemu"
-brew "ruby-build"
-brew "rbenv"
-brew "redis"
-brew "ripgrep"
-brew "utf8proc"
-brew "tmux"
-brew "tmux-xpanes"
-brew "tmuxinator"
-brew "tokei"
-brew "tree-sitter"
-brew "typos-cli"
-brew "unixodbc"
-brew "vegeta"
-brew "vifm"
-brew "wakatime-cli"
-brew "wget"
-brew "xclip"
-brew "youtube-dl"
-brew "yq"
-brew "yt-dlp"
-brew "zlib"
-brew "bufbuild/buf/buf"
-brew "clojure/tools/clojure"
-brew "d12frosted/emacs-plus/emacs-plus@27", args: ["with-modern-doom3-icon"], link: false
-brew "d12frosted/emacs-plus/emacs-plus@31"
-brew "golangci/tap/golangci-lint"
-brew "hashicorp/tap/terraform"
-brew "heroku/brew/heroku"
-brew "joaofnds/tap/astro"
-brew "koekeishiya/formulae/skhd"
-brew "mongodb/brew/mongodb-community"
-brew "stripe/stripe-cli/stripe"
-brew "zackelia/formulae/bclm"
-cask "fig"
-cask "font-iosevka"
-cask "hammerspoon"
-cask "shottr"
-cask "wkhtmltopdf"
-vscode "bierner.color-info"
-vscode "bradlc.vscode-tailwindcss"
-vscode "castwide.solargraph"
-vscode "csstools.postcss"
-vscode "dracula-theme.theme-dracula"
-vscode "ecmel.vscode-html-css"
-vscode "evgeniypeshkov.syntax-highlighter"
-vscode "figma.figma-vscode-extension"
-vscode "formulahendry.code-runner"
-vscode "george-alisson.html-preview-vscode"
-vscode "github.copilot"
-vscode "github.copilot-chat"
-vscode "github.vscode-github-actions"
-vscode "haskell.haskell"
-vscode "justusadam.language-haskell"
-vscode "kakumei.ts-debug"
-vscode "ms-azuretools.vscode-docker"
-vscode "ms-vscode-remote.remote-containers"
-vscode "ms-vscode-remote.remote-ssh"
-vscode "ms-vscode-remote.remote-ssh-edit"
-vscode "ms-vscode-remote.remote-wsl"
-vscode "ms-vscode-remote.vscode-remote-extensionpack"
-vscode "ms-vscode.cpptools"
-vscode "ms-vscode.hexeditor"
-vscode "ms-vscode.makefile-tools"
-vscode "ms-vscode.remote-explorer"
-vscode "ms-vscode.remote-server"
-vscode "ms-vscode.vscode-typescript-next"
-vscode "ms-vsliveshare.vsliveshare"
-vscode "plex.vscode-protolint"
-vscode "qufiwefefwoyn.kanagawa"
-vscode "rebornix.scheme"
-vscode "sainnhe.sonokai"
-vscode "shd101wyy.markdown-preview-enhanced"
-vscode "shopify.ruby-lsp"
-vscode "simonsiefke.svg-preview"
-vscode "sswg.swift-lang"
-vscode "streetsidesoftware.code-spell-checker"
-vscode "sumneko.lua"
-vscode "vadimcn.vscode-lldb"
-vscode "vscode-icons-team.vscode-icons"
-vscode "vscodevim.vim"
-vscode "vue.volar"
-vscode "waderyan.gitblame"
-vscode "wakatime.vscode-wakatime"
-vscode "withfig.fig"
-vscode "xabikos.javascriptsnippets"
-vscode "zhuangtongfa.material-theme"
+tap 'homebrew-ffmpeg/ffmpeg', trusted: true
+tap 'modem-dev/tap'
+# Protocol buffers (Google's data interchange format)
+brew 'protobuf'
+# Compression/decompression library aiming for high speed
+brew 'snappy'
+# Code searching, linting, rewriting
+brew 'ast-grep'
+# Official Amazon AWS command-line interface
+brew 'awscli'
+# Collection of portable C++ source libraries
+brew 'boost'
+# Library for manipulating PNG images
+brew 'libpng'
+# Software library to render fonts
+brew 'freetype'
+# Perl compatible regular expressions library with a new API
+brew 'pcre2'
+# Official command-line tool for CircleCI
+brew 'circleci'
+# Perl lib for reading and writing EXIF metadata
+brew 'exiftool'
+# Command-line tools for fly.io services
+brew 'flyctl'
+# Command-line fuzzy finder written in Go
+brew 'fzf'
+# GNU Privacy Guard (OpenPGP)
+brew 'gnupg'
+# Package compiler and linker metadata toolkit
+brew 'pkgconf'
+# H.265/HEVC encoder
+brew 'x265'
+# Postgres C API library
+brew 'libpq'
+# GitHub command-line tool
+brew 'gh'
+# OpenGL Extension Wrangler Library
+brew 'glew'
+# C++ mathematics library for graphics software
+brew 'glm'
+# Improved top (interactive process viewer)
+brew 'htop'
+# Command-line benchmarking tool
+brew 'hyperfine'
+# Modern load testing tool, using Go and JavaScript
+brew 'k6'
+# High quality MPEG Audio Layer III (MP3) encoder
+brew 'lame'
+# Subtitle renderer for the ASS/SSA subtitle format
+brew 'libass'
+# Ogg Bitstream Library
+brew 'libogg'
+# Vorbis general audio compression codec
+brew 'libvorbis'
+# VP8/VP9 video codec
+brew 'libvpx'
+# YAML Parser
+brew 'libyaml'
+# Audio codec
+brew 'opus'
+# SDL2 compatibility layer that uses SDL3 behind the scenes
+brew 'sdl2-compat'
+# Library for loading images as SDL surfaces and textures
+brew 'sdl2_image'
+# AV1 encoder
+brew 'svt-av1'
+# Open video compression format
+brew 'theora'
+# Terminal multiplexer
+brew 'tmux'
+# Ultimate terminal divider powered by tmux
+brew 'tmux-xpanes'
+# Parser generator tool
+brew 'tree-sitter-cli'
+# Tools for the WireGuard secure network tunnel
+brew 'wireguard-tools'
+# H.264/AVC encoder
+brew 'x264'
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew 'yq'
+# Feature-rich command-line audio/video downloader
+brew 'yt-dlp'
+# UNIX shell (command interpreter)
+brew 'zsh'
+# Fish-like fast/unobtrusive autosuggestions for zsh
+brew 'zsh-autosuggestions'
+# Play, record, convert, and stream audio and video
+brew 'homebrew-ffmpeg/ffmpeg/ffmpeg'
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask 'ghostty'
+# 2D and 3D game engine
+cask 'godot'
+# Open-source code editor
+cask 'visual-studio-code'
