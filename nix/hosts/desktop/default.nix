@@ -4,27 +4,26 @@
     ./hardware-configuration.nix
 
     ../../modules/nixos
-    ../../modules/nixos/optional/audio.nix
-    ../../modules/nixos/optional/bluetooth.nix
-    ../../modules/nixos/optional/brave.nix
-    ../../modules/nixos/optional/desktop-reliability.nix
-    ../../modules/nixos/optional/firewall.nix
-    ../../modules/nixos/optional/fonts.nix
-    ../../modules/nixos/optional/greetd.nix
-    ../../modules/nixos/optional/hyprland.nix
-    ../../modules/nixos/optional/nautilus.nix
-    ../../modules/nixos/optional/nvidia.nix
-    ../../modules/nixos/optional/nix-ld.nix
-    ../../modules/nixos/optional/obs.nix
-    ../../modules/nixos/optional/paseo.nix
-    ../../modules/nixos/optional/portals.nix
-    ../../modules/nixos/optional/raddebugger.nix
-    ../../modules/nixos/optional/sshfs.nix
-    ../../modules/nixos/optional/steam.nix
-    ../../modules/nixos/optional/vscode.nix
-    ../../modules/nixos/optional/soundcloud.nix
-    ../../modules/nixos/optional/dev.nix
-    ../../modules/nixos/optional/zephyr.nix
+    ../../modules/nixos/hardware/audio.nix
+    ../../modules/nixos/hardware/bluetooth.nix
+    ../../modules/nixos/desktop/brave.nix
+    ../../modules/nixos/desktop/reliability.nix
+    ../../modules/nixos/desktop/fonts.nix
+    ../../modules/nixos/desktop/greetd.nix
+    ../../modules/nixos/desktop/hyprland.nix
+    ../../modules/nixos/desktop/nautilus.nix
+    ../../modules/nixos/hardware/nvidia.nix
+    ../../modules/nixos/dev/nix-ld.nix
+    ../../modules/nixos/obs/obs.nix
+    ../../modules/nixos/agent/paseo.nix
+    ../../modules/nixos/desktop/portals.nix
+    ../../modules/nixos/dev/raddebugger.nix
+    ../../modules/nixos/ssh/sshfs.nix
+    ../../modules/nixos/games/steam.nix
+    ../../modules/nixos/dev/vscode.nix
+    ../../modules/nixos/desktop/soundcloud.nix
+    ../../modules/nixos/dev/toolchain.nix
+    ../../modules/nixos/dev/zephyr.nix
     ../../modules/nixos/games/dofus.nix
     ./packages.nix
   ];

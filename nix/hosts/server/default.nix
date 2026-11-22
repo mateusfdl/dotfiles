@@ -4,13 +4,12 @@
     ./hardware-configuration.nix
 
     ../../modules/nixos
-    ../../modules/nixos/optional/firewall.nix
-    ../../modules/nixos/optional/k3s.nix
-    ../../modules/nixos/optional/argocd.nix
-    ../../modules/nixos/optional/maintenance.nix
-    ../../modules/nixos/optional/openssh.nix
-    ../../modules/nixos/optional/alloy.nix
-    ../../modules/nixos/optional/conntrack-exporter.nix
+    ../../modules/nixos/k8s/k3s.nix
+    ../../modules/nixos/k8s/argocd.nix
+    ./maintenance.nix
+    ../../modules/nixos/ssh/openssh.nix
+    ../../modules/nixos/monitoring/alloy.nix
+    ../../modules/nixos/monitoring/conntrack-exporter.nix
     ./packages.nix
   ];
 
