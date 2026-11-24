@@ -14,7 +14,8 @@ bind b list-buffers  # list paste buffers
 bind p paste-buffer  # paste from the top paste buffer
 bind P choose-buffer # choose which buffer to paste from
 
-set-option -g default-terminal "tmux-256color"
+set-option -g default-terminal "xterm-256color"
+set-option -ga terminal-overrides ",xterm-256color:Tc"
 
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "tmux show-buffer | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | osc52"
 bind -T copy-mode-vi y send -X copy-pipe-and-cancel "tmux osc52"
