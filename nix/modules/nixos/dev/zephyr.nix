@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  username,
   ...
 }:
 let
@@ -72,7 +73,7 @@ in
   '';
 
   users.groups.plugdev = { };
-  users.users.matheus.extraGroups = [
+  users.users.${username}.extraGroups = [
     "dialout"
     "plugdev"
   ];

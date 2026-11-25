@@ -1,4 +1,4 @@
-{ ... }:
+{ username, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -30,7 +30,7 @@
 
   networking.hostName = "desktop";
 
-  home-manager.users.matheus.imports = [
+  home-manager.users.${username}.imports = [
     ../../home/matheus
     ../../home/matheus/linux.nix
   ];
@@ -41,7 +41,7 @@
     "--ssh"
   ];
 
-  users.users.matheus.extraGroups = [
+  users.users.${username}.extraGroups = [
     "video"
     "audio"
   ];

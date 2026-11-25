@@ -1,9 +1,9 @@
-{ ... }:
+{ username, ... }:
 {
   services.tailscale = {
     enable = true;
     extraSetFlags = [
-      "--operator=matheus"
+      "--operator=${username}"
       "--accept-routes"
     ];
   };

@@ -38,10 +38,10 @@
       };
 
       mkNixos =
-        system: modules:
+        system: username: modules:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs username; };
           modules = modules ++ [
             inputs.home-manager.nixosModules.home-manager
             homeManagerSettings
@@ -49,10 +49,10 @@
         };
 
       mkDarwin =
-        system: modules:
+        system: username: modules:
         inputs.nix-darwin.lib.darwinSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs username; };
           modules = modules ++ [
             inputs.home-manager.darwinModules.home-manager
             homeManagerSettings
@@ -78,12 +78,12 @@
       );
 
       nixosConfigurations = {
-        desktop = mkNixos "x86_64-linux" [ ./hosts/desktop ];
-        server = mkNixos "x86_64-linux" [ ./hosts/server ];
+        desktop = mkNixos "x86_64-linux" "matheus" [ ./hosts/desktop ];
+        server = mkNixos "x86_64-linux" "matheus" [ ./hosts/server ];
       };
 
       darwinConfigurations = {
-        macbook = mkDarwin "aarch64-darwin" [ ./hosts/macbook ];
+        macbook = mkDarwin "aarch64-darwin" "matheus" [ ./hosts/macbook ];
       };
     };
 }

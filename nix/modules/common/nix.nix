@@ -1,4 +1,4 @@
-{ ... }:
+{ username, ... }:
 {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [ (final: prev: import ../../pkgs final) ];
@@ -13,10 +13,7 @@
     keep-derivations = true;
     keep-outputs = true;
     max-jobs = "auto";
-    trusted-users = [
-      "root"
-      "matheus"
-    ];
+    trusted-users = [ username ];
     warn-dirty = false;
   };
 

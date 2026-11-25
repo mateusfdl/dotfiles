@@ -1,17 +1,26 @@
-{ pkgs, ... }:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
+let
+  user = config.users.users.${username};
+  mountPoint = "/mnt/beelink1";
+in
 {
   environment.systemPackages = [ pkgs.sshfs ];
 
   system.activationScripts.mkMountDirs = ''
-    if ${pkgs.gnugrep}/bin/grep -q ' /mnt/beelink1 ' /proc/mounts 2>/dev/null; then
-      ${pkgs.util-linux}/bin/umount -l /mnt/beelink1 2>/dev/null || true
+    if ${pkgs.gnugrep}/bin/grep -q ' ${mountPoint} ' /proc/mounts 2>/dev/null; then
+      ${pkgs.util-linux}/bin/umount -l ${mountPoint} 2>/dev/null || true
     fi
-    mkdir -p /mnt/beelink1
-    chown matheus:users /mnt/beelink1
+    mkdir -p ${mountPoint}
+    chown ${user.name}:${user.group} ${mountPoint}
   '';
 
   programs.zsh.shellAliases = {
-    mount-beelink = "sshfs matheus@100.121.74.52:/ /mnt/beelink1 -o reconnect,ServerAliveInterval=15,IdentityFile=/home/matheus/.ssh/beelink_n1";
-    umount-beelink = "fusermount -u /mnt/beelink1";
+    mount-beelink = "sshfs matheus@100.121.74.52:/ ${mountPoint} -o reconnect,ServerAliveInterval=15,IdentityFile=${user.home}/.ssh/beelink_n1";
+    umount-beelink = "fusermount -u ${mountPoint}";
   };
 }
